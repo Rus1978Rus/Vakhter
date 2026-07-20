@@ -4,7 +4,7 @@ ERG-CAD · Objective Anomaly Detector — runnable MVP of the core node.
 Demonstrates the founding principle of the whole ACDM-ST / ERG-CAD line:
 
     INTENSITY  !=  OBJECTIVITY
-    (сильный сигнал != объективный сигнал)
+    (a strong signal is not necessarily an objective one)
 
 A signal is treated as a field of activation over a grid of
 (time steps  x  sensor nodes). The detector applies RG-style
