@@ -1,384 +1,101 @@
-ЧАСТНЫЙ АВТОРСКИЙ ПРОЕКТ / COMMERCIAL USE PROHIBITED
+PRIVATE AUTHORIAL PROJECT / ЧАСТНЫЙ АВТОРСКИЙ ПРОЕКТ · COMMERCIAL USE PROHIBITED
 
-DOCUMENT_ID: SIGN_CORE_CARD_DIGIT_CLASS_0-9_GEN3_v0_1_RU
-DOCUMENT_TYPE: SIGN_CORE_CARD
-TEMPLATE_LINE: GEN3_v0_3
-DOCUMENT_STATUS: WORKING_DRAFT
+# SIGN CORE CARD — DIGIT CLASS 0–9 (class card, DRAFT)
+
+DOCUMENT_ID: SIGN_CORE_CARD_DIGIT_CLASS_0-9_GEN3_v0_1_RU · DOCUMENT_TYPE: SIGN_CORE_CARD · TEMPLATE_LINE: GEN3_v0_3
 STATUS: WORKING_DRAFT / NOT_LOCKED / NOT_RUNTIME / NOT_VALIDATOR / NOT_PRODUCTION
-SOURCE_TEMPLATE: SIGN_CORE_CARD_TEMPLATE_GEN3_v0_3_RU
-BASED_ON_RULESET: SIGN_CORE_CARD_CONVEYOR_RULES_GEN3_v0_3_RU
+SOURCE_TEMPLATE: SIGN_CORE_CARD_TEMPLATE_GEN3_v0_3_RU · BASED_ON_RULESET: SIGN_CORE_CARD_CONVEYOR_RULES_GEN3_v0_3_RU
 
-DRAFT_NOTE (внешняя заготовка, 2026-07-20): черновик КЛАССОВОЙ карточки
-  цифр 0–9 для входа в конвейер. НЕ прогонялся через конвейер, НЕ
-  author-decided. Содержит ДВА слоя (см. раздел 4): SURFACE (цифра как
-  число/хост/двойник) и CARRIER — "двойное дно": цифра как атом
-  кодировки, способный воссоздать ЛЮБОЙ другой знак, включая охраняемые
-  (точка, солидус, @) и невидимые (ZWSP через &#8203;). Класс-карточка —
-  общий каркас; специфика отдельных цифр (0,1,5) вынесена в приложение A
-  под будущие per-digit карточки.
+🇬🇧 [English](#english) · 🇷🇺 [Русский](#русский)
 
-============================================================
-0. UNIVERSALITY
-============================================================
+---
 
-BOUND_TO_SPECIFIC_SIGN: CLASS (0 1 2 3 4 5 6 7 8 9)
-AFTER_USE_RESIDUE: FORBIDDEN
-SIGN_DATA_IS_SESSION_ONLY: YES
+<a name="english"></a>
+## English
 
-============================================================
-1. COMMON_CONVEYOR_DISCIPLINE
-============================================================
+DRAFT_NOTE (external draft, 2026-07-20): a draft of the CLASS card for digits 0–9, for the conveyor's intake. NOT conveyor-run, NOT author-decided. It contains TWO layers (see §4): SURFACE (a digit as number/host/look-alike) and CARRIER — the "double bottom": a digit as an atom of encoding, able to reconstruct ANY other sign, including the guarded ones (dot, solidus, @) and the invisibles (ZWSP via `&#8203;`). The class card is the common frame; the specifics of individual digits (0,1,5) are moved to Appendix A for future per-digit cards.
 
-CONVEYOR_DISCIPLINE_VERSION: v0_3
-RUN_CARD_REQUIRED_BEFORE_LOCK: YES
-LOCKED_WORKING_CORE_SELF_ASSIGNMENT: FORBIDDEN
-MODEL_FAMILY_DIVERSITY_REQUIRED: YES
-ADVERSARIAL_EVIDENCE_REQUIRED: YES
-MUTATION_CHECK_REQUIRED: YES
-LIMITATION_STATEMENT_REQUIRED: YES
-AFTER_RUN_RESIDUE: FORBIDDEN
+**0. UNIVERSALITY.** BOUND_TO_SPECIFIC_SIGN: CLASS (0 1 2 3 4 5 6 7 8 9) · AFTER_USE_RESIDUE: FORBIDDEN · SIGN_DATA_IS_SESSION_ONLY: YES
 
-STATUS_PROGRESSION_TRACKER:
-  WORKING_DRAFT: YES
-  STRUCTURAL_PREFLIGHT_PASS: PENDING
-  CONVEYOR_REVIEW_PASS: PENDING
-  WORKINGLY_CLOSED: NO
+**1. COMMON_CONVEYOR_DISCIPLINE.** CONVEYOR_DISCIPLINE_VERSION: v0_3 · RUN_CARD_REQUIRED_BEFORE_LOCK: YES · LOCKED_WORKING_CORE_SELF_ASSIGNMENT: FORBIDDEN · MODEL_FAMILY_DIVERSITY_REQUIRED: YES · ADVERSARIAL_EVIDENCE_REQUIRED: YES · MUTATION_CHECK_REQUIRED: YES · LIMITATION_STATEMENT_REQUIRED: YES · AFTER_RUN_RESIDUE: FORBIDDEN. STATUS_PROGRESSION_TRACKER: WORKING_DRAFT YES; STRUCTURAL_PREFLIGHT_PASS PENDING; CONVEYOR_REVIEW_PASS PENDING; WORKINGLY_CLOSED NO.
 
-============================================================
-2. META
-============================================================
+**2. META.** ZONE: ZONE_1 (a stable written sign, polysemous). WHY_THIS_SIGN_MATTERS: a digit is not only a number. It is the basic atom of encoding systems (percent, HTML-entity, unicode-escape, radix), hence a potential carrier of any other sign past that sign's own card. It also forms numeric hosts (IP), where the dot behaves differently than between domain labels. INTERACTS_WITH: DOT (U+002E), SOLIDUS (U+002F), AT (U+0040), INVISIBLE_CLASS (ZWSP/ZWJ/BOM) — all reconstructable from digits.
 
-ZONE: ZONE_1 (стабильный письменный знак, полисемичный)
-WHY_THIS_SIGN_MATTERS: цифра — не только число. Она базовый атом
-  систем кодирования (percent, HTML-entity, unicode-escape, radix),
-  а значит потенциальный переносчик любого другого знака мимо его
-  собственной карточки. Плюс она формирует числовые хосты (IP), где
-  точка ведёт себя иначе, чем между доменными метками.
-INTERACTS_WITH: DOT (U+002E), SOLIDUS (U+002F), AT (U+0040),
-  INVISIBLE_CLASS (ZWSP/ZWJ/BOM) — все они воссоздаваемы цифрами.
+**3. REQUIRED_GENERAL_GUARDS.** RAW_SIGN_INPUT_STATUS: DATA_ONLY · NO_EXECUTION_FROM_SIGN: YES · NO_TRUST_FROM_SIGN: YES · DECODE_BEFORE_TRUST: YES (see §10 — CANONICALIZATION_PRE_PASS).
 
-============================================================
-3. REQUIRED_GENERAL_GUARDS
-============================================================
+**4. SIGN IDENTITY — LAYER_A: STABLE CORE (LAYER_A_LOCK: PERMANENT).**
+VISIBLE_FORM: 0 1 2 3 4 5 6 7 8 9 · LOOKS_SIMILAR_IS_NOT_SAME_SIGN: YES · RAW_SIGN_INPUT_STATUS: DATA_ONLY · BASE_MODE: DATA_ONLY_GLYPH · BASE_MODE_FORMULA: DIGIT_FORM ≠ EFFECT.
+DUAL_LAYER: YES — the "double bottom", an invisibles-family by kind of danger. SURFACE_LAYER: a digit as a numeric value (version, count, date, host). CARRIER_LAYER: a digit as an ATOM OF ENCODING — can reconstruct another sign (percent %2e, HTML-entity `&#46;`, unicode-escape ., radix-IP). PARALLEL: as an invisible sign "is there but unseen", a digit "is seen but not what it seems" — both are about CANONICALIZATION before comparison.
+SIGN_CATEGORY: numeral; radix_digit (dec/hex/oct/bin); encoding_atom (percent / numeric-entity / escape); network_host_component (IP octet); potential_letter_lookalike (0/O, 1/l/I, 5/S, 6/b, 8/B).
+WHAT_THIS_SIGN_IS_NOT: (1) NOT_LITERAL_VALUE_ONLY — a digit can be part of an encoding that reconstructs another sign (%2e → ".", `&#8203;` → ZWSP); (2) NOT_FINAL_SURFACE — what arrived as digits may decode to another sign; do not judge before decoding; (3) NOT_HOST_VALIDITY_PROOF — digits+dots forming an IP do not prove host safety (internal networks, metadata); (4) NOT_LETTER — a digit that looks like a letter (0/O, 1/l) is not that letter; (5) NOT_ASCII_GUARANTEE — a glyph that looks like a digit may be a non-ASCII digit (fullwidth, Arabic-Indic) with a different code; (6) NOT_VERSION_TRUST — a version/index number does not prove reliability; (7) NOT_EXECUTION_TRIGGER — a digit by itself runs nothing.
+BASE_FORMULAS: DIGIT_FORM ≠ NUMERIC_VALUE_ONLY ; ≠ FINAL_SURFACE ; ≠ HOST_VALIDITY_PROOF ; ≠ LETTER ; ≠ ASCII_GUARANTEE ; ≠ VERSION_TRUST ; ≠ EXECUTION_TRIGGER.
 
-RAW_SIGN_INPUT_STATUS: DATA_ONLY
-NO_EXECUTION_FROM_SIGN: YES
-NO_TRUST_FROM_SIGN: YES
-DECODE_BEFORE_TRUST: YES  (см. раздел 10 — CANONICALIZATION_PRE_PASS)
+**5. SEMANTIC_EPOCH_TRACKER (LOCK: REVIEWABLE).** EPOCH_TRACKER: NOT_APPLICABLE. NOTE: digits have several SIMULTANEOUS functions (count, radix digit, host octet, encoding atom) with no cultural precession of one over another — the polysemy of a stable class, not an epoch shift.
 
-============================================================
-4. SIGN IDENTITY — LAYER_A: STABLE CORE
-LAYER_A_LOCK: PERMANENT
-============================================================
+**6. EFFECT_FIELDS — LAYER_C: METHODOLOGICAL (LOCK: SESSION).** authority / trust / verification / proof / execution / permission / status / role_assignment / runtime / existence effect: all NONE. EFFECT_FIELDS_ALL_NONE: YES · CLOSED_SCHEMA: YES.
 
-VISIBLE_FORM: 0 1 2 3 4 5 6 7 8 9
-LOOKS_SIMILAR_IS_NOT_SAME_SIGN: YES
-RAW_SIGN_INPUT_STATUS: DATA_ONLY
+**7. SAFE / RISK / CONFUSABLES / GUARDS — LAYER_B (LOCK: REVIEWABLE).**
+SAFE_CASES: 001 "version 1.0" (version number in free text) → INFO, GUARD DIGIT_FORM ≠ VERSION_TRUST; 002 "3.14" (decimal fraction) → INFO, GUARD DIGIT_FORM ≠ NUMERIC_VALUE_ONLY; 003 "year 2026, house 12, +7 900 000 00 00" (year/number/phone) → INFO; 004 "1. First item  2. Second item" (list numbering) → INFO; 005 "the %2f symbol means a slash in a URL" (text ABOUT encoding, not the attack) → INFO, GUARD DECODE_ONLY_IN_EXECUTABLE_POSITION (do not decode explanatory text) — see LIMITATION.
+RISK_CASES — SURFACE LAYER (digit as host / look-alike): 001 IP_HOST_INTERNAL_SSRF "http://192.168.0.1/admin" HIGH — digits+dots form an internal IP → SSRF past domain reputation, GUARD ≠ HOST_VALIDITY_PROOF; 002 IP_HOST_CLOUD_METADATA "http://169.254.169.254/latest/meta-data/" HIGH — link-local cloud-metadata address, one of the most dangerous numeric hosts, GUARD ≠ HOST_VALIDITY_PROOF; 003 ALT_IP_ENCODING_OBFUSCATION "http://2130706433/ | http://0x7f000001/ | http://0177.0.0.1/" HIGH — 127.0.0.1 in decimal/hex/octal to bypass a "127.0.0.1" filter, GUARD ≠ FINAL_SURFACE (normalise the radix); 004 DIGIT_AS_LETTER_BRAND_MIMICRY "paypa1.com | g00gle.com | micr0soft.com" HIGH — 1→l, 0→o, 5→s make a visual domain twin, GUARD ≠ LETTER (interacts with CONFUSABLES); 005 NON_ASCII_DIGIT_HOST "http://１２７.０.０.１" (fullwidth digits) MEDIUM — a digit-glyph with another code bypasses the ASCII-digit check, GUARD ≠ ASCII_GUARANTEE.
+RISK_CASES — CARRIER LAYER (double bottom: a digit reconstructs another sign): 006 PERCENT_ENCODED_GUARDED_SIGN "%2e%2e%2f%2e%2e%2fetc/passwd" HIGH — "../../" from percent-encoding → traversal past the DOT and SOLIDUS cards that look for the literal, GUARD ≠ FINAL_SURFACE; requires CANONICALIZATION_PRE_PASS; 007 NUMERIC_ENTITY_REBUILDS_INVISIBLE "admin&#8203;istrator" HIGH — ZWSP (U+200B) rebuilt from the decimal HTML-entity `&#8203;` → past the ZWSP card, GUARD ≠ FINAL_SURFACE (decode the entity before INVISIBLE_CLASS); 008 DOUBLE_ENCODING_DEPTH "%252e%252e%252f" HIGH — one decode pass yields "%2e..", not ".." — encoding depth fools single normalization, GUARD DECODE_DEPTH_AWARE (see LIMITATION — depth limit); 009 DECIMAL_CHAR_STRING_SMUGGLING "&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;" MEDIUM — a word built from decimal numeric character references to bypass literal-word checks, GUARD ≠ FINAL_SURFACE.
+CONFUSABLES: 001 ０ U+FF10 FULLWIDTH DIGIT ZERO MED, FULLWIDTH_ZERO ≠ ASCII_ZERO; 002 ٠ U+0660 ARABIC-INDIC DIGIT ZERO MED, ARABIC_INDIC_ZERO ≠ ASCII_ZERO; 003 O U+004F LATIN CAPITAL LETTER O HIGH, LETTER_O ≠ DIGIT_ZERO (reverse twin: a letter as a digit); 004 l U+006C LATIN SMALL LETTER L HIGH, LETTER_L ≠ DIGIT_ONE; 005 Ⅰ U+2160 ROMAN NUMERAL ONE LOW, ROMAN_ONE ≠ DIGIT_ONE.
 
-BASE_MODE: DATA_ONLY_GLYPH
-BASE_MODE_FORMULA: DIGIT_FORM ≠ EFFECT
+**8. ADVERSARIAL_COVERAGE — RUN_CARD SEED.** SEED_ATTACKS_REQUIRED_IN_RUN: IP_HOST (internal / loopback / metadata); ALT_IP_ENCODING (dec / hex / oct / mixed); DIGIT_LETTER_LOOKALIKE (brand mimicry); PERCENT_ENCODED traversal (single and double); NUMERIC_ENTITY reconstruction of an invisible and a guarded sign; NON_ASCII_DIGIT host. MODEL_FAMILY_DIVERSITY_REQUIRED: YES (at least 2 different families).
 
-DUAL_LAYER: YES   # "двойное дно" — семья невидимых по типу опасности
-  SURFACE_LAYER: цифра как числовое значение (версия, счёт, дата, хост)
-  CARRIER_LAYER: цифра как АТОМ КОДИРОВКИ — может воссоздать другой знак
-    (percent %2e, HTML-entity &#46;, unicode-escape ., radix-IP).
-  PARALLEL: как невидимый знак "есть, но не виден", цифра "видна, но не
-    то, чем кажется" — оба про КАНОНИЗАЦИЮ до сравнения.
+**9. MUTATION_CHECK.** MUTATIONS_TO_SURVIVE: radix change (127.0.0.1 ↔ 2130706433 ↔ 0x7f000001); encoding change (%2e ↔ `&#46;` ↔ .); depth change (%2e ↔ %252e); width/script change (0 ↔ ０ ↔ ٠). INVARIANT: after canonicalization all variants must yield ONE verdict.
 
-SIGN_CATEGORY:
-  - numeral (числовое значение)
-  - radix_digit (основание записи: dec/hex/oct/bin)
-  - encoding_atom (percent / numeric-entity / escape)
-  - network_host_component (октет IP)
-  - potential_letter_lookalike (0/O, 1/l/I, 5/S, 6/b, 8/B)
+**10. KNOWN_OPEN_QUESTIONS.** Q1_CANONICALIZATION_PRE_PASS (the double bottom, key): the CARRIER_LAYER means the digit card is NOT a leaf but the SEED of a NORMALIZATION step that must decode input (percent / numeric-entity / unicode-escape / radix-IP) BEFORE the other cards apply. Otherwise any guarded sign is bypassed by "write it in numbers". This is a CROSS-CARD / ENGINE question, wider than one card. OPEN: where the pre-pass lives (engine vs. card), what its boundary is. Q2_DECODE_DEPTH: how far to decode (double/triple encoding) and how not to loop (decode-loop) — the depth limit. Q3_DECODE_CONTEXT: where NOT to decode (explanatory text about "%2f", SAFE_CASE_005) — else false alarms. Q4_PER_DIGIT_SPLIT: whether to split 0 and 1 (the main twins/encoders) into separate hardened per-digit cards (Appendix A).
 
-WHAT_THIS_SIGN_IS_NOT:
-  1. NOT_LITERAL_VALUE_ONLY — цифра может быть частью кодировки,
-     воссоздающей другой знак (%2e -> ".", &#8203; -> ZWSP)
-  2. NOT_FINAL_SURFACE — то, что дошло цифрами, может декодироваться
-     в иной знак; проверять до декодирования нельзя
-  3. NOT_HOST_VALIDITY_PROOF — цифры+точки, сложившиеся в IP, не
-     доказывают безопасность хоста (внутренние сети, метаданные)
-  4. NOT_LETTER — цифра, похожая на букву (0/O, 1/l), не есть эта буква
-  5. NOT_ASCII_GUARANTEE — глиф, похожий на цифру, может быть не-ASCII
-     цифрой (полноширинная, арабо-индийская) с другим кодом
-  6. NOT_VERSION_TRUST — число версии/индекса не доказывает надёжность
-  7. NOT_EXECUTION_TRIGGER — цифра сама по себе ничего не запускает
+**11. PATCH_HISTORY.** v0_1 (2026-07-20): first draft of the CLASS card for digits with two layers (SURFACE + CARRIER). Not conveyor-run.
 
-BASE_FORMULAS:
-  DIGIT_FORM ≠ NUMERIC_VALUE_ONLY
-  DIGIT_FORM ≠ FINAL_SURFACE
-  DIGIT_FORM ≠ HOST_VALIDITY_PROOF
-  DIGIT_FORM ≠ LETTER
-  DIGIT_FORM ≠ ASCII_GUARANTEE
-  DIGIT_FORM ≠ VERSION_TRUST
-  DIGIT_FORM ≠ EXECUTION_TRIGGER
+**12. LIMITATION_STATEMENT.** (1) This is WORKING_DRAFT: not conveyor-passed, not author-decided, not runtime, not a validator. (2) The CARRIER_LAYER (double bottom) is NOT implemented by this card — it only NAMES the danger and SEEDS the CANONICALIZATION_PRE_PASS. The decoding itself is separate engine work (§10). (3) Canonicalization depends on DEPTH: a single decode misses double-encoding (%252e); too greedy breaks legitimate text ABOUT encoding (SAFE_CASE_005). The boundary is an open question. (4) The class card generalizes 0–9; the specifics of individual digits (0: octal/hex/leading-zero/O-twin; 1: l/I-twin; 5: S-twin) are in Appendix A for future per-digit cards. (5) Does not cover the language layer (numbers-as-meaning-words) — not a sign card's job.
 
-============================================================
-5. SEMANTIC_EPOCH_TRACKER
-SEMANTIC_EPOCH_TRACKER_LOCK: REVIEWABLE
-============================================================
+**13. INTEGRATION_INTERFACE_STATUS.** INTEGRATION_STATUS: PENDING. REQUIRES: a CANONICALIZATION_PRE_PASS hook at runtime (before scan_signs); interaction with the cards DOT (IP boundary), SOLIDUS (path), AT (email host), INVISIBLE_CLASS (entity reconstruction). NOTE: until the pre-pass exists, the card works only on the SURFACE_LAYER (literal IPs/twins); the CARRIER_LAYER stays declared but not intercepted — this must be shown honestly in the report, not presented as covered.
 
-EPOCH_TRACKER: NOT_APPLICABLE
-NOTE: цифры имеют несколько ОДНОВРЕМЕННЫХ функций (счёт, разряд системы
-  счисления, октет хоста, атом кодировки) без культурной прецессии одной
-  над другой — полисемия стабильного класса, не смена эпох.
+**APPENDIX A. PER-DIGIT SPECIALIZATION (seed for separate cards).** 0: octal/hex prefixes, leading-zero, letter-O twin, "null" semantics · 1: l/I twin, leading digit of versions/indices · 2: hex component, rare Z twin (stylised) · 5: S twin (p5ypal), leetspeak · 6: b twin, 8: B twin, 9: g/q twin — leetspeak mimicry · 3 4 7: mostly SURFACE (host/number), weak twins.
 
-============================================================
-6. EFFECT_FIELDS — LAYER_C: METHODOLOGICAL LAYER
-LAYER_C_LOCK: SESSION
-============================================================
+---
 
-authority_effect: NONE
-trust_effect: NONE
-verification_effect: NONE
-proof_effect: NONE
-execution_effect: NONE
-permission_effect: NONE
-status_effect: NONE
-role_assignment_effect: NONE
-runtime_effect: NONE
-existence_effect: NONE
+<a name="русский"></a>
+## Русский
 
-EFFECT_FIELDS_ALL_NONE: YES
-CLOSED_SCHEMA: YES
+DRAFT_NOTE (внешняя заготовка, 2026-07-20): черновик КЛАССОВОЙ карточки цифр 0–9 для входа в конвейер. НЕ прогонялся через конвейер, НЕ author-decided. Содержит ДВА слоя (см. раздел 4): SURFACE (цифра как число/хост/двойник) и CARRIER — «двойное дно»: цифра как атом кодировки, способный воссоздать ЛЮБОЙ другой знак, включая охраняемые (точка, солидус, @) и невидимые (ZWSP через `&#8203;`). Класс-карточка — общий каркас; специфика отдельных цифр (0,1,5) вынесена в приложение A под будущие per-digit карточки.
 
-============================================================
-7. SAFE / RISK / CONFUSABLES / GUARDS — LAYER_B: SEMI-STABLE LAYER
-LAYER_B_LOCK: REVIEWABLE
-============================================================
+**0. UNIVERSALITY.** BOUND_TO_SPECIFIC_SIGN: CLASS (0 1 2 3 4 5 6 7 8 9) · AFTER_USE_RESIDUE: FORBIDDEN · SIGN_DATA_IS_SESSION_ONLY: YES
 
-SAFE_CASES:
-  SAFE_CASE_001:
-    INPUT: "version 1.0"
-    CONTEXT: номер версии в свободном тексте
-    EXPECTED: INFO
-    RISK: NONE
-    GUARD: DIGIT_FORM ≠ VERSION_TRUST
-  SAFE_CASE_002:
-    INPUT: "3.14"
-    CONTEXT: десятичная дробь
-    EXPECTED: INFO
-    RISK: NONE
-    GUARD: DIGIT_FORM ≠ NUMERIC_VALUE_ONLY (десятичный контекст)
-  SAFE_CASE_003:
-    INPUT: "год 2026, дом 12, +7 900 000 00 00"
-    CONTEXT: год / номер / телефон — обычные числа
-    EXPECTED: INFO
-    RISK: NONE
-    GUARD: none required
-  SAFE_CASE_004:
-    INPUT: "1. Первый пункт  2. Второй пункт"
-    CONTEXT: нумерация списка
-    EXPECTED: INFO
-    RISK: NONE
-    GUARD: none required
-  SAFE_CASE_005:
-    INPUT: "символ %2f в URL означает слэш"
-    CONTEXT: текст ОБ кодировке (мета-упоминание), не сама атака
-    EXPECTED: INFO
-    RISK: NONE
-    GUARD: DECODE_ONLY_IN_EXECUTABLE_POSITION (не декодировать
-      пояснительный текст) — см. LIMITATION
+**1. COMMON_CONVEYOR_DISCIPLINE.** CONVEYOR_DISCIPLINE_VERSION: v0_3 · RUN_CARD_REQUIRED_BEFORE_LOCK: YES · LOCKED_WORKING_CORE_SELF_ASSIGNMENT: FORBIDDEN · MODEL_FAMILY_DIVERSITY_REQUIRED: YES · ADVERSARIAL_EVIDENCE_REQUIRED: YES · MUTATION_CHECK_REQUIRED: YES · LIMITATION_STATEMENT_REQUIRED: YES · AFTER_RUN_RESIDUE: FORBIDDEN. STATUS_PROGRESSION_TRACKER: WORKING_DRAFT YES; STRUCTURAL_PREFLIGHT_PASS PENDING; CONVEYOR_REVIEW_PASS PENDING; WORKINGLY_CLOSED NO.
 
-RISK_CASES:
-  # ---- SURFACE LAYER (цифра как хост / двойник) ----
-  RISK_CASE_001:
-    NAME: IP_HOST_INTERNAL_SSRF
-    INPUT: "http://192.168.0.1/admin"
-    CONTEXT: числовой хост в приватном диапазоне в позиции URL
-    RISK: HIGH
-    ATTACK: цифры+точки образуют внутренний IP -> стук во внутреннюю
-      сеть (SSRF), минуя доменную репутацию
-    GUARD: DIGIT_FORM ≠ HOST_VALIDITY_PROOF
-  RISK_CASE_002:
-    NAME: IP_HOST_CLOUD_METADATA
-    INPUT: "http://169.254.169.254/latest/meta-data/"
-    CONTEXT: link-local адрес облачных метаданных
-    RISK: HIGH
-    ATTACK: доступ к облачным метаданным/кредам через SSRF — один из
-      самых опасных числовых хостов
-    GUARD: DIGIT_FORM ≠ HOST_VALIDITY_PROOF
-  RISK_CASE_003:
-    NAME: ALT_IP_ENCODING_OBFUSCATION
-    INPUT: "http://2130706433/  |  http://0x7f000001/  |  http://0177.0.0.1/"
-    CONTEXT: 127.0.0.1 записан десятично / hex / octal
-    RISK: HIGH
-    ATTACK: чистыми цифрами (иное основание) переписан IP, чтобы обойти
-      фильтр, ищущий "127.0.0.1"
-    GUARD: DIGIT_FORM ≠ FINAL_SURFACE (нормализовать основание до
-      сравнения)
-  RISK_CASE_004:
-    NAME: DIGIT_AS_LETTER_BRAND_MIMICRY
-    INPUT: "paypa1.com  |  g00gle.com  |  micr0soft.com"
-    CONTEXT: цифра подменяет похожую букву в бренде
-    RISK: HIGH
-    ATTACK: 1->l, 0->o, 5->s создают визуальный двойник домена
-    GUARD: DIGIT_FORM ≠ LETTER (взаимодействие с CONFUSABLES)
-  RISK_CASE_005:
-    NAME: NON_ASCII_DIGIT_HOST
-    INPUT: "http://１２７.０.０.１"  (полноширинные цифры)
-    CONTEXT: хост из не-ASCII цифр
-    RISK: MEDIUM
-    ATTACK: глиф-цифра с иным кодом обходит проверку по ASCII-цифрам
-    GUARD: DIGIT_FORM ≠ ASCII_GUARANTEE
+**2. META.** ZONE: ZONE_1 (стабильный письменный знак, полисемичный). WHY_THIS_SIGN_MATTERS: цифра — не только число. Она базовый атом систем кодирования (percent, HTML-entity, unicode-escape, radix), а значит потенциальный переносчик любого другого знака мимо его собственной карточки. Плюс она формирует числовые хосты (IP), где точка ведёт себя иначе, чем между доменными метками. INTERACTS_WITH: DOT (U+002E), SOLIDUS (U+002F), AT (U+0040), INVISIBLE_CLASS (ZWSP/ZWJ/BOM) — все они воссоздаваемы цифрами.
 
-  # ---- CARRIER LAYER (двойное дно: цифра воссоздаёт другой знак) ----
-  RISK_CASE_006:
-    NAME: PERCENT_ENCODED_GUARDED_SIGN
-    INPUT: "%2e%2e%2f%2e%2e%2fetc/passwd"
-    CONTEXT: "../../" собран percent-кодировкой цифрами/hex
-    RISK: HIGH
-    ATTACK: точка и солидус воссозданы как %2e/%2f -> traversal
-      проезжает мимо КАРТОЧЕК ТОЧКИ и СОЛИДУСА, которые ищут литерал
-    GUARD: DIGIT_FORM ≠ FINAL_SURFACE; требует CANONICALIZATION_PRE_PASS
-  RISK_CASE_007:
-    NAME: NUMERIC_ENTITY_REBUILDS_INVISIBLE
-    INPUT: "admin&#8203;istrator"
-    CONTEXT: ZWSP (U+200B) воссоздан десятичной HTML-entity &#8203;
-    RISK: HIGH
-    ATTACK: цифрами собран НЕВИДИМЫЙ знак -> обходит карточку ZWSP,
-      которая сработала бы на литеральный невидимый символ
-    GUARD: DIGIT_FORM ≠ FINAL_SURFACE (декодировать entity до
-      применения INVISIBLE_CLASS)
-  RISK_CASE_008:
-    NAME: DOUBLE_ENCODING_DEPTH
-    INPUT: "%252e%252e%252f"
-    CONTEXT: "%2e.." закодирован повторно ("%25"="%")
-    RISK: HIGH
-    ATTACK: один проход декодирования даёт "%2e..", не ".." — глубина
-      кодирования обманывает однократную нормализацию
-    GUARD: DECODE_DEPTH_AWARE (см. LIMITATION — предел глубины)
-  RISK_CASE_009:
-    NAME: DECIMAL_CHAR_STRING_SMUGGLING
-    INPUT: "&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;"
-    CONTEXT: слово собрано из десятичных numeric character references
-    RISK: MEDIUM
-    ATTACK: любой текст (в т.ч. ключевые слова) переписан цифрами,
-      чтобы обойти проверку по литеральным словам
-    GUARD: DIGIT_FORM ≠ FINAL_SURFACE
+**3. REQUIRED_GENERAL_GUARDS.** RAW_SIGN_INPUT_STATUS: DATA_ONLY · NO_EXECUTION_FROM_SIGN: YES · NO_TRUST_FROM_SIGN: YES · DECODE_BEFORE_TRUST: YES (см. раздел 10 — CANONICALIZATION_PRE_PASS).
 
-CONFUSABLES:
-  CONFUSABLE_001:
-    VISIBLE_FORM: ０
-    CODEPOINT: U+FF10
-    NAME: FULLWIDTH DIGIT ZERO
-    RISK: MEDIUM
-    RULE: FULLWIDTH_ZERO ≠ ASCII_ZERO
-  CONFUSABLE_002:
-    VISIBLE_FORM: ٠
-    CODEPOINT: U+0660
-    NAME: ARABIC-INDIC DIGIT ZERO
-    RISK: MEDIUM
-    RULE: ARABIC_INDIC_ZERO ≠ ASCII_ZERO
-  CONFUSABLE_003:
-    VISIBLE_FORM: O
-    CODEPOINT: U+004F
-    NAME: LATIN CAPITAL LETTER O
-    RISK: HIGH
-    RULE: LETTER_O ≠ DIGIT_ZERO   (обратный двойник: буква как цифра)
-  CONFUSABLE_004:
-    VISIBLE_FORM: l
-    CODEPOINT: U+006C
-    NAME: LATIN SMALL LETTER L
-    RISK: HIGH
-    RULE: LETTER_L ≠ DIGIT_ONE
-  CONFUSABLE_005:
-    VISIBLE_FORM: Ⅰ
-    CODEPOINT: U+2160
-    NAME: ROMAN NUMERAL ONE
-    RISK: LOW
-    RULE: ROMAN_ONE ≠ DIGIT_ONE
+**4. SIGN IDENTITY — LAYER_A: STABLE CORE (LAYER_A_LOCK: PERMANENT).**
+VISIBLE_FORM: 0 1 2 3 4 5 6 7 8 9 · LOOKS_SIMILAR_IS_NOT_SAME_SIGN: YES · RAW_SIGN_INPUT_STATUS: DATA_ONLY · BASE_MODE: DATA_ONLY_GLYPH · BASE_MODE_FORMULA: DIGIT_FORM ≠ EFFECT.
+DUAL_LAYER: YES — «двойное дно», семья невидимых по типу опасности. SURFACE_LAYER: цифра как числовое значение (версия, счёт, дата, хост). CARRIER_LAYER: цифра как АТОМ КОДИРОВКИ — может воссоздать другой знак (percent %2e, HTML-entity `&#46;`, unicode-escape ., radix-IP). PARALLEL: как невидимый знак «есть, но не виден», цифра «видна, но не то, чем кажется» — оба про КАНОНИЗАЦИЮ до сравнения.
+SIGN_CATEGORY: numeral; radix_digit (dec/hex/oct/bin); encoding_atom (percent / numeric-entity / escape); network_host_component (октет IP); potential_letter_lookalike (0/O, 1/l/I, 5/S, 6/b, 8/B).
+WHAT_THIS_SIGN_IS_NOT: (1) NOT_LITERAL_VALUE_ONLY — цифра может быть частью кодировки, воссоздающей другой знак (%2e → ".", `&#8203;` → ZWSP); (2) NOT_FINAL_SURFACE — то, что дошло цифрами, может декодироваться в иной знак; проверять до декодирования нельзя; (3) NOT_HOST_VALIDITY_PROOF — цифры+точки, сложившиеся в IP, не доказывают безопасность хоста (внутренние сети, метаданные); (4) NOT_LETTER — цифра, похожая на букву (0/O, 1/l), не есть эта буква; (5) NOT_ASCII_GUARANTEE — глиф, похожий на цифру, может быть не-ASCII цифрой (полноширинная, арабо-индийская) с другим кодом; (6) NOT_VERSION_TRUST — число версии/индекса не доказывает надёжность; (7) NOT_EXECUTION_TRIGGER — цифра сама по себе ничего не запускает.
+BASE_FORMULAS: DIGIT_FORM ≠ NUMERIC_VALUE_ONLY ; ≠ FINAL_SURFACE ; ≠ HOST_VALIDITY_PROOF ; ≠ LETTER ; ≠ ASCII_GUARANTEE ; ≠ VERSION_TRUST ; ≠ EXECUTION_TRIGGER.
 
-============================================================
-8. ADVERSARIAL_COVERAGE — RUN_CARD SEED
-============================================================
+**5. SEMANTIC_EPOCH_TRACKER (LOCK: REVIEWABLE).** EPOCH_TRACKER: NOT_APPLICABLE. NOTE: цифры имеют несколько ОДНОВРЕМЕННЫХ функций (счёт, разряд системы счисления, октет хоста, атом кодировки) без культурной прецессии одной над другой — полисемия стабильного класса, не смена эпох.
 
-SEED_ATTACKS_REQUIRED_IN_RUN:
-  - IP_HOST (internal / loopback / metadata)
-  - ALT_IP_ENCODING (dec / hex / oct / mixed)
-  - DIGIT_LETTER_LOOKALIKE (brand mimicry)
-  - PERCENT_ENCODED traversal (single и double)
-  - NUMERIC_ENTITY воссоздание невидимого и охраняемого знака
-  - NON_ASCII_DIGIT host
-MODEL_FAMILY_DIVERSITY_REQUIRED: YES (минимум 2 разных семейства)
+**6. EFFECT_FIELDS — LAYER_C: METHODOLOGICAL (LOCK: SESSION).** authority / trust / verification / proof / execution / permission / status / role_assignment / runtime / existence effect: всё NONE. EFFECT_FIELDS_ALL_NONE: YES · CLOSED_SCHEMA: YES.
 
-============================================================
-9. MUTATION_CHECK
-============================================================
+**7. SAFE / RISK / CONFUSABLES / GUARDS — LAYER_B (LOCK: REVIEWABLE).**
+SAFE_CASES: 001 "version 1.0" (номер версии в свободном тексте) → INFO, GUARD DIGIT_FORM ≠ VERSION_TRUST; 002 "3.14" (десятичная дробь) → INFO, GUARD DIGIT_FORM ≠ NUMERIC_VALUE_ONLY; 003 "год 2026, дом 12, +7 900 000 00 00" (год/номер/телефон) → INFO; 004 "1. Первый пункт  2. Второй пункт" (нумерация списка) → INFO; 005 "символ %2f в URL означает слэш" (текст ОБ кодировке, не сама атака) → INFO, GUARD DECODE_ONLY_IN_EXECUTABLE_POSITION (не декодировать пояснительный текст) — см. LIMITATION.
+RISK_CASES — SURFACE LAYER (цифра как хост / двойник): 001 IP_HOST_INTERNAL_SSRF "http://192.168.0.1/admin" HIGH — цифры+точки образуют внутренний IP → стук во внутреннюю сеть (SSRF) минуя доменную репутацию, GUARD ≠ HOST_VALIDITY_PROOF; 002 IP_HOST_CLOUD_METADATA "http://169.254.169.254/latest/meta-data/" HIGH — link-local адрес облачных метаданных, один из самых опасных числовых хостов, GUARD ≠ HOST_VALIDITY_PROOF; 003 ALT_IP_ENCODING_OBFUSCATION "http://2130706433/ | http://0x7f000001/ | http://0177.0.0.1/" HIGH — 127.0.0.1 десятично/hex/octal, чтобы обойти фильтр "127.0.0.1", GUARD ≠ FINAL_SURFACE (нормализовать основание); 004 DIGIT_AS_LETTER_BRAND_MIMICRY "paypa1.com | g00gle.com | micr0soft.com" HIGH — 1→l, 0→o, 5→s создают визуальный двойник домена, GUARD ≠ LETTER (взаимодействие с CONFUSABLES); 005 NON_ASCII_DIGIT_HOST "http://１２７.０.０.１" (полноширинные цифры) MEDIUM — глиф-цифра с иным кодом обходит проверку по ASCII-цифрам, GUARD ≠ ASCII_GUARANTEE.
+RISK_CASES — CARRIER LAYER (двойное дно: цифра воссоздаёт другой знак): 006 PERCENT_ENCODED_GUARDED_SIGN "%2e%2e%2f%2e%2e%2fetc/passwd" HIGH — "../../" собран percent-кодировкой → traversal мимо КАРТОЧЕК ТОЧКИ и СОЛИДУСА, которые ищут литерал, GUARD ≠ FINAL_SURFACE; требует CANONICALIZATION_PRE_PASS; 007 NUMERIC_ENTITY_REBUILDS_INVISIBLE "admin&#8203;istrator" HIGH — ZWSP (U+200B) воссоздан десятичной HTML-entity `&#8203;` → обходит карточку ZWSP, GUARD ≠ FINAL_SURFACE (декодировать entity до INVISIBLE_CLASS); 008 DOUBLE_ENCODING_DEPTH "%252e%252e%252f" HIGH — один проход декодирования даёт "%2e..", не ".." — глубина кодирования обманывает однократную нормализацию, GUARD DECODE_DEPTH_AWARE (см. LIMITATION — предел глубины); 009 DECIMAL_CHAR_STRING_SMUGGLING "&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;" MEDIUM — слово собрано из десятичных numeric character references, чтобы обойти проверку по литеральным словам, GUARD ≠ FINAL_SURFACE.
+CONFUSABLES: 001 ０ U+FF10 FULLWIDTH DIGIT ZERO MED, FULLWIDTH_ZERO ≠ ASCII_ZERO; 002 ٠ U+0660 ARABIC-INDIC DIGIT ZERO MED, ARABIC_INDIC_ZERO ≠ ASCII_ZERO; 003 O U+004F LATIN CAPITAL LETTER O HIGH, LETTER_O ≠ DIGIT_ZERO (обратный двойник: буква как цифра); 004 l U+006C LATIN SMALL LETTER L HIGH, LETTER_L ≠ DIGIT_ONE; 005 Ⅰ U+2160 ROMAN NUMERAL ONE LOW, ROMAN_ONE ≠ DIGIT_ONE.
 
-MUTATIONS_TO_SURVIVE:
-  - смена основания (127.0.0.1 <-> 2130706433 <-> 0x7f000001)
-  - смена кодировки (%2e <-> &#46; <-> .)
-  - смена глубины (%2e <-> %252e)
-  - смена ширины/скрипта (0 <-> ０ <-> ٠)
-INVARIANT: после канонизации все варианты должны давать ОДИН вердикт.
+**8. ADVERSARIAL_COVERAGE — RUN_CARD SEED.** SEED_ATTACKS_REQUIRED_IN_RUN: IP_HOST (internal / loopback / metadata); ALT_IP_ENCODING (dec / hex / oct / mixed); DIGIT_LETTER_LOOKALIKE (brand mimicry); PERCENT_ENCODED traversal (single и double); NUMERIC_ENTITY воссоздание невидимого и охраняемого знака; NON_ASCII_DIGIT host. MODEL_FAMILY_DIVERSITY_REQUIRED: YES (минимум 2 разных семейства).
 
-============================================================
-10. KNOWN_OPEN_QUESTIONS
-============================================================
+**9. MUTATION_CHECK.** MUTATIONS_TO_SURVIVE: смена основания (127.0.0.1 ↔ 2130706433 ↔ 0x7f000001); смена кодировки (%2e ↔ `&#46;` ↔ .); смена глубины (%2e ↔ %252e); смена ширины/скрипта (0 ↔ ０ ↔ ٠). INVARIANT: после канонизации все варианты должны давать ОДИН вердикт.
 
-Q1_CANONICALIZATION_PRE_PASS (двойное дно, ключевое):
-  CARRIER_LAYER означает, что цифровая карточка НЕ листик, а СЕМЯ
-  этапа НОРМАЛИЗАЦИИ, который должен декодировать вход (percent /
-  numeric-entity / unicode-escape / radix-IP) ДО применения остальных
-  карточек. Иначе любой охраняемый знак обходится фразой "напиши это
-  числами". Это КРОСС-КАРТОЧНЫЙ / ДВИЖКОВЫЙ вопрос, шире одной карточки.
-  ОТКРЫТО: где живёт pre-pass (движок vs карточка), какова граница.
-Q2_DECODE_DEPTH: докуда декодировать (double/triple encoding) и как не
-  зациклиться (decode-loop) — предел глубины.
-Q3_DECODE_CONTEXT: где декодировать НЕЛЬЗЯ (пояснительный текст про
-  "%2f", SAFE_CASE_005) — иначе ложные тревоги.
-Q4_PER_DIGIT_SPLIT: выносить ли 0 и 1 (главные двойники/кодировка) в
-  отдельные усиленные per-digit карточки (приложение A).
+**10. KNOWN_OPEN_QUESTIONS.** Q1_CANONICALIZATION_PRE_PASS (двойное дно, ключевое): CARRIER_LAYER означает, что цифровая карточка НЕ листик, а СЕМЯ этапа НОРМАЛИЗАЦИИ, который должен декодировать вход (percent / numeric-entity / unicode-escape / radix-IP) ДО применения остальных карточек. Иначе любой охраняемый знак обходится фразой «напиши это числами». Это КРОСС-КАРТОЧНЫЙ / ДВИЖКОВЫЙ вопрос, шире одной карточки. ОТКРЫТО: где живёт pre-pass (движок vs карточка), какова граница. Q2_DECODE_DEPTH: докуда декодировать (double/triple encoding) и как не зациклиться (decode-loop) — предел глубины. Q3_DECODE_CONTEXT: где декодировать НЕЛЬЗЯ (пояснительный текст про "%2f", SAFE_CASE_005) — иначе ложные тревоги. Q4_PER_DIGIT_SPLIT: выносить ли 0 и 1 (главные двойники/кодировка) в отдельные усиленные per-digit карточки (приложение A).
 
-============================================================
-11. PATCH_HISTORY
-============================================================
+**11. PATCH_HISTORY.** v0_1 (2026-07-20): первичный черновик КЛАССОВОЙ карточки цифр с двумя слоями (SURFACE + CARRIER). Не прогонялся через конвейер.
 
-v0_1 (2026-07-20): первичный черновик КЛАССОВОЙ карточки цифр с двумя
-  слоями (SURFACE + CARRIER). Не прогонялся через конвейер.
+**12. LIMITATION_STATEMENT.** (1) Это WORKING_DRAFT: не прошёл конвейер, не author-decided, не runtime, не валидатор. (2) CARRIER_LAYER (двойное дно) НЕ реализуется этой карточкой — она лишь НАЗЫВАЕТ опасность и СЕЯТ CANONICALIZATION_PRE_PASS. Само декодирование — отдельная движковая работа (раздел 10). (3) Канонизация зависима от ГЛУБИНЫ: однократное декодирование пропускает double-encoding (%252e). Слишком жадное — ломает легитимный текст ОБ кодировке (SAFE_CASE_005). Граница — открытый вопрос. (4) Класс-карточка обобщает 0–9; специфика отдельных цифр (0: octal/hex/leading-zero/O-двойник; 1: l/I-двойник; 5: S-двойник) — в приложении A, под будущие per-digit карточки. (5) Не покрывает языковой слой (числа-как-слова смысла) — это не задача знаковой карточки.
 
-============================================================
-12. LIMITATION_STATEMENT
-============================================================
+**13. INTEGRATION_INTERFACE_STATUS.** INTEGRATION_STATUS: PENDING. REQUIRES: CANONICALIZATION_PRE_PASS хук в рантайме (до scan_signs); взаимодействие с карточками DOT (IP-граница), SOLIDUS (path), AT (email-хост), INVISIBLE_CLASS (entity-воссоздание). NOTE: до появления pre-pass карточка работает только на SURFACE_LAYER (литеральные IP/двойники); CARRIER_LAYER остаётся заявленным, но не перехваченным — это надо честно показывать в отчёте, а не выдавать за покрытое.
 
-  1. Это WORKING_DRAFT: не прошёл конвейер, не author-decided, не
-     runtime, не валидатор.
-  2. CARRIER_LAYER (двойное дно) НЕ реализуется этой карточкой — она
-     лишь НАЗЫВАЕТ опасность и СЕЯТ CANONICALIZATION_PRE_PASS. Само
-     декодирование — отдельная движковая работа (раздел 10).
-  3. Канонизация зависима от ГЛУБИНЫ: однократное декодирование
-     пропускает double-encoding (%252e). Слишком жадное — ломает
-     легитимный текст ОБ кодировке (SAFE_CASE_005). Граница —
-     открытый вопрос.
-  4. Класс-карточка обобщает 0–9; специфика отдельных цифр (0: octal/
-     hex/leading-zero/O-двойник; 1: l/I-двойник; 5: S-двойник) — в
-     приложении A, под будущие per-digit карточки.
-  5. Не покрывает языковой слой (числа-как-слова смысла) — это не
-     задача знаковой карточки.
-
-============================================================
-13. INTEGRATION_INTERFACE_STATUS
-============================================================
-
-INTEGRATION_STATUS: PENDING
-REQUIRES:
-  - CANONICALIZATION_PRE_PASS хук в рантайме (до scan_signs)
-  - взаимодействие с карточками: DOT (IP-граница), SOLIDUS (path),
-    AT (email-хост), INVISIBLE_CLASS (entity-воссоздание)
-NOTE: до появления pre-pass карточка работает только на SURFACE_LAYER
-  (литеральные IP/двойники); CARRIER_LAYER остаётся заявленным, но не
-  перехваченным — это надо честно показывать в отчёте, а не выдавать
-  за покрытое.
-
-============================================================
-ПРИЛОЖЕНИЕ A. PER-DIGIT SPECIALIZATION (seed под отдельные карточки)
-============================================================
-
-  0: octal/hex-префиксы, leading-zero, двойник буквы O, "null"-семантика
-  1: двойник l/I, ведущая цифра версий/индексов
-  2: hex-компонент, редкий двойник Z (стилизованный)
-  5: двойник S (p5ypal), leetspeak
-  6: двойник b, 8: двойник B, 9: двойник g/q — leetspeak-мимикрия
-  3 4 7: преимущественно SURFACE (хост/число), слабые двойники
+**ПРИЛОЖЕНИЕ A. PER-DIGIT SPECIALIZATION (seed под отдельные карточки).** 0: octal/hex-префиксы, leading-zero, двойник буквы O, "null"-семантика · 1: двойник l/I, ведущая цифра версий/индексов · 2: hex-компонент, редкий двойник Z (стилизованный) · 5: двойник S (p5ypal), leetspeak · 6: двойник b, 8: двойник B, 9: двойник g/q — leetspeak-мимикрия · 3 4 7: преимущественно SURFACE (хост/число), слабые двойники.
