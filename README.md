@@ -54,7 +54,6 @@ The guard's parts are general primitives, so they spin out into other fields ([`
 ```
 README.md              — this file
 COVERAGE_MAP.md        — measured coverage by category (before/after)
-MASTER_PROJECT_MAP.md  — map of the wider project ecosystem
 code/
   invariant_engine/    — core + adapters + real MSL
   range/               — the assembled guard, cards, harnesses, supply-chain gates
@@ -110,7 +109,6 @@ Vakhter — это **турникет безопасности для прило
 ```
 README.md              — этот файл
 COVERAGE_MAP.md        — измеренный охват по категориям (до/после)
-MASTER_PROJECT_MAP.md  — карта всей экосистемы проектов
 code/
   invariant_engine/    — ядро + адаптеры + настоящий MSL
   range/               — собранный вахтёр, карточки, харнессы, воротца цепочки поставки
