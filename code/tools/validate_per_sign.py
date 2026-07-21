@@ -26,11 +26,12 @@ MIN = {"WHAT_IS_NOT": 10, "BASE_FORMULAS": 10, "SAFE_CASE": 6, "RISK_CASE": 6,
 # Unicode Name Aliases (control category) used when a card lists one as a
 # functional confusable of a control-char sign (LF/CR/TAB/NUL...).
 CONTROL_ALIASES = {
-    0x0000: "NULL", 0x0007: "BELL", 0x0008: "BACKSPACE",
+    0x0000: "NULL", 0x0001: "START OF HEADING", 0x0004: "END OF TRANSMISSION",
+    0x0007: "BELL", 0x0008: "BACKSPACE",
     0x0009: "CHARACTER TABULATION", 0x000A: "LINE FEED",
     0x000B: "LINE TABULATION", 0x000C: "FORM FEED",
-    0x000D: "CARRIAGE RETURN", 0x001B: "ESCAPE",
-    0x0085: "NEXT LINE",
+    0x000D: "CARRIAGE RETURN", 0x001A: "SUBSTITUTE", 0x001B: "ESCAPE",
+    0x007F: "DELETE", 0x0085: "NEXT LINE",
 }
 
 PLACEHOLDER_HINTS = ["<...>", "<XXXX>", "U+<X", "<the ", "<author", "<YYYY",
