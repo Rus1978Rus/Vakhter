@@ -45,10 +45,23 @@ GRK_TO_LAT = {
     0x039A: "K", 0x039C: "M", 0x039D: "N", 0x039F: "O", 0x03A1: "P", 0x03A4: "T",
     0x03A5: "Y", 0x03A7: "X",
 }
-OTHER_CONF = {0x2010: "-"}                    # HYPHEN U+2010 confuses with ASCII '-'
+# Roman-numeral LETTER FORMS that look like Latin letters (Number Forms block).
+# Mixed INTO an ASCII-Latin word they are a spoof (ⅼ in paypaⅼ); standalone
+# Roman numerals (Ⅻ, "ⅰ ⅴ ⅹ ⅼ") are their own tokens and never trip this.
+ROMAN_TO_LAT = {0x2170: "i", 0x2174: "v", 0x2179: "x", 0x217C: "l", 0x217D: "c",
+                0x217E: "d", 0x217F: "m",
+                0x2160: "I", 0x2164: "V", 0x2169: "X", 0x216C: "L", 0x216D: "C",
+                0x216E: "D", 0x216F: "M"}
+# Non-ASCII dashes that confuse with the ASCII hyphen. Legit in prose typography
+# (well‐known) — flagged ONLY inside a domain-ish token (one containing a dot).
+NASCII_DASH = {0x2010: "-", 0x2011: "-", 0x2012: "-", 0x2013: "-", 0x2014: "-",
+               0x2015: "-", 0x2212: "-", 0xFF0D: "-"}
+OTHER_CONF = {}
 CONFUSABLE = {}
 CONFUSABLE.update(CYR_TO_LAT)
 CONFUSABLE.update(GRK_TO_LAT)
+CONFUSABLE.update(ROMAN_TO_LAT)
+CONFUSABLE.update(NASCII_DASH)
 CONFUSABLE.update(OTHER_CONF)
 
 # DEMO target skeletons for the whole-script branch (a real deployment swaps this
@@ -80,17 +93,28 @@ def _skeleton(tok):
     return "".join(CONFUSABLE.get(ord(c), c) for c in tok)
 
 
+def _tokish(ch):
+    return (_script(ch) is not None or ch in ".-_"
+            or ord(ch) in ROMAN_TO_LAT or ord(ch) in NASCII_DASH)
+
+
 def _tokens(text):
-    """Maximal runs of letters (+ intra-token '.' '-' '_' for domains)."""
+    """Maximal runs of letters (+ intra-token '.' '-' '_', roman-numeral
+    letter-forms and non-ASCII dashes — so paypaⅼ.com / pay‐pal.com are tokens)."""
     toks, cur = [], []
     for ch in text:
-        if _script(ch) is not None or ch in ".-_":
+        if _tokish(ch):
             cur.append(ch)
         elif cur:
             toks.append("".join(cur)); cur = []
     if cur:
         toks.append("".join(cur))
     return toks
+
+
+def _ascii_latin(ch):
+    o = ord(ch)
+    return (0x41 <= o <= 0x5A) or (0x61 <= o <= 0x7A)
 
 
 def confusable_cards_reader(text):
@@ -110,6 +134,26 @@ def confusable_cards_reader(text):
                     f"mixed-script confusable token '{tok}' impersonates '{skel}' "
                     f"(Latin + {'/'.join(sorted(scripts & {'Cyrillic','Greek'}))} "
                     f"look-alikes)", conclusive=True, signature="mixed_script_confusable")
+
+        has_ascii_latin = any(_ascii_latin(c) for c in tok)
+
+        # roman-numeral letter-form mixed INTO an ASCII-Latin word (paypaⅼ, iⅼlegal)
+        roman = [c for c in tok if ord(c) in ROMAN_TO_LAT]
+        if has_ascii_latin and roman:
+            skel = _skeleton(tok)
+            return Finding("suspect", 0.85,
+                f"confusable token '{tok}' impersonates '{skel}' "
+                f"(Roman-numeral letter-form among Latin letters)",
+                conclusive=True, signature="mixed_script_confusable")
+
+        # non-ASCII dash in a DOMAIN-ish token (has a dot) — pay‐pal.com, not well‐known
+        dash = [c for c in tok if ord(c) in NASCII_DASH]
+        if has_ascii_latin and dash and "." in tok:
+            skel = _skeleton(tok)
+            return Finding("suspect", 0.85,
+                f"confusable token '{tok}' impersonates '{skel}' "
+                f"(non-ASCII dash in a domain-like token)",
+                conclusive=True, signature="mixed_script_confusable")
 
         # whole-script spoof: all-foreign token whose skeleton equals a TARGET
         if (scripts <= {"Cyrillic"} or scripts <= {"Greek"}) and letters:
