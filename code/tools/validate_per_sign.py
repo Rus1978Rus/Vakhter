@@ -22,6 +22,17 @@ CARDS = os.path.abspath(os.path.join(HERE, "..", "..", "sign_cards", "per_sign")
 MIN = {"WHAT_IS_NOT": 10, "BASE_FORMULAS": 10, "SAFE_CASE": 6, "RISK_CASE": 6,
        "CONFUSABLE": 5, "CG": 6, "MUTATION": 6, "ADVERSARIAL": 10}
 
+# Control codepoints have no formal UCD name, only aliases. Names below are the
+# Unicode Name Aliases (control category) used when a card lists one as a
+# functional confusable of a control-char sign (LF/CR/TAB/NUL...).
+CONTROL_ALIASES = {
+    0x0000: "NULL", 0x0007: "BELL", 0x0008: "BACKSPACE",
+    0x0009: "CHARACTER TABULATION", 0x000A: "LINE FEED",
+    0x000B: "LINE TABULATION", 0x000C: "FORM FEED",
+    0x000D: "CARRIAGE RETURN", 0x001B: "ESCAPE",
+    0x0085: "NEXT LINE",
+}
+
 PLACEHOLDER_HINTS = ["<...>", "<XXXX>", "U+<X", "<the ", "<author", "<YYYY",
                      "<number>", "<vector>", "<category", "<example text>",
                      "<similar symbol>", "<official name>", "<question>",
@@ -86,12 +97,21 @@ def validate_file(path):
     if ph:
         errs.append(f"leftover placeholders: {ph}")
     for cp, nm in confusable_codepoints(text):
+        ch = chr(cp)
         try:
-            ch = chr(cp)
             real = unicodedata.name(ch)
         except (ValueError, KeyError):
-            errs.append(f"CONFUSABLE U+{cp:04X} not a named codepoint")
-            continue
+            # Control chars (LF/CR/TAB/VT/FF/NEL...) are real assigned codepoints
+            # with no formal UCD name, only aliases. Accept them when the category
+            # is a control (Cc); reject only genuinely unassigned/surrogate points.
+            if unicodedata.category(ch) == "Cc":
+                real = CONTROL_ALIASES.get(cp)
+                if real is None:
+                    warns.append(f"U+{cp:04X} control char without a known alias")
+                    continue
+            else:
+                errs.append(f"CONFUSABLE U+{cp:04X} not a named codepoint")
+                continue
         if nm and nm.upper() != real.upper():
             warns.append(f"U+{cp:04X} name '{nm}' != UCD '{real}'")
     return c, errs, warns
