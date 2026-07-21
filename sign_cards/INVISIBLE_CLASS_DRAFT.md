@@ -57,7 +57,7 @@ GUARD_PRINCIPLE: never fire on presence alone; require the hostile context (spli
 
 **9. MUTATION_CHECK.** literal invisible ↔ `&#N;` ↔ `%XX` byte form; position (start / middle / end of token); single vs. run. INVARIANT: after canonicalization one verdict; a legit-glue case must stay OK across all forms.
 
-**10. KNOWN_OPEN_QUESTIONS.** Q1: a script-aware allowlist so legit ZWNJ (Persian/Indic) reaches OK instead of WATCH. Q2: the DESYNC model — flag when the sign's presence would make two parsers disagree (browser strips SHY, server keeps it — UTS #46 treats these unevenly). Q3: how to combine with the length-witness (Notarius) so an invisible insertion is also caught by codepoint-count shift.
+**10. KNOWN_OPEN_QUESTIONS.** Q1: a script-aware allowlist so legit ZWNJ (Persian/Indic) reaches OK instead of WATCH. Q2: the DESYNC model — flag when the sign's presence would make two parsers disagree (browser strips SHY, server keeps it — UTS #46 treats these unevenly). **PROTOTYPED** as `code/range/canonical_view.py` (raw-vs-canonical two-view divergence; escalates invisible-against-domain-punctuation WATCH → ALARM, 0 own FP — simulated in `range_canonical_view.py`); adopted from the MSL/MIP invisible-guard design. Q3: how to combine with the length-witness (Notarius) so an invisible insertion is also caught by codepoint-count shift.
 
 **11. PATCH_HISTORY.** v0_1 (2026-07-20): first draft of the invisible/zero-width CLASS card enumerating the P0/P1 codepoints, paired with `invisible_cards.py`. Not conveyor-run.
 
@@ -115,7 +115,7 @@ GUARD_PRINCIPLE: никогда не срабатывать на одном пр
 
 **9. MUTATION_CHECK.** литеральный невидимый ↔ `&#N;` ↔ байтовая форма `%XX`; позиция (начало / середина / конец токена); одиночный vs. цепочка. INVARIANT: после канонизации один вердикт; кейс легит-клея должен оставаться OK во всех формах.
 
-**10. KNOWN_OPEN_QUESTIONS.** Q1: allowlist по письменностям, чтобы легит ZWNJ (персидский/индийский) достигал OK вместо WATCH. Q2: модель ДЕСИНХРОНА — флагать, когда присутствие знака заставит два парсера разойтись (браузер вырезает SHY, сервер оставляет — UTS #46 трактует их неодинаково). Q3: как совместить с уликой-длины (Notarius), чтобы невидимая вставка ловилась ещё и сдвигом счётчика кодпоинтов.
+**10. KNOWN_OPEN_QUESTIONS.** Q1: allowlist по письменностям, чтобы легит ZWNJ (персидский/индийский) достигал OK вместо WATCH. Q2: модель ДЕСИНХРОНА — флагать, когда присутствие знака заставит два парсера разойтись (браузер вырезает SHY, сервер оставляет — UTS #46 трактует их неодинаково). **ПРОТОТИПИРОВАНО** как `code/range/canonical_view.py` (расхождение двух прочтений raw-vs-canonical; повышает невидимый-рядом-с-доменной-пунктуацией WATCH → ALARM, 0 собственных FP — симуляция в `range_canonical_view.py`); взято из MSL/MIP invisible-guard дизайна. Q3: как совместить с уликой-длины (Notarius), чтобы невидимая вставка ловилась ещё и сдвигом счётчика кодпоинтов.
 
 **11. PATCH_HISTORY.** v0_1 (2026-07-20): первый черновик невидимой/zero-width КЛАССОВОЙ карточки с перечислением кодпоинтов P0/P1, в паре с `invisible_cards.py`. Не прогонялся через конвейер.
 
