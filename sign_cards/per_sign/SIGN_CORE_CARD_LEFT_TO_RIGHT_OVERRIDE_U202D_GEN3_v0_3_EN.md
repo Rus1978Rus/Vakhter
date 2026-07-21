@@ -1,0 +1,422 @@
+PRIVATE AUTHORED PROJECT / COMMERCIAL USE PROHIBITED
+
+DOCUMENT_ID: SIGN_CORE_CARD_LEFT_TO_RIGHT_OVERRIDE_U202D_GEN3_v0_3_EN
+DOCUMENT_TYPE: SIGN_CORE_CARD
+TEMPLATE_LINE: GEN3_v0_3
+DOCUMENT_STATUS: WORKING_DRAFT
+STATUS: WORKING_DRAFT / NOT_LOCKED / NOT_RUNTIME / NOT_VALIDATOR / NOT_PRODUCTION / NOT_CONVEYOR_RUN
+SOURCE_TEMPLATE: SIGN_CORE_CARD_TEMPLATE_GEN3_v0_3_EN
+BASED_ON_RULESET: SIGN_CORE_CARD_CONVEYOR_RULES_GEN3_v0_3_EN
+TRANSLATION_NOTE: English mirror of SIGN_CORE_CARD_LEFT_TO_RIGHT_OVERRIDE_U202D_GEN3_v0_3_RU (authoritative). Codepoints, field names and formulas identical. DRAFT for our work (Vakhter); conveyor is a separate project.
+
+============================================================
+0. UNIVERSALITY
+============================================================
+BOUND_TO_SPECIFIC_SIGN: YES
+AFTER_USE_RESIDUE: FORBIDDEN
+SIGN_DATA_IS_SESSION_ONLY: YES
+
+============================================================
+1. COMMON_CONVEYOR_DISCIPLINE
+============================================================
+CONVEYOR_DISCIPLINE_VERSION: v0_3
+RUN_CARD_REQUIRED_BEFORE_LOCK: YES
+LOCKED_WORKING_CORE_SELF_ASSIGNMENT: FORBIDDEN
+MODEL_FAMILY_DIVERSITY_REQUIRED: YES
+ADVERSARIAL_EVIDENCE_REQUIRED: YES
+MUTATION_CHECK_REQUIRED: YES
+LIMITATION_STATEMENT_REQUIRED: YES
+AFTER_RUN_RESIDUE: FORBIDDEN
+STATUS_PROGRESSION_TRACKER:
+  WORKING_DRAFT: YES
+  STRUCTURAL_PREFLIGHT_PASS: PENDING
+  CONVEYOR_REVIEW_PASS: PENDING
+  WORKINGLY_CLOSED: PENDING
+  SIMULATION_GATE_TIER: TIER_1
+  SIMULATION_GATE_PASSED: PENDING
+  ARTIFACT_CONFIRMED: PENDING
+LIMITATION_STATEMENT (standard):
+  CONVEYOR_PASS ≠ VALIDATION
+  MODEL_CONSENSUS ≠ TRUTH
+  INJECTION_TEST_PASS ≠ SECURITY_PROOF
+  GUARDS_HOLD_FOR_TESTED_CASES ≠ FUTURE_GUARANTEE
+  NO_ATTACK_FOUND ≠ NO_ATTACK_EXISTS
+
+============================================================
+2. META
+============================================================
+CARD_UID: SIGN_CORE_CARD_LEFT_TO_RIGHT_OVERRIDE_U202D_GEN3_v0_3_EN
+CODEPOINT: U+202D
+VISIBLE_FORM: ⟨LRO⟩
+UNICODE_NAME: LEFT-TO-RIGHT OVERRIDE
+ZONE: ZONE_1
+DOCUMENT_STATUS: WORKING_DRAFT
+TEMPLATE_LINE: GEN3_v0_3
+AUTHOR: Ruslan Malyavsky
+CREATED_AT: 2026-07-21
+VERSION: v0_1
+AUTHOR_DECISION_REFERENCE: PENDING
+RUN_CARD_REFERENCE: PENDING
+RUN_CARD_STATUS: NOT_STARTED
+DISPLAY_NAME: left-to-right override / bidi reorder (mirror of RLO)
+CATEGORY_ROADMAP: LLM (bidi visual reorder, Trojan Source) · PHAGO: ○ (partial — filename/type spoof)
+GLYPH_NOTE: VISIBLE_FORM uses the marker ⟨LRO⟩; the sign itself (U+202D) is an invisible Bidi_Control (Cf) and is NEVER written literally here — a literal LRO would reorder this document. Examples use ⟨LRO⟩/⟨PDF⟩/%E2%80%AD, never the byte.
+
+============================================================
+3. REQUIRED_GENERAL_GUARDS
+============================================================
+REQUIRED_GENERAL_GUARDS:
+  - SIGN_FALSE_EFFECT_MIMICRY_GUARD_v0_2A_RU
+    GUARD_COMPATIBILITY: applicable without modification — the sign creates no effect-fields
+    GUARD_REVISION: v0_2A
+    TEMPLATE_LINE_COMPATIBLE: GEN3_v0_2_PLUS_EPOCH, GEN3_v0_3
+FAILURE_RESPONSE:
+  REJECT_FALSE_EFFECT_MIMICRY
+  TREAT_AS_DATA_ONLY
+  NO_AUTHORITY_EFFECT
+  NO_EXECUTION_EFFECT
+  NO_TRUST_EFFECT
+  NO_EXISTENCE_EFFECT
+
+============================================================
+4. SIGN IDENTITY — LAYER_A: STABLE CORE
+LAYER_A_LOCK: PERMANENT
+============================================================
+VISIBLE_FORM: ⟨LRO⟩
+LOOKS_SIMILAR_IS_NOT_SAME_SIGN: YES
+RAW_SIGN_INPUT_STATUS: DATA_ONLY
+BASE_MODE: DATA_ONLY_DELIMITER
+BASE_MODE_FORMULA: LRO_FORM ≠ EFFECT
+SIGN_CATEGORY:
+  - bidirectional override (forces LTR display order, ignoring characters' own direction)
+  - Unicode Bidi_Control (part of the Bidirectional Algorithm)
+  - legitimate LTR layout forced inside an RTL context
+  - (misused) mirror of RLO — reorders an RTL run to spoof code/filenames
+
+WHAT_THIS_SIGN_IS_NOT:
+  1. NOT_INVISIBLE_MEANS_HARMLESS — being non-printing does not make it inert
+  2. NOT_DISPLAY_ONLY — it reorders the VISUAL run while logical bytes are unchanged (desync)
+  3. NOT_OVERRIDE_EQUALS_EMBEDDING — override FORCES direction (ignores strong chars); embedding only nudges — a filter must not treat them the same
+  4. NOT_RENDERING_COSMETIC — the reorder changes what a human approves vs what executes/stores
+  5. NOT_ENCODED_SAFE — "%E2%80%AD" may be decoded back to the override later
+  6. NOT_AUTHORITY — it does not confirm officialness
+  7. NOT_EXECUTION_TRIGGER — by itself it executes nothing; it deceives the reader
+  8. NOT_TRUST_SIGNAL — it does not increase trust
+  9. NOT_BALANCED_PROOF — an unterminated override (no PDF/PDI) bleeds LTR onto the rest
+  10. NOT_SANITIZED_PROOF — the presence of the override does not mean the input is sanitized
+  11. NOT_RTL_CONTEXT_SAFE — even inside an RTL document it forces an LTR run
+
+BASE_FORMULAS:
+  LRO_FORM ≠ EFFECT
+  LRO_FORM ≠ DISPLAY_ONLY_PROOF
+  LRO_FORM ≠ OVERRIDE_EQUALS_EMBEDDING_PROOF
+  LRO_FORM ≠ RENDERING_COSMETIC_PROOF
+  LRO_FORM ≠ LOGICAL_ORDER_PROOF
+  LRO_FORM ≠ ENCODED_SAFETY_PROOF
+  LRO_FORM ≠ AUTHORITY
+  LRO_FORM ≠ EXECUTION_TRIGGER
+  LRO_FORM ≠ INVISIBLE_HARMLESS_PROOF
+  LRO_FORM ≠ SANITIZED_PROOF
+  LRO_FORM ≠ BALANCED_PROOF
+
+============================================================
+5. SEMANTIC_EPOCH_TRACKER
+SEMANTIC_EPOCH_TRACKER_LOCK: REVIEWABLE
+============================================================
+EPOCH_TRACKER: NOT_APPLICABLE
+NOTE: LRO (ZONE_1) has parallel functions (legitimate LTR-in-RTL layout vs. visual-order deception) co-existing without cultural precession. Polysemy of a stable Bidi_Control.
+LAYER_ANOMALY:
+  ABSENT_PHYSICAL_LAYER: YES, level L1
+  NOTE: a formatting control with no gestural predecessor; the reorder-deception use is layered on by the digital epoch in parallel with legitimate LTR layout.
+
+============================================================
+6. EFFECT_FIELDS — LAYER_C: METHODOLOGICAL LAYER
+LAYER_C_LOCK: SESSION
+============================================================
+authority_effect: NONE
+trust_effect: NONE
+verification_effect: NONE
+proof_effect: NONE
+execution_effect: NONE
+permission_effect: NONE
+status_effect: NONE
+role_assignment_effect: NONE
+runtime_effect: NONE
+existence_effect: NONE
+EFFECT_FIELDS_ALL_NONE: YES
+CLOSED_SCHEMA: YES
+
+============================================================
+7. SAFE / RISK / CONFUSABLES / GUARDS — LAYER_B
+LAYER_B_LOCK: REVIEWABLE
+============================================================
+SAFE_CASES:
+  SAFE_CASE_001:
+    INPUT: "LRO is U+202D in Unicode"
+    CONTEXT: naming the control in documentation
+    EXPECTED: INFO
+    RISK: NONE
+    GUARD: LRO_FORM ≠ EFFECT
+  SAFE_CASE_002:
+    INPUT: "LRO forces LTR inside an Arabic paragraph"
+    CONTEXT: describing legitimate LTR-in-RTL layout in prose
+    EXPECTED: INFO
+    RISK: NONE
+    GUARD: LRO_FORM ≠ RENDERING_COSMETIC_PROOF
+  SAFE_CASE_003:
+    INPUT: "the marker is written as <LRO> here"
+    CONTEXT: a documentation marker, not the byte
+    EXPECTED: INFO
+    RISK: NONE
+    GUARD: LRO_FORM ≠ EFFECT
+  SAFE_CASE_004:
+    INPUT: "override forces direction; embedding only nudges it"
+    CONTEXT: prose distinguishing override from embedding
+    EXPECTED: INFO
+    RISK: NONE
+    GUARD: LRO_FORM ≠ OVERRIDE_EQUALS_EMBEDDING_PROOF
+  SAFE_CASE_005:
+    INPUT: "a properly terminated LTR run (LRO...PDF)"
+    CONTEXT: describing balanced legitimate usage
+    EXPECTED: INFO
+    RISK: NONE
+    GUARD: LRO_FORM ≠ BALANCED_PROOF
+  SAFE_CASE_006:
+    INPUT: "the Bidirectional Algorithm handles direction"
+    CONTEXT: prose about the UBA
+    EXPECTED: INFO
+    RISK: NONE
+    GUARD: LRO_FORM ≠ EFFECT
+
+RISK_CASES:
+  RISK_CASE_001:
+    NAME: RTL_CONTEXT_CODE_REORDER
+    INPUT: 'grant = false <LRO> // enabled? <PDF>'
+    CONTEXT: an LTR override reordering code inside an RTL-influenced source line
+    RISK: CRITICAL
+    ATTACK: the override reorders the visual run so a reviewer approves code they misread (logic ≠ display)
+    GUARD: LRO_FORM ≠ RENDERING_COSMETIC_PROOF
+  RISK_CASE_002:
+    NAME: FILENAME_EXTENSION_SPOOF
+    INPUT: "invoice<LRO>fdp.exe"
+    CONTEXT: an LTR override on an RTL-carrying tail to spoof the extension
+    RISK: HIGH
+    ATTACK: the override reorders the tail so a dangerous file displays a benign extension
+    GUARD: LRO_FORM ≠ DISPLAY_ONLY_PROOF
+  RISK_CASE_003:
+    NAME: UNTERMINATED_OVERRIDE_BLEED
+    INPUT: "label<LRO>rest of the line with no PDF"
+    CONTEXT: an override with no PDF/PDI, forcing LTR onto everything after
+    RISK: HIGH
+    ATTACK: the unterminated override bleeds LTR past its intended span, corrupting later fields
+    GUARD: LRO_FORM ≠ BALANCED_PROOF
+  RISK_CASE_004:
+    NAME: OVERRIDE_VS_EMBED_FILTER_GAP
+    INPUT: "input passing a strip that only removes embeddings, not overrides"
+    CONTEXT: a filter that neutralizes RLE/LRE but leaves LRO/RLO overrides
+    RISK: HIGH
+    ATTACK: because override forces direction unconditionally, an embedding-only strip leaves the stronger attack live
+    GUARD: LRO_FORM ≠ OVERRIDE_EQUALS_EMBEDDING_PROOF
+  RISK_CASE_005:
+    NAME: ENCODED_BIDI_BYPASS
+    INPUT: "value%E2%80%ADtail (with a later decode)"
+    CONTEXT: a percent-encoded LRO decoded back before display
+    RISK: HIGH
+    ATTACK: "%E2%80%AD" decodes to the override AFTER a check → reorder deception
+    GUARD: LRO_FORM ≠ ENCODED_SAFETY_PROOF
+  RISK_CASE_006:
+    NAME: BIDI_HOMOGLYPH_STACK
+    INPUT: "раyраl<LRO> ... (bidi + confusable letters combined)"
+    CONTEXT: an override stacked with confusable letters to deepen the spoof
+    RISK: MEDIUM
+    ATTACK: the override plus look-alike letters make a hostile string pass a shallow visual review
+    GUARD: LRO_FORM ≠ EFFECT
+
+CONFUSABLES:
+  CONFUSABLE_001:
+    VISIBLE_FORM: ⟨RLO⟩
+    CODEPOINT: U+202E
+    NAME: RIGHT-TO-LEFT OVERRIDE
+    RISK: HIGH
+    RULE: RIGHT_TO_LEFT_OVERRIDE ≠ LEFT_TO_RIGHT_OVERRIDE (mirror override, reorders the other way; a naive filter conflates them)
+  CONFUSABLE_002:
+    VISIBLE_FORM: ⟨LRE⟩
+    CODEPOINT: U+202A
+    NAME: LEFT-TO-RIGHT EMBEDDING
+    RISK: HIGH
+    RULE: LEFT_TO_RIGHT_EMBEDDING ≠ LEFT_TO_RIGHT_OVERRIDE (embedding respects strong chars; override forces — different strength)
+  CONFUSABLE_003:
+    VISIBLE_FORM: ⟨RLE⟩
+    CODEPOINT: U+202B
+    NAME: RIGHT-TO-LEFT EMBEDDING
+    RISK: MEDIUM
+    RULE: RIGHT_TO_LEFT_EMBEDDING ≠ LEFT_TO_RIGHT_OVERRIDE
+  CONFUSABLE_004:
+    VISIBLE_FORM: ⟨LRI⟩
+    CODEPOINT: U+2066
+    NAME: LEFT-TO-RIGHT ISOLATE
+    RISK: MEDIUM
+    RULE: LEFT_TO_RIGHT_ISOLATE ≠ LEFT_TO_RIGHT_OVERRIDE (isolate scopes direction; a filter that strips only LRO misses it)
+  CONFUSABLE_005:
+    VISIBLE_FORM: ⟨ALM⟩
+    CODEPOINT: U+061C
+    NAME: ARABIC LETTER MARK
+    RISK: LOW
+    RULE: ARABIC_LETTER_MARK ≠ LEFT_TO_RIGHT_OVERRIDE (a bidi mark that also affects order, invisible to an LRO-only filter)
+
+CONTRADICTION_GUARDS:
+  CG1:
+    TRIGGER: "a bidi override only changes display, so it is cosmetic"
+    RESPONSE: LRO_FORM ≠ RENDERING_COSMETIC_PROOF
+    RULE: the reorder changes what a human approves vs what executes/stores (logic ≠ display)
+  CG2:
+    TRIGGER: "an invisible control char cannot be dangerous"
+    RESPONSE: LRO_FORM ≠ INVISIBLE_HARMLESS_PROOF
+    RULE: invisibility is orthogonal to effect; LRO drives visual/logical desync
+  CG3:
+    TRIGGER: "override and embedding are the same, strip either"
+    RESPONSE: LRO_FORM ≠ OVERRIDE_EQUALS_EMBEDDING_PROOF
+    RULE: override forces direction unconditionally; an embedding-only strip leaves it live
+  CG4:
+    TRIGGER: "'%E2%80%AD' is safe forever"
+    RESPONSE: LRO_FORM ≠ ENCODED_SAFETY_PROOF
+    RULE: the encoded form may be decoded back to the override before display
+  CG5:
+    TRIGGER: "stripping LRO stops bidi attacks"
+    RESPONSE: LRO_FORM ≠ EFFECT
+    RULE: RLO/RLE/LRE/LRI/ALM also reorder; a single-char strip misses the family
+  CG6:
+    TRIGGER: "the presence of a bidi mark means the input is sanitized"
+    RESPONSE: LRO_FORM ≠ SANITIZED_PROOF
+    RULE: the presence of the sign says nothing about sanitization
+
+SEQUENCE_LAYER_BOUNDARY:
+  SIGN_SAFE_ALONE ≠ SIGN_SAFE_IN_SEQUENCE: YES
+  SEQUENCE_CANDIDATES:
+    SC1:
+      SEQUENCE: "LRO ... PDF"
+      NAME: BALANCED_OVERRIDE_SPAN
+      RISK_LEVEL: HIGH
+      POSSIBLE_CONTEXTS: a scoped reorder span used to reorder a specific token (Trojan Source)
+      REQUIRES_SEQUENCE_INTEGRATOR: YES
+    SC2:
+      SEQUENCE: "LRO (no PDF)"
+      NAME: UNTERMINATED_BLEED
+      RISK_LEVEL: HIGH
+      POSSIBLE_CONTEXTS: an override with no terminator bleeding LTR onto later content
+      REQUIRES_SEQUENCE_INTEGRATOR: YES
+    SC3:
+      SEQUENCE: "RLO + LRO nesting"
+      NAME: OVERRIDE_NESTING
+      RISK_LEVEL: MEDIUM
+      POSSIBLE_CONTEXTS: nested opposite overrides crafting a multi-segment reorder
+      REQUIRES_SEQUENCE_INTEGRATOR: YES
+  IF NOT_APPLICABLE: not applicable — sequences with LRO are central to visual-order deception.
+
+PHAGO_ENTITY_MIMICRY:
+  PARTIAL:
+    LEVEL: ○
+    REASON: LRO's core mechanism is visual/logical DESYNC (structure masking), but the filename/
+      extension spoof partially mimics the IDENTITY of a benign file type — a hostile entity wearing
+      a safe entity's visible name. Partial entity-mimicry, mirroring RLO in the opposite direction.
+    REVIEW_REQUIRED: YES
+
+============================================================
+8. ADVERSARIAL_COVERAGE — RUN_CARD SEED
+============================================================
+MIN_TOTAL_VECTORS: 10 (5 categories A-E, CATEGORY_F NOT_APPLICABLE for ZONE_1)
+CATEGORY_A: FORM_MANIPULATION (2)
+  A1: substitution of LRO with RLO (U+202E) / LRE (U+202A) to evade an LRO-only filter
+  A2: percent-encoding "%E2%80%AD" to slip past a raw-byte scan
+CATEGORY_B: CONTEXT_INJECTION (2)
+  B1: code reorder grant=false <LRO> // enabled? <PDF>
+  B2: filename extension spoof invoice<LRO>fdp.exe
+CATEGORY_C: SEQUENCE_MANIPULATION (2)
+  C1: "LRO ... PDF" (SC1) — scoped reorder span
+  C2: "LRO (no PDF)" (SC2) — unterminated bleed
+CATEGORY_D: SEMANTIC_MIMICRY (2)
+  D1: LRO presented as harmless LTR layout inside a code/identifier field
+  D2: "%E2%80%AD" as "safe" encoded text with a later decode
+CATEGORY_E: PHAGO_ENTITY_MIMICRY (2)
+  E1: filename/type spoof — a hostile file wearing a benign extension's visible identity
+  E2: identifier spoof — a privileged branch wearing a benign-looking name
+CATEGORY_F: SEMANTIC_LAYER_MANIPULATION
+  NOT_APPLICABLE
+  REASON: ZONE_1, the sign has no dormant/active epochs.
+ACTUAL_TOTAL_VECTORS: 10
+COVERAGE_STATUS: SUFFICIENT (10 ≥ 10)
+
+============================================================
+9. MUTATION_CHECK
+============================================================
+MUTATION_01:
+  CLAIM: a bidi override is cosmetic display only
+  EXPECTED: FAIL_RENDERING_COSMETIC_MIMICRY
+  RESULT: FAIL
+MUTATION_02:
+  CLAIM: an invisible control char cannot be dangerous
+  EXPECTED: FAIL_INVISIBLE_HARMLESS_MIMICRY
+  RESULT: FAIL
+MUTATION_03:
+  CLAIM: override and embedding are interchangeable
+  EXPECTED: FAIL_OVERRIDE_EQUALS_EMBEDDING_MIMICRY
+  RESULT: FAIL
+MUTATION_04:
+  CLAIM: "%E2%80%AD" is safe forever
+  EXPECTED: FAIL_ENCODED_SAFETY_MIMICRY
+  RESULT: FAIL
+MUTATION_05:
+  CLAIM: stripping LRO stops all bidi attacks
+  EXPECTED: FAIL_CONFUSABLE_COVERAGE_MIMICRY
+  RESULT: FAIL
+MUTATION_06:
+  CLAIM: the presence of a bidi mark proves the input was sanitized
+  EXPECTED: FAIL_SANITIZED_MIMICRY
+  RESULT: FAIL
+
+============================================================
+10. KNOWN_OPEN_QUESTIONS
+============================================================
+OQ1:
+  QUESTION: how to neutralize LRO/RLO overrides (reject unbalanced, strip the whole family incl. overrides AND embeddings AND isolates) without breaking legitimate mixed-direction text?
+  STATUS: CLOSED_AS_DELEGATED_TO_INTEGRATOR (reject unterminated/nesting-violating bidi in code/identifiers/filenames + render logical order for review + strip the full Bidi_Control family — an integrator/runtime concern)
+  BLOCKS_WORKINGLY_CLOSED: NO
+  NOTE: the card fixes the rule "override forces direction unconditionally; an embedding-only strip is not enough".
+ALL_OPEN_QUESTIONS_CLOSED: NO (delegated, non-blocking)
+
+============================================================
+11. PATCH_HISTORY
+============================================================
+PATCH_HISTORY:
+  v0_1_PATCH_01: initial creation (Ruslan Malyavsky, 2026-07-21) — draft from the GEN3_v0_3 template (Vakhter); not conveyor-run.
+PATCHES_APPLIED: 1
+PATCHES_VERIFIED: 0/1
+
+============================================================
+12. LIMITATION_STATEMENT
+============================================================
+LIMITATION_STATEMENT:
+  THIS_CARD IS A WORKING_DRAFT ARTIFACT (until ARTIFACT_CONFIRMED)
+  NOT A FINAL_STANDARD
+  NOT A PARSER
+  NOT A RUNTIME
+  NOT A SECURITY_CERTIFICATE
+  NOT_CONVEYOR_RUN (draft for our work; conveyor is a separate project)
+  CONVEYOR_PASS ≠ VALIDATION
+  RUN_CARD_RESULT ≠ FINAL_STATUS
+  WORKINGLY_CLOSED ≠ ARTIFACT_CONFIRMED
+
+============================================================
+13. INTEGRATION_INTERFACE_STATUS
+============================================================
+INTEGRATION_INTERFACE_STATUS:
+  STATUS: READY_PENDING_CONCRETE_INTEGRATOR
+  ATTACHED_INTEGRATOR_UID: NONE_CURRENTLY_ATTACHED
+  ACTIVE_MODULES_COUNT: 0
+  RUNTIME_ATTACHMENT: NONE
+  PERMANENT_BINDING: NO
+  SESSION_ONLY_BINDING: YES
+  AFTER_RUN_RESIDUE: FORBIDDEN
+
+============================================================
+END_OF_DOCUMENT
