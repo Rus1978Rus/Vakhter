@@ -38,10 +38,16 @@ This map records that the invisible / default-ignorable contour is now **fully c
 |---|---|
 | RESERVED_IGNORABLE_CLASS | U+2065; U+FFF0–FFF8; U+E0000; U+E0002–E001F; U+E0080–E00FF; U+E01F0–E0FFF (~3.7k reserved code points) |
 
-**D. Adjacent tail NOT in the 138 (Cf but NOT default-ignorable) — not yet carded**
-The prepended / enclosing format characters — Arabic number signs (U+0600–0605, U+06DD, U+0890, U+0891, U+08E2), Syriac abbreviation mark (U+070F), Kaithi number signs (U+110BD, U+110CD), interlinear annotation (U+FFF9–FFFB), Egyptian hieroglyph format (U+13430–1343F). These are format chars that DO affect visible layout, so they sit outside "class 138" and would be a separate PREPENDED_FORMAT card if wanted.
+**D. Adjacent tail NOT in the 138 (Cf but NOT default-ignorable) — now covered**
 
-**Coverage summary (verified by `scratchpad/cov2.py` against the host Unicode DB):** the 138 = 138/138; assigned non-Cf tail = 10/10; reserved blanket = closed. WORKING_DRAFT / NOT_CONVEYOR_RUN — drafts exist and run, but conveyor closing is a separate project.
+| Card | Owns | Branch |
+|---|---|---|
+| PREPENDED_FORMAT_CLASS | U+0600–0605, U+06DD, U+0890, U+0891, U+08E2, U+070F, U+110BD, U+110CD | prepended concatenation marks (scope = following digits/letters) |
+| PREPENDED_FORMAT_CLASS | U+FFF9–FFFB, U+13430–1343F | bracketing / annotation controls (balanced runs) |
+
+These are format chars that DO affect visible layout — format that ACTS, not hides — so they sit outside "class 138". This closes the whole Cf set (163 = 138 default-ignorable + 25 prepended/enclosing).
+
+**Coverage summary (verified by `scratchpad/cov2.py` against the host Unicode DB):** the 138 = 138/138; assigned non-Cf DI tail = 10/10; reserved blanket = closed; Cf-not-DI tail (25) = covered. Whole format (Cf) set + full Default_Ignorable contour carded. WORKING_DRAFT / NOT_CONVEYOR_RUN — drafts exist and run, but conveyor closing is a separate project.
 
 ---
 
@@ -74,7 +80,13 @@ The prepended / enclosing format characters — Arabic number signs (U+0600–06
 |---|---|
 | RESERVED_IGNORABLE_CLASS | U+2065; U+FFF0–FFF8; U+E0000; U+E0002–E001F; U+E0080–E00FF; U+E01F0–E0FFF (~3.7k зарезервированных кодпоинтов) |
 
-**D. Смежный хвост НЕ в 138 (Cf, но НЕ default-ignorable) — ещё не откарточен**
-Prepended / enclosing форматные знаки — арабские числовые знаки (U+0600–0605, U+06DD, U+0890, U+0891, U+08E2), сирийская аббревиатурная марка (U+070F), кайтхи числовые знаки (U+110BD, U+110CD), interlinear annotation (U+FFF9–FFFB), египетский иероглифический формат (U+13430–1343F). Это форматные знаки, которые ВЛИЯЮТ на видимую раскладку, поэтому лежат вне «класса 138» и стали бы отдельной карточкой PREPENDED_FORMAT при желании.
+**D. Смежный хвост НЕ в 138 (Cf, но НЕ default-ignorable) — теперь покрыт**
 
-**Сводка покрытия (проверено `scratchpad/cov2.py` против базы Unicode хоста):** 138 = 138/138; назначенный не-Cf хвост = 10/10; зарезервированный бланкет = закрыт. WORKING_DRAFT / NOT_CONVEYOR_RUN — черновики есть и бегут, но закрытие конвейером — отдельный проект.
+| Карточка | Владеет | Ветка |
+|---|---|---|
+| PREPENDED_FORMAT_CLASS | U+0600–0605, U+06DD, U+0890, U+0891, U+08E2, U+070F, U+110BD, U+110CD | prepended concatenation marks (область = следующие цифры/буквы) |
+| PREPENDED_FORMAT_CLASS | U+FFF9–FFFB, U+13430–1343F | скобящие / аннотационные контроли (сбалансированные прогоны) |
+
+Это форматные знаки, которые ВЛИЯЮТ на видимую раскладку — формат, что ДЕЙСТВУЕТ, а не прячет — поэтому лежат вне «класса 138». Это закрывает весь Cf-набор (163 = 138 default-ignorable + 25 prepended/enclosing).
+
+**Сводка покрытия (проверено `scratchpad/cov2.py` против базы Unicode хоста):** 138 = 138/138; назначенный не-Cf DI хвост = 10/10; зарезервированный бланкет = закрыт; Cf-не-DI хвост (25) = покрыт. Весь форматный (Cf) набор + полный Default_Ignorable контур откарточены. WORKING_DRAFT / NOT_CONVEYOR_RUN — черновики есть и бегут, но закрытие конвейером — отдельный проект.
