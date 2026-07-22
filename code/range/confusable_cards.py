@@ -121,9 +121,35 @@ def confusable_cards_reader(text):
     """Confusable authority: ALARM mixed-script or whole-script-on-target / OK."""
     for tok in _tokens(text):
         letters = _letters(tok)
+        scripts = {_script(c) for c in letters}
+        has_ascii_latin = any(_ascii_latin(c) for c in tok)
+
+        # roman-numeral letter-form mixed INTO an ASCII-Latin word (paypaⅼ, ⅬG, iⅼlegal).
+        # Evaluated BEFORE the >=2-letter gate below: a roman-numeral FORM is category Nl
+        # and is NOT counted by _letters(), so a single ASCII letter + a roman form (e.g.
+        # "ⅬG" for LG) would otherwise be skipped. A standalone numeral ("Ⅹ", "ⅩVⅠ") has
+        # no ASCII letter, so has_ascii_latin is False there and this never fires on it.
+        roman = [c for c in tok if ord(c) in ROMAN_TO_LAT]
+        if has_ascii_latin and roman:
+            skel = _skeleton(tok)
+            return Finding("suspect", 0.85,
+                f"confusable token '{tok}' impersonates '{skel}' "
+                f"(Roman-numeral letter-form among Latin letters)",
+                conclusive=True, signature="mixed_script_confusable")
+
+        # non-ASCII dash in a DOMAIN-ish token (has a dot) — pay‐pal.com, not well‐known.
+        # Also gate-independent for the same reason (a dash is not a letter).
+        dash = [c for c in tok if ord(c) in NASCII_DASH]
+        if has_ascii_latin and dash and "." in tok:
+            skel = _skeleton(tok)
+            return Finding("suspect", 0.85,
+                f"confusable token '{tok}' impersonates '{skel}' "
+                f"(non-ASCII dash in a domain-like token)",
+                conclusive=True, signature="mixed_script_confusable")
+
+        # the remaining checks compare script letters, so they need >=2 of them
         if len(letters) < 2:
             continue
-        scripts = {_script(c) for c in letters}
 
         # mixed-script confusable: Latin + (Cyrillic/Greek) lookalikes in one token
         if "Latin" in scripts and (scripts & {"Cyrillic", "Greek"}):
@@ -134,26 +160,6 @@ def confusable_cards_reader(text):
                     f"mixed-script confusable token '{tok}' impersonates '{skel}' "
                     f"(Latin + {'/'.join(sorted(scripts & {'Cyrillic','Greek'}))} "
                     f"look-alikes)", conclusive=True, signature="mixed_script_confusable")
-
-        has_ascii_latin = any(_ascii_latin(c) for c in tok)
-
-        # roman-numeral letter-form mixed INTO an ASCII-Latin word (paypaⅼ, iⅼlegal)
-        roman = [c for c in tok if ord(c) in ROMAN_TO_LAT]
-        if has_ascii_latin and roman:
-            skel = _skeleton(tok)
-            return Finding("suspect", 0.85,
-                f"confusable token '{tok}' impersonates '{skel}' "
-                f"(Roman-numeral letter-form among Latin letters)",
-                conclusive=True, signature="mixed_script_confusable")
-
-        # non-ASCII dash in a DOMAIN-ish token (has a dot) — pay‐pal.com, not well‐known
-        dash = [c for c in tok if ord(c) in NASCII_DASH]
-        if has_ascii_latin and dash and "." in tok:
-            skel = _skeleton(tok)
-            return Finding("suspect", 0.85,
-                f"confusable token '{tok}' impersonates '{skel}' "
-                f"(non-ASCII dash in a domain-like token)",
-                conclusive=True, signature="mixed_script_confusable")
 
         # whole-script spoof: all-foreign token whose skeleton equals a TARGET
         if (scripts <= {"Cyrillic"} or scripts <= {"Greek"}) and letters:
