@@ -156,6 +156,26 @@ def fold_math_alnum(s: str):
     return "".join(out), present
 
 
+# Unicode spaces that a filter-evader uses in place of a normal space. Folded to
+# a plain ASCII space so downstream sees one canonical spacing. ZERO-WIDTH marks
+# (U+200B/200C/200D/FEFF) are NOT here — they are invisible smuggles, judged by
+# the invisible detector, not spaces. U+3000 is already folded by fold_fullwidth.
+_SPACE_FOLD = ({0x00A0, 0x1680, 0x202F, 0x205F} | set(range(0x2000, 0x200B)))
+
+
+def fold_spaces(s: str):
+    """Fold non-ASCII whitespace (NBSP, en/em/thin/hair spaces, U+202F, U+205F,
+    ogham space) to a plain ASCII space, so a space-substitution evasion is peeled
+    to one canonical form. Returns (folded, present)."""
+    out, present = [], False
+    for ch in s:
+        if ord(ch) in _SPACE_FOLD:
+            out.append(" "); present = True
+        else:
+            out.append(ch)
+    return "".join(out), present
+
+
 def _int_to_ip(n):
     return socket.inet_ntoa(struct.pack("!I", n)) if 0 <= n <= 0xFFFFFFFF else None
 
@@ -177,7 +197,8 @@ def canonicalize(text: str, max_depth: int = 3):
     decoded, passes, overlong = decode_layers(text, max_depth)
     folded, fullwidth = fold_fullwidth(decoded)   # peel the fullwidth carrier
     folded, math = fold_math_alnum(folded)        # peel math-alphanumeric styling
+    folded, wspace = fold_spaces(folded)          # peel non-ASCII space carriers
     canon = normalize_ip_hosts(folded)            # after folds: styled IPs normalize too
     return canon, {"decode_passes": passes, "overlong_utf8": overlong,
                    "fullwidth": fullwidth, "math_styled": math,
-                   "changed": canon != text}
+                   "weird_space": wspace, "changed": canon != text}
