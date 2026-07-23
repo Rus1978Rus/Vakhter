@@ -330,6 +330,22 @@ Status: `ADOPTED` (confusable_cards ARM_TO_LAT; metachar/harden round-2;
 test_armenian.py, test_rce_round2.py) / `DEFERRED` (Cherokee cards, secret-format
 DLP).
 
+**AD-26 · Cherokee is detected by a hard-mix rule, not a guessed look-alike table.**
+Decision: Cherokee (a documented IDN-spoof syllabary) is flagged when a single
+token mixes Latin with Cherokee — the mix itself is conclusive — WITHOUT a
+per-letter Cherokee→Latin table.
+Rationale: AD-25 refused to guess Cherokee equivalences, and a security table must
+not assert unverified look-alikes. But the equivalences aren't needed: the
+detector's core law is that a script MIX within a token is the tell (AD-2), and —
+unlike CJK, where "IDカード" / "iPhone12" are normal tokens — no language
+interleaves Latin with Cherokee mid-token, so the mix alone is anomalous. This is
+strictly script-specific: only "hard-mix" scripts (Cherokee) are treated this way,
+so Japanese/CJK Latin-mixing and pure single-script Cherokee (ᏣᎳᎩ) stay clean
+(verified 0 FP). The trade-off vs the Cyrillic/Greek/Armenian tables: no impersonated
+skeleton is shown, only the anomaly — an honest reflection of what is verified.
+Status: `ADOPTED` (code/range/confusable_cards.py hard-mix branch;
+code/tests/test_cherokee.py).
+
 ---
 
 <a name="русский"></a>
@@ -642,3 +658,19 @@ SQL stacked-запросы, магия десериализации Java/PHP, э
 ReDoS-безопасны; 0 новых ложных срабатываний.
 Статус: `ПРИНЯТО` (confusable_cards ARM_TO_LAT; metachar/harden round-2;
 test_armenian.py, test_rce_round2.py) / `ОТЛОЖЕНО` (Cherokee-карточки, secret-format DLP).
+
+**AD-26 · Cherokee детектится правилом hard-mix, а не угаданной таблицей двойников.**
+Решение: Cherokee (задокументированный IDN-спуф-силлабарий) флагуется, когда один
+токен смешивает латиницу с Cherokee — сама смесь окончательна — БЕЗ таблицы
+Cherokee→Latin по буквам.
+Обоснование: AD-25 отказался угадывать Cherokee-соответствия, и security-таблица не
+должна утверждать невыверенные двойники. Но соответствия и не нужны: базовый закон
+детектора — смесь письменностей внутри токена и есть признак (AD-2), и — в отличие от
+CJK, где «IDカード» / «iPhone12» нормальные токены — ни один язык не переплетает
+латиницу с Cherokee внутри токена, поэтому одна смесь уже аномальна. Это строго
+скрипт-специфично: только «hard-mix» скрипты (Cherokee) обрабатываются так, поэтому
+Latin-смешение японского/CJK и чистый односкриптовый Cherokee (ᏣᎳᎩ) остаются чистыми
+(проверено 0 FP). Компромисс против таблиц Cyrillic/Greek/Armenian: не показывается
+имитируемый скелет, только аномалия — честное отражение того, что выверено.
+Статус: `ПРИНЯТО` (code/range/confusable_cards.py hard-mix branch;
+code/tests/test_cherokee.py).
