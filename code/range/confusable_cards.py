@@ -59,12 +59,22 @@ ROMAN_TO_LAT = {0x2170: "i", 0x2174: "v", 0x2179: "x", 0x217C: "l", 0x217D: "c",
 # (well‐known) — flagged ONLY inside a domain-ish token (one containing a dot).
 NASCII_DASH = {0x2010: "-", 0x2011: "-", 0x2012: "-", 0x2013: "-", 0x2014: "-",
                0x2015: "-", 0x2212: "-", 0xFF0D: "-"}
+# Non-ASCII dots that confuse with the ASCII full stop '.' — used to spoof a
+# domain separator (paypal․com). Legit as a CJK/Arabic full stop in native text,
+# so flagged ONLY between two ASCII-Latin letters (the domain-separator tell).
+# (Fullwidth full stop U+FF0E is peeled upstream by the canonicalization fold.)
+NASCII_DOT = {0x2024: ".", 0x3002: ".", 0xFF61: ".", 0x06D4: ".", 0x0701: "."}
+# Non-ASCII slashes that confuse with '/'. (Fullwidth solidus U+FF0F is folded
+# upstream.) Same domain-separator gate as the dots.
+NASCII_SLASH = {0x2044: "/", 0x2215: "/", 0x29F8: "/"}
 OTHER_CONF = {}
 CONFUSABLE = {}
 CONFUSABLE.update(CYR_TO_LAT)
 CONFUSABLE.update(GRK_TO_LAT)
 CONFUSABLE.update(ROMAN_TO_LAT)
 CONFUSABLE.update(NASCII_DASH)
+CONFUSABLE.update(NASCII_DOT)
+CONFUSABLE.update(NASCII_SLASH)
 CONFUSABLE.update(OTHER_CONF)
 
 # Target skeletons for the whole-script branch: fires ONLY when a foreign token's
@@ -97,7 +107,8 @@ def _skeleton(tok):
 
 def _tokish(ch):
     return (_script(ch) is not None or ch in ".-_"
-            or ord(ch) in ROMAN_TO_LAT or ord(ch) in NASCII_DASH)
+            or ord(ch) in ROMAN_TO_LAT or ord(ch) in NASCII_DASH
+            or ord(ch) in NASCII_DOT or ord(ch) in NASCII_SLASH)
 
 
 def _tokens(text):
@@ -148,6 +159,22 @@ def confusable_cards_reader(text):
                 f"confusable token '{tok}' impersonates '{skel}' "
                 f"(non-ASCII dash in a domain-like token)",
                 conclusive=True, signature="mixed_script_confusable")
+
+        # non-ASCII dot/slash used as a DOMAIN SEPARATOR (paypal․com, micro∕soft).
+        # Flagged ONLY when the confusable sits BETWEEN two ASCII-Latin letters —
+        # so a CJK sentence-final 。 (preceded by CJK, not by an ASCII letter) never
+        # trips it. Gate-independent for the same reason as dash (not a letter).
+        for i, c in enumerate(tok):
+            if ord(c) in NASCII_DOT or ord(c) in NASCII_SLASH:
+                prev = tok[i - 1] if i > 0 else ""
+                nxt = tok[i + 1] if i + 1 < len(tok) else ""
+                if prev and nxt and _ascii_latin(prev) and _ascii_latin(nxt):
+                    skel = _skeleton(tok)
+                    kind = "dot" if ord(c) in NASCII_DOT else "slash"
+                    return Finding("suspect", 0.85,
+                        f"confusable token '{tok}' impersonates '{skel}' "
+                        f"(non-ASCII {kind} as a domain separator)",
+                        conclusive=True, signature="mixed_script_confusable")
 
         # the remaining checks compare script letters, so they need >=2 of them
         if len(letters) < 2:
