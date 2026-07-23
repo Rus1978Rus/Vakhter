@@ -30,14 +30,16 @@ DETECTOR = os.path.abspath(os.path.join(HERE, "..", "range", "confusable_cards.p
 CARDS = os.path.abspath(os.path.join(HERE, "..", "..", "sign_cards", "per_sign"))
 
 # families whose cards MUST be backed by the detector (i.e. must be PROTO-capable)
-HOMOGLYPH_FAMILIES = ("GREEK_", "CYRILLIC_", "ROMAN_")
+HOMOGLYPH_FAMILIES = ("GREEK_", "CYRILLIC_", "ROMAN_", "ARMENIAN_")
 
 
 def detector_codepoints():
-    """Union of the three homoglyph lookup tables in the live detector."""
+    """Union of the per-letter homoglyph lookup tables in the live detector.
+    (Cherokee is intentionally excluded — it is detected by a script-mix rule with
+    NO per-letter table, so it has no per-sign cards; see AD-26.)"""
     src = open(DETECTOR, encoding="utf-8").read()
     cps = set()
-    for name in ("CYR_TO_LAT", "GRK_TO_LAT", "ROMAN_TO_LAT"):
+    for name in ("CYR_TO_LAT", "GRK_TO_LAT", "ROMAN_TO_LAT", "ARM_TO_LAT"):
         m = re.search(name + r"\s*=\s*\{(.*?)\}", src, re.S)
         if not m:
             raise SystemExit(f"coverage_lock: table {name} not found in detector")
