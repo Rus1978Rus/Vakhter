@@ -22,8 +22,21 @@ def _sign(secret, msg):
     return hmac.new(secret, msg.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
-def subject_of(name, component_hash):
-    return f"{name}|{component_hash}"
+def _canon(*parts):
+    """Unambiguous field encoding: LENGTH-PREFIX each field so a delimiter inside
+    a field cannot shift boundaries. Without this, subject_of('a','b|c') and
+    subject_of('a|b','c') both render 'a|b|c', so one signature is valid for two
+    different (name,hash) pairs (audit finding, PoC in test_trust_core.py)."""
+    return "\x1e".join(f"{len(p)}:{p}" for p in (str(x) for x in parts))
+
+
+def subject_of(name, component_hash, epoch=0):
+    """Bind a signature to (name, hash, EPOCH). The epoch is a monotonic version
+    counter: an approval signed at epoch N does not validate at epoch M, so old
+    signatures cannot be REPLAYED to re-accept a rolled-back component (audit
+    finding). Callers thread the component's current epoch; default 0 keeps the
+    single-version demo working."""
+    return _canon(name, component_hash, epoch)
 
 
 def sign_as(signer_id, secret, subject):
@@ -43,9 +56,11 @@ def verify_quorum(subject, signatures, authorised, threshold):
     return (len(valid) >= threshold, sorted(valid))
 
 
-def accept_change(name, component_hash, role, signatures, authorised):
-    """Gate a component change under the role's quorum policy."""
+def accept_change(name, component_hash, role, signatures, authorised, epoch=0):
+    """Gate a component change under the role's quorum policy, bound to `epoch`
+    (the component's current monotonic version — signatures for any other epoch
+    do not count, blocking rollback replay)."""
     threshold = POLICY.get(role, POLICY["lowering"])   # unknown role -> strictest
-    subject = subject_of(name, component_hash)
+    subject = subject_of(name, component_hash, epoch)
     ok, signers = verify_quorum(subject, signatures, authorised, threshold)
     return ok, threshold, signers

@@ -48,6 +48,12 @@ def _sign(secret, msg):
     return hmac.new(secret, msg.encode("utf-8"), hashlib.sha256).hexdigest()
 
 
+def _canon(*parts):
+    """Length-prefixed field encoding so a '|' inside a component name cannot shift
+    the signed message's boundaries (audit finding; see quorum._canon)."""
+    return "\x1e".join(f"{len(p)}:{p}" for p in (str(x) for x in parts))
+
+
 def stamp(name, path, author_secret, steps=CONVEYOR_STEPS):
     """AUTHOR side (needs the key): produce a provenance record after the
     conveyor closes a component."""
@@ -55,7 +61,7 @@ def stamp(name, path, author_secret, steps=CONVEYOR_STEPS):
     lineage = []
     prev = "ROOT"
     for step in steps:
-        sig = _sign(author_secret, f"{name}|{h}|{step}|{prev}")
+        sig = _sign(author_secret, _canon(name, h, step, prev))
         lineage.append({"step": step, "prev": prev, "sig": sig})
         prev = sig
     return {"name": name, "origin": "author-conveyor",
@@ -76,7 +82,7 @@ def verify_native(record, path, verifier_key):
         return "NO_PROVENANCE"                   # signed maybe, but no origin trace
     prev = "ROOT"
     for s in lineage:                            # every step must be author-signed
-        expect = _sign(verifier_key, f"{record['name']}|{record['hash']}|{s['step']}|{prev}")
+        expect = _sign(verifier_key, _canon(record['name'], record['hash'], s['step'], prev))
         if s.get("prev") != prev or not hmac.compare_digest(expect, s.get("sig", "")):
             return "FORGED_LINEAGE"              # SIGNED != NATIVE — no author key
         prev = s["sig"]
