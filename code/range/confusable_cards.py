@@ -67,12 +67,11 @@ CONFUSABLE.update(ROMAN_TO_LAT)
 CONFUSABLE.update(NASCII_DASH)
 CONFUSABLE.update(OTHER_CONF)
 
-# DEMO target skeletons for the whole-script branch (a real deployment swaps this
-# for the Unicode confusables data + a brand/domain corpus). Whole-script fires
-# ONLY when a foreign token's Latin skeleton equals one of these — so ordinary
-# foreign words never trip it.
-DEMO_TARGETS = {"paypal", "google", "apple", "amazon", "microsoft", "yahoo",
-                "coinbase", "binance", "outlook", "netflix"}
+# Target skeletons for the whole-script branch: fires ONLY when a foreign token's
+# Latin skeleton equals one of these, so ordinary foreign words never trip it. The
+# list is the shared brand corpus (frequency-ordered, len>=5 for FP-safety) — one
+# source of truth with the digit-leet detector (see brand_corpus.py / AD-13).
+from brand_corpus import WHOLE_SCRIPT_TARGETS as DEMO_TARGETS
 
 
 def _script(ch):

@@ -18,10 +18,7 @@ from invariant_engine.supplement import combine  # severity-max merge
 # ---- A) digit-as-letter homoglyph ----
 LEET = {"0": ["o"], "1": ["l", "i"], "3": ["e"], "4": ["a"],
         "5": ["s"], "6": ["g", "b"], "7": ["t"], "8": ["b"], "9": ["g"]}
-BRANDS = {"paypal", "google", "microsoft", "apple", "amazon", "netflix",
-          "facebook", "twitter", "instagram", "sberbank", "binance",
-          "telegram", "whatsapp", "linkedin", "gmail", "outlook", "yahoo",
-          "youtube", "coinbase", "metamask", "steam"}
+from brand_corpus import PHISHING_BRANDS as BRANDS   # one shared brand corpus
 
 def _deleet_variants(tok):
     outs = [""]
