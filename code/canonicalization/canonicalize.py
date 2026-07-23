@@ -107,6 +107,55 @@ def fold_fullwidth(s: str):
     return "".join(out), present
 
 
+def _build_math_fold():
+    """Map every MATHEMATICAL ALPHANUMERIC letter/digit to its ASCII base.
+
+    Source is restricted on purpose: the Mathematical Alphanumeric Symbols block
+    (U+1D400..U+1D7FF) PLUS the ~29 math styles that live as 'holes' in the
+    Letterlike Symbols block (ℂ ℎ ℬ ℑ ℝ …, U+2100..U+214F). We take the ASCII
+    value from NFKC but keep the SOURCE list narrow so ordinary compatibility
+    characters (², ½, №, ™, Ω, ℹ) are NOT touched. Built once at import."""
+    import unicodedata as _u
+    fold = {}
+    for o in range(0x1D400, 0x1D800):
+        nf = _u.normalize("NFKC", chr(o))
+        if len(nf) == 1 and nf.isascii() and nf.isalnum():
+            fold[o] = nf
+    _KEEP = ("SCRIPT", "FRAKTUR", "BLACK-LETTER", "DOUBLE-STRUCK", "ITALIC")
+    for o in range(0x2100, 0x2150):
+        ch = chr(o)
+        try:
+            name = _u.name(ch)
+        except ValueError:
+            continue
+        nf = _u.normalize("NFKC", ch)
+        if len(nf) == 1 and nf.isascii() and nf.isalpha() and any(k in name for k in _KEEP):
+            fold[o] = nf
+    # math letters whose Unicode NAME carries no style keyword: U+210E PLANCK
+    # CONSTANT is the mathematical italic small h (its 1D-block slot is reserved).
+    fold[0x210E] = "h"
+    return fold
+
+
+_MATH_FOLD = _build_math_fold()
+
+
+def fold_math_alnum(s: str):
+    """Fold mathematical-alphanumeric styling (a compatibility carrier) to ASCII:
+    𝐩𝐚𝐲𝐩𝐚𝐥 → paypal, 𝕏 → X, ℝ → R. Same "double bottom" as fullwidth — a styled
+    attack (𝗌𝖼𝗋𝗂𝗉𝗍, math-styled brand) is revealed to the readers underneath.
+    Only the curated math source set folds (see _build_math_fold). Returns
+    (folded, present)."""
+    out, present = [], False
+    for ch in s:
+        r = _MATH_FOLD.get(ord(ch))
+        if r is not None:
+            out.append(r); present = True
+        else:
+            out.append(ch)
+    return "".join(out), present
+
+
 def _int_to_ip(n):
     return socket.inet_ntoa(struct.pack("!I", n)) if 0 <= n <= 0xFFFFFFFF else None
 
@@ -127,6 +176,8 @@ def normalize_ip_hosts(text: str) -> str:
 def canonicalize(text: str, max_depth: int = 3):
     decoded, passes, overlong = decode_layers(text, max_depth)
     folded, fullwidth = fold_fullwidth(decoded)   # peel the fullwidth carrier
-    canon = normalize_ip_hosts(folded)            # after fold: fullwidth IPs normalize too
+    folded, math = fold_math_alnum(folded)        # peel math-alphanumeric styling
+    canon = normalize_ip_hosts(folded)            # after folds: styled IPs normalize too
     return canon, {"decode_passes": passes, "overlong_utf8": overlong,
-                   "fullwidth": fullwidth, "changed": canon != text}
+                   "fullwidth": fullwidth, "math_styled": math,
+                   "changed": canon != text}
