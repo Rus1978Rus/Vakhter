@@ -71,6 +71,52 @@ def _dns_exfil(text):
     return None
 
 
+# ---- execution: PowerShell encoded / LOLBins / pipe-to-shell ----
+# All bounded ([^\n]{0,N}) and flat (no nested quantifier) -> linear, ReDoS-safe.
+_POWERSHELL = re.compile(
+    r"\b(powershell|pwsh)\b[^\n]{0,80}?("
+    r"-e(nc|ncodedcommand|c)?\s+[A-Za-z0-9+/=]{12,}"          # -enc <base64>
+    r"|-nop\b|-noni\b|-w\s+hidden|-windowstyle\s+hidden"      # stealth flags
+    r"|iex\b|invoke-expression|frombase64string|downloadstring)", re.I)
+_LOLBIN = re.compile(
+    r"\b(certutil\b[^\n]{0,80}?(-urlcache|-decode|-f\s+https?:)"  # certutil download/decode
+    r"|bitsadmin\b[^\n]{0,40}?/transfer"                          # bitsadmin transfer
+    r"|mshta\b\s+(https?:|javascript:|vbscript:)"                 # mshta remote
+    r"|regsvr32\b[^\n]{0,40}?/i:https?:"                          # regsvr32 scriptlet
+    r"|rundll32\b[^\n]{0,40}?(javascript:|,\s*DllRegisterServer))", re.I)
+_PIPE_SHELL = re.compile(r"\b(curl|wget)\b[^\n|]{0,200}\|\s*(sudo\s+)?(ba|z|d)?sh\b", re.I)
+
+
+def _execution(text):
+    if _POWERSHELL.search(text):
+        return Finding("suspect", 0.9, "PowerShell stealth/encoded execution",
+                       conclusive=True, signature="powershell_exec")
+    if _LOLBIN.search(text):
+        return Finding("suspect", 0.9, "living-off-the-land binary download/exec (LOLBin)",
+                       conclusive=True, signature="lolbin")
+    if _PIPE_SHELL.search(text):
+        return Finding("suspect", 0.9, "download piped straight to a shell (curl|sh)",
+                       conclusive=True, signature="pipe_to_shell")
+    return None
+
+
+# ---- Windows / UNC paths ----
+_WIN_TRAVERSAL = re.compile(r"(?:\.\.[\\/]){2,}[\w.\\/-]*\\")   # ..\..\  (Windows backslash)
+_UNC = re.compile(r"(?:^|[\s\"'(=,>])\\\\[A-Za-z0-9._-]+\\[A-Za-z0-9$._-]+")  # \\host\share
+
+
+def _windows_path(text):
+    if _WIN_TRAVERSAL.search(text):
+        return Finding("suspect", 0.85, "Windows backslash path traversal (..\\..\\)",
+                       conclusive=True, signature="win_traversal")
+    if _UNC.search(text):
+        # a remote SMB/UNC reference: credential-leak / lateral vector — WATCH, not
+        # conclusive, since legit intranet shares exist.
+        return Finding("suspect", 0.5, "UNC / SMB network path (\\\\host\\share) reference",
+                       signature="unc_path")
+    return None
+
+
 # ---- #5-ext: IPv6 + octal IP hosts ----
 def _classify_ip(ip, host):
     if ip.is_link_local:
@@ -117,7 +163,7 @@ def _ip_advanced(text):
 
 def harden_cards_reader(text):
     result = Finding("clean", 0.0, "harden-cards: nothing")
-    for check in (_templates, _cloud, _dns_exfil, _ip_advanced):
+    for check in (_templates, _cloud, _dns_exfil, _execution, _windows_path, _ip_advanced):
         f = check(text)
         if f:
             result = combine(result, f)
