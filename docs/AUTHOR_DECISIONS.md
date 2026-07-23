@@ -244,6 +244,22 @@ reserved for step 2.
 Status: `ADOPTED` (fold subset) / `REJECTED` (raw ed-1); code/range/digit_cards.py
 :: _visual_brand; code/tests/test_brand_visual.py.
 
+**AD-21 · Non-ASCII whitespace is folded to an ASCII space; zero-width marks are not.**
+Decision: NBSP (U+00A0), the en/em/thin/hair spaces (U+2000–200A), U+202F, U+205F
+and the ogham space (U+1680) fold to a plain ASCII space in canonicalization, with
+a `weird_space` witness flag — the last compatibility carrier after fullwidth and
+math.
+Rationale: honest scope — our readers are structure-based, so this is
+normalization + a witness, not a new structural detector; its value is one
+canonical spacing for anything downstream plus a recorded carrier. Zero-width
+marks (U+200B/200C/200D/FEFF) are explicitly EXCLUDED — they are invisible
+smuggles owned by the invisible detector, and folding them to a space would both
+lose that signal and misrepresent them. U+3000 is already covered by the
+fullwidth fold. Benign typography (NBSP/thin space in prose and number grouping)
+folds to normal spacing → 0 false positives.
+Status: `ADOPTED` (code/canonicalization/canonicalize.py :: fold_spaces;
+code/tests/test_space_fold.py).
+
 ---
 
 <a name="русский"></a>
@@ -476,3 +492,17 @@ code/tests/test_math_alnum.py).
 ступень 2.
 Статус: `ПРИНЯТО` (подмножество свёрток) / `ОТВЕРГНУТО` (сырой ed-1);
 code/range/digit_cards.py :: _visual_brand; code/tests/test_brand_visual.py.
+
+**AD-21 · Non-ASCII пробелы сворачиваются в ASCII-пробел; zero-width — нет.**
+Решение: NBSP (U+00A0), en/em/thin/hair пробелы (U+2000–200A), U+202F, U+205F и
+ogham-пробел (U+1680) сворачиваются в обычный ASCII-пробел в канонизации, с флагом-
+свидетелем `weird_space` — последний компат-носитель после fullwidth и math.
+Обоснование: честная область — детекторы структурные, поэтому это нормализация +
+свидетель, а не новый структурный детект; ценность — единое каноническое
+расстановка пробелов для всего, что ниже по потоку, плюс зафиксированный носитель.
+Zero-width метки (U+200B/200C/200D/FEFF) явно ИСКЛЮЧЕНЫ — это невидимые контрабанды
+детектора невидимок, и сворачивание их в пробел и потеряло бы сигнал, и исказило бы
+их. U+3000 уже покрыт fullwidth-fold. Обычная типографика (NBSP/тонкий пробел в
+прозе и разрядке чисел) сворачивается в норму → 0 ложных срабатываний.
+Статус: `ПРИНЯТО` (code/canonicalization/canonicalize.py :: fold_spaces;
+code/tests/test_space_fold.py).
