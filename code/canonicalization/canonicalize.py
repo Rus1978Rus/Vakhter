@@ -84,6 +84,29 @@ def decode_layers(text: str, max_depth: int = 3):
     return cur, passes, overlong
 
 
+def fold_fullwidth(s: str):
+    """Fold the FULLWIDTH ASCII block (a compatibility carrier) to its ASCII form:
+    U+FF01..U+FF5E -> U+0021..U+007E (offset 0xFEE0), and IDEOGRAPHIC SPACE
+    U+3000 -> U+0020. This is the fullwidth slice of NFKC, done explicitly so a
+    fullwidth-encoded attack (＜script＞, １２７．０．０．１, paypa1 as ｐａｙｐａ1) is
+    revealed to the readers underneath — the same "double bottom" as overlong.
+
+    SCOPE (deliberately narrow, to avoid false positives): ONLY the fullwidth
+    ASCII variants FF01..FF5E and U+3000. Halfwidth katakana (FF61..FF9F) and the
+    fullwidth white brackets (FF5F..FF60) are REAL characters, not ASCII carriers,
+    and are left untouched. Returns (folded, present)."""
+    out, present = [], False
+    for ch in s:
+        o = ord(ch)
+        if 0xFF01 <= o <= 0xFF5E:
+            out.append(chr(o - 0xFEE0)); present = True
+        elif o == 0x3000:
+            out.append(" "); present = True
+        else:
+            out.append(ch)
+    return "".join(out), present
+
+
 def _int_to_ip(n):
     return socket.inet_ntoa(struct.pack("!I", n)) if 0 <= n <= 0xFFFFFFFF else None
 
@@ -103,6 +126,7 @@ def normalize_ip_hosts(text: str) -> str:
 
 def canonicalize(text: str, max_depth: int = 3):
     decoded, passes, overlong = decode_layers(text, max_depth)
-    canon = normalize_ip_hosts(decoded)
+    folded, fullwidth = fold_fullwidth(decoded)   # peel the fullwidth carrier
+    canon = normalize_ip_hosts(folded)            # after fold: fullwidth IPs normalize too
     return canon, {"decode_passes": passes, "overlong_utf8": overlong,
-                   "changed": canon != text}
+                   "fullwidth": fullwidth, "changed": canon != text}
