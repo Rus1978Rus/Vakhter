@@ -27,7 +27,12 @@ turned into the DoS.
 import signal
 from invariant_engine.core import Finding
 
-MAX_LEN     = 200_000     # deep analysis beyond this is refused (chunk upstream)
+MAX_LEN     = 128_000     # deep analysis beyond this is refused (chunk upstream).
+                          # Lowered from 200k after the full detector stack (incl. the
+                          # wired confusable reader) was measured: worst-case clean
+                          # input costs ~5us/char, so 128k keeps the whole pipeline at
+                          # ~0.6s — a comfortable margin under BUDGET_S even on a slow
+                          # host. A sign-in-context input is never this large anyway.
 INVIS_CAP   = 128         # more hidden chars than this = a flood, not a message
 DOM_RATIO   = 0.40        # one char making up >40% of a real message = flood
 DOM_MIN_LEN = 500         # ...only judged once the input is long enough to matter
