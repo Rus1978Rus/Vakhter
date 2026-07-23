@@ -260,6 +260,23 @@ folds to normal spacing → 0 false positives.
 Status: `ADOPTED` (code/canonicalization/canonicalize.py :: fold_spaces;
 code/tests/test_space_fold.py).
 
+**AD-22 · The rich confusable detector is wired into the assembled guard.**
+Decision: `confusable_cards_reader` joins `_READERS` in product.py, so `analyze()`
+judges the full homoglyph surface (Greek, Roman-numeral forms, extended Cyrillic,
+whole-script, non-ASCII dash/dot/slash — 76 locked forms) instead of only the
+light dot-gated Cyrillic check that digit_cards carries.
+Rationale: the rich detector was built and locked over this series but lived only
+as a draft simulator (measured by range_confusable), NOT in the front door — so
+the guard silently missed most homoglyph attacks. A reader can only raise
+severity (findings combine by max), so wiring it can add detection or false
+positives but never remove either; it was therefore gated on a full regression
+sweep. Result: the guard now flags Greek/Cyrillic/Roman/whole-script/dot-separator
+spoofs that were previously CLEAN through analyze(), with 0 new false positives
+across every range_* benign corpus and the ERG safety gate still silencing 0
+threats. self_defense bounces floods before the reader, so no DoS surface is
+added.
+Status: `ADOPTED` (code/range/product.py; code/tests/test_guard_confusable.py).
+
 ---
 
 <a name="русский"></a>
@@ -506,3 +523,19 @@ Zero-width метки (U+200B/200C/200D/FEFF) явно ИСКЛЮЧЕНЫ — э
 прозе и разрядке чисел) сворачивается в норму → 0 ложных срабатываний.
 Статус: `ПРИНЯТО` (code/canonicalization/canonicalize.py :: fold_spaces;
 code/tests/test_space_fold.py).
+
+**AD-22 · Богатый confusable-детектор подключён в собранный гвард.**
+Решение: `confusable_cards_reader` добавлен в `_READERS` в product.py, поэтому
+`analyze()` судит всю гомоглиф-поверхность (греческий, римские формы, расширенная
+кириллица, whole-script, non-ASCII дефис/точка/слэш — 76 запертых форм) вместо
+только урезанной dot-gated кириллической проверки из digit_cards.
+Обоснование: богатый детектор строился и запирался всю эту серию, но жил лишь как
+draft-симулятор (мерялся range_confusable), а НЕ в парадной двери — поэтому гвард
+тихо пропускал большинство гомоглиф-атак. Ридер может только повышать серьёзность
+(находки сливаются по максимуму), поэтому подключение может добавить детект или
+ложные срабатывания, но не убрать ни то ни другое; отсюда — полный регресс-прогон
+перед принятием. Итог: гвард теперь ловит греческие/кириллические/римские/
+whole-script/dot-разделитель спуфы, ранее CLEAN через analyze(), с 0 новых ложных
+срабатываний по всем бенайн-корпусам range_* и safety-gate ERG по-прежнему глушит 0
+угроз. self_defense гасит флуды до ридера, так что DoS-поверхность не добавляется.
+Статус: `ПРИНЯТО` (code/range/product.py; code/tests/test_guard_confusable.py).
