@@ -36,6 +36,8 @@ CYR_TO_LAT = {
     0x0410: "A", 0x0412: "B", 0x0415: "E", 0x041A: "K", 0x041C: "M", 0x041D: "H",
     0x041E: "O", 0x0420: "P", 0x0421: "C", 0x0422: "T", 0x0425: "X", 0x0423: "Y",
     0x0406: "I", 0x0408: "J", 0x0405: "S",
+    0x051B: "q", 0x0501: "d", 0x051D: "w", 0x0475: "v",
+    0x051A: "Q", 0x0500: "D", 0x051C: "W", 0x0474: "V",
 }
 # Greek letters that are Latin look-alikes
 GRK_TO_LAT = {
@@ -43,7 +45,7 @@ GRK_TO_LAT = {
     0x03B7: "n", 0x03C5: "u", 0x03C7: "x", 0x03F2: "c",
     0x0391: "A", 0x0392: "B", 0x0395: "E", 0x0396: "Z", 0x0397: "H", 0x0399: "I",
     0x039A: "K", 0x039C: "M", 0x039D: "N", 0x039F: "O", 0x03A1: "P", 0x03A4: "T",
-    0x03A5: "Y", 0x03A7: "X", 0x03F9: "C",
+    0x03A5: "Y", 0x03A7: "X", 0x03F9: "C", 0x03F3: "j",
 }
 # Roman-numeral LETTER FORMS that look like Latin letters (Number Forms block).
 # Mixed INTO an ASCII-Latin word they are a spoof (ⅼ in paypaⅼ); standalone
