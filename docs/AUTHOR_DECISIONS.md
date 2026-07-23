@@ -199,6 +199,20 @@ it (a unit test caught this).
 Status: `ADOPTED` (code/canonicalization/canonicalize.py :: fold_math_alnum;
 code/tests/test_math_alnum.py).
 
+**AD-18 · The two brand-mimicry detectors share ONE frequency-ordered brand corpus.**
+Decision: the digit-leet detector (digit_cards) and the whole-script branch
+(confusable_cards) read a single `brand_corpus.py` instead of two private
+hard-coded lists. The corpus is ordered by real-world impersonation frequency.
+Rationale: the two lists had drifted (21 vs 10 brands) — the exact silent-drift
+failure AD-13 exists to prevent, now removed by a shared source of truth. Two
+consumers, two FP profiles, so the corpus exposes a length gate: the whole-script
+branch uses only targets of length ≥5 (`WHOLE_SCRIPT_TARGETS`), because a short
+all-foreign skeleton could collide with a real short word, while the digit-leet
+branch is already gated by the digit-present requirement and safely uses the full
+set (`PHISHING_BRANDS`). It stays a curated demo corpus; production swaps the list
+in one place.
+Status: `ADOPTED` (code/range/brand_corpus.py; code/tests/test_brand_corpus.py).
+
 ---
 
 <a name="русский"></a>
@@ -388,3 +402,16 @@ Mathematical Alphanumeric Symbols (U+1D400–1D7FF) плюс ~29 math-стиле
 имя не несёт ключа стиля, и name-фильтр её пропускал (поймал юнит-тест).
 Статус: `ПРИНЯТО` (code/canonicalization/canonicalize.py :: fold_math_alnum;
 code/tests/test_math_alnum.py).
+
+**AD-18 · Два детектора бренд-мимикрии делят ОДИН frequency-ранжированный корпус.**
+Решение: leet-детектор (digit_cards) и whole-script ветка (confusable_cards)
+читают единый `brand_corpus.py` вместо двух приватных хардкод-списков. Корпус
+упорядочен по частоте имитации в реальной жизни.
+Обоснование: списки разошлись (21 против 10 брендов) — ровно тот тихий дрейф,
+против которого существует AD-13, теперь устранён единым источником правды. Два
+потребителя — два профиля FP, поэтому корпус выставляет порог длины: whole-script
+берёт только цели длиной ≥5 (`WHOLE_SCRIPT_TARGETS`), т.к. короткий целиком-чужой
+скелет мог бы совпасть с реальным коротким словом, а leet-ветка уже отсечена
+требованием наличия цифры и безопасно использует полный набор (`PHISHING_BRANDS`).
+Остаётся курируемым демо-корпусом; прод меняет список в одном месте.
+Статус: `ПРИНЯТО` (code/range/brand_corpus.py; code/tests/test_brand_corpus.py).
