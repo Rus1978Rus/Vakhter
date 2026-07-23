@@ -213,6 +213,21 @@ set (`PHISHING_BRANDS`). It stays a curated demo corpus; production swaps the li
 in one place.
 Status: `ADOPTED` (code/range/brand_corpus.py; code/tests/test_brand_corpus.py).
 
+**AD-19 · Non-ASCII dot/slash separators are detected in the table, not as per-sign cards, gated between Latin letters.**
+Decision: homoglyph separators — dots (U+2024 ․, U+3002 。, U+FF61 ｡, U+06D4 ۔) and
+slashes (U+2044 ⁄, U+2215 ∕, U+29F8 ⧸) — join NASCII_DASH as detector tables with
+a branch, and get NO SIGN_CORE_CARD.
+Rationale: a separator is not a letter, so the letter-oriented card template does
+not fit it, and coverage_lock only requires cards for the letter families
+(GREEK_/CYRILLIC_/ROMAN_) — the same treatment the existing non-ASCII dash already
+gets. Detection fires ONLY when the confusable sits BETWEEN two ASCII-Latin
+letters (paypal․com), which is the domain-separator signature: it keeps a CJK or
+Arabic sentence-final full stop (preceded by non-Latin) and a real fraction slash
+(digits around it) clean → 0 false positives. Fullwidth full stop/solidus
+(U+FF0E/FF0F) are intentionally absent here — they are already peeled by the
+canonicalization fold (AD-16).
+Status: `ADOPTED` (code/range/confusable_cards.py; code/tests/test_domain_separator.py).
+
 ---
 
 <a name="русский"></a>
@@ -415,3 +430,17 @@ code/tests/test_math_alnum.py).
 требованием наличия цифры и безопасно использует полный набор (`PHISHING_BRANDS`).
 Остаётся курируемым демо-корпусом; прод меняет список в одном месте.
 Статус: `ПРИНЯТО` (code/range/brand_corpus.py; code/tests/test_brand_corpus.py).
+
+**AD-19 · Non-ASCII «точка»/«слэш»-разделители детектятся таблицей, без per-sign карточек, с гейтом «между латиницей».**
+Решение: гомоглифы-разделители — точки (U+2024 ․, U+3002 。, U+FF61 ｡, U+06D4 ۔) и
+слэши (U+2044 ⁄, U+2215 ∕, U+29F8 ⧸) — присоединяются к NASCII_DASH как таблицы
+детектора с веткой, и карточки SIGN_CORE_CARD НЕ получают.
+Обоснование: разделитель — не буква, letter-ориентированный шаблон ему не подходит,
+а coverage_lock требует карточки только для буквенных семейств
+(GREEK_/CYRILLIC_/ROMAN_) — ровно как уже сделано для non-ASCII дефиса. Детект
+срабатывает ТОЛЬКО когда гомоглиф стоит МЕЖДУ двумя ASCII-латинскими буквами
+(paypal․com) — это подпись доменного разделителя: японская/арабская концевая точка
+(после не-латиницы) и настоящая дробь (цифры вокруг) остаются чистыми → 0 ложных
+срабатываний. Полноширинные точка/слэш (U+FF0E/FF0F) здесь намеренно отсутствуют —
+их уже снимает fold канонизации (AD-16).
+Статус: `ПРИНЯТО` (code/range/confusable_cards.py; code/tests/test_domain_separator.py).
