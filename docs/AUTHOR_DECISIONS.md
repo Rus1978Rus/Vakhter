@@ -162,6 +162,27 @@ superseded here by the ALARM/OK/WATCH layer (AD-6) plus the Mn insight (AD-8), s
 that too was recorded rather than imported.
 Status: `REJECTED` (import); recorded for provenance of the decision.
 
+### Detection — prioritisation and the fullwidth carrier
+
+**AD-16 · New confusable/carrier work is prioritised by real-world attack frequency; fullwidth folds in canonicalization.**
+Decision: the confusable table is extended by how often a form is actually abused,
+not alphabetically. Under that rule Cyrillic к (U+043A) → k was added (the last
+common single-substitution Cyrillic look-alike; the mixed-script check already
+fires when any foreign letter is a confusable, so the only real gap is a
+single-swap token whose one letter is absent). The next-frequency vector,
+fullwidth ASCII (U+FF01–FF5E, U+3000), is handled by FOLDING it to ASCII in the
+canonicalization pre-pass — not by a new detector.
+Rationale: fullwidth is a compatibility CARRIER, not a script mix, so its home is
+the "double bottom" pre-pass beside overlong-UTF8: peel the carrier, let the
+readers judge the real sign (fullwidth ＜script＞ / IP / ../ now surface). Scope is
+kept to the fullwidth ASCII block only — halfwidth katakana (FF61–FF9F), the
+fullwidth white brackets (FF5F–FF60) and real CJK are left untouched — so the fold
+adds 0 false positives. `м`/`т`/`ь` were considered and REJECTED as confusables:
+they are not in UTS #39 and their glyphs are not reliably ASCII-confusable, and a
+security table must not assert a look-alike that isn't one.
+Status: `ADOPTED` (code/canonicalization/canonicalize.py :: fold_fullwidth;
+code/tests/test_fullwidth.py).
+
 ---
 
 <a name="русский"></a>
@@ -314,3 +335,25 @@ security-проект; (б) провенанс и кворум — quorum-защ
 превосходит слой ALARM/OK/WATCH (AD-6) плюс инсайт про Mn (AD-8), поэтому и она
 записана, а не импортирована.
 Статус: `ОТВЕРГНУТО` (импорт); записано для провенанса решения.
+
+### Детекция — приоритизация и полноширинный носитель
+
+**AD-16 · Новая работа по двойникам/носителям приоритизируется по частоте атак в реальной жизни; fullwidth сворачивается в канонизации.**
+Решение: таблица конфузаблов расширяется по тому, насколько часто форму реально
+эксплуатируют, а не по алфавиту. По этому правилу добавлена кириллическая к
+(U+043A) → k (последний ходовой односимвольный кириллический двойник; проверка
+смешения письменностей уже срабатывает, если хоть одна чужая буква — конфузабл,
+поэтому реальная дыра — только токен с единственной подменой, чья буква
+отсутствует в таблице). Следующий по частоте вектор — полноширинный ASCII
+(U+FF01–FF5E, U+3000) — закрыт СВОРАЧИВАНИЕМ в ASCII в пре-пассе канонизации, а не
+новым детектором.
+Обоснование: fullwidth — это компат-НОСИТЕЛЬ, а не смесь письменностей, поэтому
+его место в «двойном дне» рядом с overlong-UTF8: снять носитель, дать детекторам
+судить настоящий знак (fullwidth ＜script＞ / IP / ../ теперь всплывают). Область
+ограничена только блоком fullwidth ASCII — halfwidth-катакана (FF61–FF9F),
+полноширинные белые скобки (FF5F–FF60) и настоящий CJK не тронуты — поэтому fold
+даёт 0 ложных срабатываний. `м`/`т`/`ь` рассмотрены и ОТВЕРГНУТЫ как конфузаблы:
+их нет в UTS #39, а начертание не является надёжно ASCII-двойником; security-
+таблица не должна утверждать сходство, которого нет.
+Статус: `ПРИНЯТО` (code/canonicalization/canonicalize.py :: fold_fullwidth;
+code/tests/test_fullwidth.py).
