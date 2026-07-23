@@ -23,6 +23,18 @@ _XSS   = re.compile(r"<[ \t]{0,8}(script|iframe|svg|img|body|object|embed|link)\
                     r"|javascript:|on(error|load|click|mouseover|focus)[ \t]{0,8}=", re.I)
 _CRLF  = re.compile(r"[\r\n][ \t]{0,16}(set-cookie|location|content-length|content-type|host|"
                     r"x-forwarded-for)[ \t]{0,16}:", re.I)
+# LDAP filter injection — only the LDAP-specific shapes, so ordinary ")(" in code
+# / math never trips it: the wildcard-paren break "*)(", boolean chaining ")(&(" /
+# ")(|(", or an LDAP attribute wildcarded "(uid=*".
+_LDAP  = re.compile(r"\*\s*\)\s*\("
+                    r"|\)\s*\(\s*[&|]\s*\("
+                    r"|\(\s*(uid|cn|mail|sn|givenname|objectclass|memberof|samaccountname)"
+                    r"\s*=\s*\*", re.I)
+# NoSQL (Mongo) operator injection — only a QUOTED key "$op" (as in {"$gt":""}) or
+# a bracketed param [$op] (as in user[$ne]=1); a bare "$where" in prose stays clean.
+_NOSQL = re.compile(r'"\$(gt|gte|lt|lte|ne|eq|nin|in|or|and|nor|not|where|regex|expr|'
+                    r'exists|elemmatch|mod|all|type)"'
+                    r"|\[\s*\$(gt|gte|lt|lte|ne|eq|nin|in|where|regex|exists)\s*\]", re.I)
 
 
 def metachar_cards_reader(text):
@@ -41,4 +53,8 @@ def metachar_cards_reader(text):
         res = hit(0.85, "quote + SQL operator pattern (SQL injection)", "sqli")
     if _BTICK.search(text) or _SHELL.search(text):
         res = hit(0.9, "shell command-substitution / chaining pattern (command injection)", "cmdi")
+    if _LDAP.search(text):
+        res = hit(0.85, "LDAP filter metacharacter pattern (LDAP injection)", "ldapi")
+    if _NOSQL.search(text):
+        res = hit(0.85, "NoSQL operator in a query position (NoSQL injection)", "nosqli")
     return res

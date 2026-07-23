@@ -12,6 +12,7 @@ CONTEXTUAL by design so normal shell vars ${HOME}, legit templates {{ user.name 
 prose mentions of "aws", and short domains a.example.com stay clean.
 """
 import re
+import socket
 import ipaddress
 from invariant_engine.core import Finding
 from invariant_engine.supplement import combine
@@ -132,8 +133,9 @@ def _classify_ip(ip, host):
 
 
 def _ip_advanced(text):
-    # bracketed IPv6 in a URL:  http://[::1]/  http://[fd00::1]/  http://[::ffff:169.254.169.254]/
-    for m in re.finditer(r"https?://\[([0-9a-fA-F:.]+)\]", text):
+    # bracketed IPv6 in a URL, with an OPTIONAL zone id:  http://[::1]/  http://[fd00::1]/
+    # http://[::ffff:169.254.169.254]/  http://[fe80::1%25eth0]/  (%25 = url-encoded %)
+    for m in re.finditer(r"https?://\[([0-9a-fA-F:.]+)(?:(?:%25|%)[^\]]{0,40})?\]", text):
         try:
             ip = ipaddress.ip_address(m.group(1))
         except ValueError:
@@ -141,6 +143,17 @@ def _ip_advanced(text):
         # an IPv4-mapped v6 (::ffff:a.b.c.d) should be judged on the embedded v4
         mapped = getattr(ip, "ipv4_mapped", None)
         f = _classify_ip(mapped or ip, m.group(0))
+        if f:
+            return f
+    # short-form dotted IPv4 host (inet_aton):  http://127.1/  http://10.0.1/  http://0x7f.1/
+    # Gated on URL context so "version 5.1" in prose is never read as an IP.
+    for m in re.finditer(r"https?://([0-9xa-fA-F]{1,10}(?:\.[0-9xa-fA-F]{1,10}){1,2})(?=[/:?#\s]|$)", text):
+        host = m.group(1)
+        try:
+            ip = ipaddress.ip_address(socket.inet_aton(host))
+        except (OSError, ValueError):
+            continue
+        f = _classify_ip(ip, m.group(0))
         if f:
             return f
     # octal-dotted IPv4 host:  http://0177.0.0.1/   http://0300.0250.0.1/
