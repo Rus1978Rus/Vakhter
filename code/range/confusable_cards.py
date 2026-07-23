@@ -99,6 +99,8 @@ def _script(ch):
         return "Greek"
     if 0x0531 <= o <= 0x058F:
         return "Armenian"
+    if 0x13A0 <= o <= 0x13FF or 0xAB70 <= o <= 0xABBF:
+        return "Cherokee"
     if u.category(ch).startswith("L"):
         return "Other"
     return None
@@ -186,6 +188,16 @@ def confusable_cards_reader(text):
         # the remaining checks compare script letters, so they need >=2 of them
         if len(letters) < 2:
             continue
+
+        # hard-mix anomaly: Latin + a script that NEVER legitimately mixes with Latin
+        # mid-token (Cherokee — a documented IDN-spoof syllabary). Unlike CJK, where
+        # "IDカード" is a normal token, no language interleaves Latin with Cherokee, so
+        # the mix itself is the tell — flagged WITHOUT asserting per-letter equivalences
+        # (those are not carried, to avoid claiming an unverified look-alike).
+        if "Latin" in scripts and ("Cherokee" in scripts):
+            return Finding("suspect", 0.85,
+                f"anomalous script mix in '{tok}' (Latin + Cherokee — homoglyph spoof)",
+                conclusive=True, signature="mixed_script_confusable")
 
         # mixed-script confusable: Latin + (Cyrillic/Greek/Armenian) lookalikes in one token
         _FOREIGN = {"Cyrillic", "Greek", "Armenian"}
