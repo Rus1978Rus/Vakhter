@@ -76,7 +76,7 @@ def _dns_exfil(text):
 # All bounded ([^\n]{0,N}) and flat (no nested quantifier) -> linear, ReDoS-safe.
 _POWERSHELL = re.compile(
     r"\b(powershell|pwsh)\b[^\n]{0,80}?("
-    r"-e(nc|ncodedcommand|c)?\s+[A-Za-z0-9+/=]{12,}"          # -enc <base64>
+    r"-e(nc|ncodedcommand|c)?\s+[A-Za-z0-9+/=]{8,}"           # -enc <base64> (>=8 = UTF-16LE floor)
     r"|-nop\b|-noni\b|-w\s+hidden|-windowstyle\s+hidden"      # stealth flags
     r"|iex\b|invoke-expression|frombase64string|downloadstring)", re.I)
 _LOLBIN = re.compile(
