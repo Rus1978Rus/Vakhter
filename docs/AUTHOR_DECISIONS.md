@@ -346,6 +346,24 @@ skeleton is shown, only the anomaly — an honest reflection of what is verified
 Status: `ADOPTED` (code/range/confusable_cards.py hard-mix branch;
 code/tests/test_cherokee.py).
 
+**AD-27 · Armenian is promoted to a carded family; ERG-softening immunity is audited and pinned.**
+Decision: (a) Armenian gets five first-class per-sign cards (օ/ո/ս/ա/Օ) tracked by
+coverage_lock (ARM_TO_LAT + ARMENIAN_ family, LOCKED 81), while Cherokee stays
+card-less by design (a method note, docs/CHEROKEE_HARD_MIX.md). (b) The ERG
+context layer — the only component that can LOWER a verdict — is audited against
+every detector added this cycle, and the audit is made a permanent regression
+test.
+Rationale: after expanding detection so broadly, the real risk is not a missed
+attack but a *silenced* one — ERG wrongly clearing a new conclusive finding under
+a benign frame. ERG's contract already makes drafted-card signatures immune (it
+softens only MSL-core action signatures, and never clears a conclusive ALARM to
+OK), but "immune by contract" is verified, not assumed: 14 new attack classes
+wrapped in the softening trigger ("is it safe…?", "explain…", "for example…") all
+stay blocked (0 silenced). test_erg_immunity.py pins this so a future ERG change
+cannot silently start clearing them.
+Status: `ADOPTED` (sign_cards ARMENIAN_*; coverage_lock ARM; docs/CHEROKEE_HARD_MIX.md;
+code/tests/test_erg_immunity.py).
+
 ---
 
 <a name="русский"></a>
@@ -674,3 +692,22 @@ Latin-смешение японского/CJK и чистый односкрип
 имитируемый скелет, только аномалия — честное отражение того, что выверено.
 Статус: `ПРИНЯТО` (code/range/confusable_cards.py hard-mix branch;
 code/tests/test_cherokee.py).
+
+**AD-27 · Армянский повышен до карточного семейства; иммунитет к ERG-смягчению проверен и закреплён.**
+Решение: (a) армянский получает пять first-class per-sign карточек (օ/ո/ս/ա/Օ),
+отслеживаемых coverage_lock (ARM_TO_LAT + семейство ARMENIAN_, LOCKED 81), а чероки
+остаётся без карточек по дизайну (method-заметка docs/CHEROKEE_HARD_MIX.md). (b)
+Слой ERG-контекста — единственный компонент, способный ПОНИЗИТЬ вердикт — проверен
+против каждого детектора, добавленного в этом цикле, и аудит превращён в постоянный
+регрессионный тест.
+Обоснование: после столь широкого расширения детекции реальный риск — не
+пропущенная атака, а *заглушённая* — ERG ошибочно очищает новую окончательную
+находку под benign-рамкой. Контракт ERG уже делает сигнатуры drafted-карточек
+иммунными (смягчает только MSL-core action-сигнатуры и никогда не очищает
+conclusive ALARM в OK), но «иммунно по контракту» — проверяется, а не
+предполагается: 14 новых классов атак, обёрнутых в триггер смягчения («безопасно
+ли…?», «объясни…», «например…»), остаются заблокированными (0 заглушено).
+test_erg_immunity.py закрепляет это, чтобы будущая правка ERG не могла тихо начать
+их очищать.
+Статус: `ПРИНЯТО` (sign_cards ARMENIAN_*; coverage_lock ARM; docs/CHEROKEE_HARD_MIX.md;
+code/tests/test_erg_immunity.py).
