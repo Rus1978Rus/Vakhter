@@ -31,13 +31,15 @@ from digit_cards import digit_cards_reader
 from metachar_cards import metachar_cards_reader
 from invisible_cards import invisible_cards_reader
 from harden_cards import harden_cards_reader
+from confusable_cards import confusable_cards_reader
 from erg_context import erg_context
 from guard import self_defense
 from fail_closed import safe_reader, safe_analyze
 
 _READERS = [("msl", real_text_reader), ("supplement", supplement_reader),
             ("digit", digit_cards_reader), ("metachar", metachar_cards_reader),
-            ("invisible", invisible_cards_reader), ("harden", harden_cards_reader)]
+            ("invisible", invisible_cards_reader), ("harden", harden_cards_reader),
+            ("confusable", confusable_cards_reader)]
 
 
 def _core(text):
