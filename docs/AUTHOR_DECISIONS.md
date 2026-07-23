@@ -228,6 +228,22 @@ Arabic sentence-final full stop (preceded by non-Latin) and a real fraction slas
 canonicalization fold (AD-16).
 Status: `ADOPTED` (code/range/confusable_cards.py; code/tests/test_domain_separator.py).
 
+**AD-20 · Visual-multigraph brand mimicry is adopted; raw edit-distance-1 is rejected.**
+Decision: brand look-alikes that carry no digit — rn→m (arnazon), vv→w
+(vvhatsapp), cl→d, and capital-I-for-lowercase-l (paypaI, googIe) — are detected
+by de-confusing a label with those specific folds and matching the shared brand
+corpus. General edit-distance-1 matching is NOT adopted.
+Rationale: the fold-then-exact-match rule is FP-safe — it fires only when a fold
+lands exactly on a brand AND the label is not already that brand, so legit brand
+mentions and ordinary words with rn/vv/cl/I stay clean (0 FP across a 90-word
+benign corpus). Raw edit-distance-1 was tested and rejected: short brands make it
+unsafe (visas~visa, beta~meta, phase~chase, team/steal~steam would all fire), and
+distinguishing a typo-squat from a real word needs a dictionary the tool does not
+carry. A `len>=5` gate skips short labels. This is the fallback the 3-step plan
+reserved for step 2.
+Status: `ADOPTED` (fold subset) / `REJECTED` (raw ed-1); code/range/digit_cards.py
+:: _visual_brand; code/tests/test_brand_visual.py.
+
 ---
 
 <a name="русский"></a>
@@ -444,3 +460,19 @@ code/tests/test_math_alnum.py).
 срабатываний. Полноширинные точка/слэш (U+FF0E/FF0F) здесь намеренно отсутствуют —
 их уже снимает fold канонизации (AD-16).
 Статус: `ПРИНЯТО` (code/range/confusable_cards.py; code/tests/test_domain_separator.py).
+
+**AD-20 · Визуальные биграммы бренд-мимикрии приняты; сырой edit-distance-1 отвергнут.**
+Решение: бренд-двойники без цифры — rn→m (arnazon), vv→w (vvhatsapp), cl→d и
+заглавная-I-вместо-строчной-l (paypaI, googIe) — детектятся свёрткой метки этими
+конкретными правилами и сверкой с общим бренд-корпусом. Общий edit-distance-1 НЕ
+принят.
+Обоснование: правило «свернуть → точное совпадение» FP-безопасно — срабатывает
+только когда свёртка точно попадает в бренд И метка ещё не является этим брендом,
+поэтому легит-упоминания брендов и обычные слова с rn/vv/cl/I остаются чистыми (0 FP
+на 90-словном бенайн-корпусе). Сырой edit-distance-1 проверен и отвергнут: короткие
+бренды делают его небезопасным (visas~visa, beta~meta, phase~chase, team/steal~steam
+— все бы сработали), а отличить тайпосквот от настоящего слова без словаря нельзя.
+Гейт `len>=5` пропускает короткие метки. Это запасной вариант, заложенный в план на
+ступень 2.
+Статус: `ПРИНЯТО` (подмножество свёрток) / `ОТВЕРГНУТО` (сырой ed-1);
+code/range/digit_cards.py :: _visual_brand; code/tests/test_brand_visual.py.
