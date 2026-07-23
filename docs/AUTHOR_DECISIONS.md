@@ -382,6 +382,20 @@ in test_trust_core.py; the trust-core harnesses still pass.
 Status: `ADOPTED` (delimiter + epoch fixes; code/range/quorum.py, provenance.py;
 code/tests/test_trust_core.py) / `DEFERRED` (Ed25519 asymmetric signing — AD-12).
 
+**AD-29 · DoS recheck of the wired readers: MAX_LEN lowered to keep the budget margin.**
+Decision: after wiring the full reader stack, re-audit self-defense. Floods still
+bounce cheaply at the front gate and every new reader is strictly linear
+(~1.1 µs/char, no O(n²)), but the worst-case LEGAL input (all-foreign, no dominant
+char, no early return) at the old 200k cap cost ~1.0 s warm, leaving a thin margin
+under the 1.5 s budget. Lower MAX_LEN 200k → 128k so the whole pipeline stays at
+~0.57 s worst-case.
+Rationale: the extra per-char cost is real (more readers = more passes), so the
+"refuse-oversized-before-expensive-analysis" cap should track it. A sign-in-context
+input is never 128k chars, so no legitimate capacity is lost, and the margin under
+budget is restored to be comfortable on a slow host too. Pinned by
+test_dos_readers.py (floods bounce, worst-case under budget, each reader linear).
+Status: `ADOPTED` (code/range/guard.py MAX_LEN; code/tests/test_dos_readers.py).
+
 ---
 
 <a name="русский"></a>
@@ -746,3 +760,18 @@ Ed25519; вместо неявности тест закрепляет симм�
 явным. Все PoC и фиксы — в test_trust_core.py; харнессы trust-ядра по-прежнему проходят.
 Статус: `ПРИНЯТО` (фиксы разделителя + эпохи; code/range/quorum.py, provenance.py;
 code/tests/test_trust_core.py) / `ОТЛОЖЕНО` (асимметричная подпись Ed25519 — AD-12).
+
+**AD-29 · DoS-перепроверка подключённых ридеров: MAX_LEN понижен для сохранения запаса бюджета.**
+Решение: после подключения всего стека ридеров — перепроверить self-defense. Флуды
+по-прежнему дёшево гасятся на входном шлюзе, и каждый новый ридер строго линеен
+(~1.1 µs/символ, без O(n²)), но worst-case ЛЕГАЛЬНЫЙ вход (весь чужой, без
+доминантного символа, без раннего выхода) при старом кэпе 200k стоил ~1.0 с в
+прогретом состоянии, оставляя тонкий запас под бюджетом 1.5 с. Понижаю MAX_LEN
+200k → 128k, чтобы весь пайплайн держался на ~0.57 с worst-case.
+Обоснование: дополнительная стоимость на символ реальна (больше ридеров = больше
+проходов), поэтому кэп «отказать-крупному-до-дорогого-анализа» должен её отслеживать.
+Знак-в-контексте никогда не бывает 128k символов, поэтому легитимная ёмкость не
+теряется, а запас под бюджетом восстановлен до комфортного и на медленном хосте.
+Закреплено test_dos_readers.py (флуды гасятся, worst-case под бюджетом, каждый ридер
+линеен).
+Статус: `ПРИНЯТО` (code/range/guard.py MAX_LEN; code/tests/test_dos_readers.py).
