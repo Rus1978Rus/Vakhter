@@ -38,6 +38,32 @@ def _homoglyph_digit(text):
                     conclusive=True, signature="homoglyph_digit")
     return None
 
+# ---- A2) visual multigraph / I-l brand mimicry (no digit needed) ----
+# Typosquatting look-alikes that need no digit: rn->m (arnazon), vv->w (vvhatsapp),
+# cl->d, and capital-I used as lowercase-l (paypaI, googIe). We de-confuse a label
+# and flag ONLY when a fold lands exactly on a brand AND the label itself is not
+# already that brand — so a legit "amazon"/"Chase" mention (no trick) never fires.
+def _visual_variants(label):
+    forms = {label}
+    for f in list(forms):
+        forms.add(f.replace("rn", "m"))
+        forms.add(f.replace("vv", "w"))
+        forms.add(f.replace("cl", "d"))
+    forms |= {f.replace("rn", "m").replace("vv", "w") for f in list(forms)}
+    forms |= {f.replace("I", "l") for f in list(forms)}   # capital I as lowercase l
+    return {f.lower() for f in forms}
+
+def _visual_brand(text):
+    for label in re.findall(r"[A-Za-z]{5,}", text):     # len>=5: no short-brand FP
+        if label.lower() in BRANDS:                     # legit brand mention, no trick
+            continue
+        if _visual_variants(label) & BRANDS:
+            return Finding("suspect", 0.8,
+                f"visual brand mimicry: '{label}' resolves to a known brand via a "
+                f"look-alike multigraph (rn->m / vv->w / cl->d) or capital-I-for-l",
+                conclusive=True, signature="brand_visual")
+    return None
+
 # ---- B) numeric IP host ----
 def _ip_host(text):
     for m in re.finditer(r"https?://([^/\s:?#]+)", text, re.I):
@@ -78,7 +104,7 @@ def _confusable(text):
 def digit_cards_reader(text):
     """Max-severity of the three simulated digit-card checks; clean if none."""
     result = Finding("clean", 0.0, "digit-cards: nothing")
-    for check in (_homoglyph_digit, _ip_host, _confusable):
+    for check in (_homoglyph_digit, _visual_brand, _ip_host, _confusable):
         f = check(text)
         if f:
             result = combine(result, f)
