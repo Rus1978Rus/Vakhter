@@ -183,6 +183,22 @@ security table must not assert a look-alike that isn't one.
 Status: `ADOPTED` (code/canonicalization/canonicalize.py :: fold_fullwidth;
 code/tests/test_fullwidth.py).
 
+**AD-17 · Mathematical-alphanumeric styling is folded to ASCII in the pre-pass, from a curated source.**
+Decision: math-alphanumeric letters/digits (𝐛𝐨𝐥𝐝, 𝘪𝘵𝘢𝘭𝘪𝘤, 𝔻𝕠𝕦𝕓𝕝𝕖-𝕤𝕥𝕣𝕦𝕔𝕜,
+𝗌𝖺𝗇𝗌, monospace) fold to ASCII in canonicalization, next after fullwidth by
+real-world frequency, with a `math_styled` witness flag.
+Rationale: same carrier logic as AD-16 — pure styling, not a script mix. The map
+is built once at import from a NARROW source: the Mathematical Alphanumeric
+Symbols block (U+1D400–1D7FF) plus the ~29 math styles that live as holes in the
+Letterlike Symbols block (ℂ ℬ ℑ ℝ …), taking the ASCII value from NFKC. Using
+full NFKC was rejected as too broad (it also folds ½, ², ﬁ, ㎏ …); the curated
+source keeps ordinary compatibility characters (², ½, №, ™, Ω, ℹ) untouched → 0
+false positives. U+210E PLANCK CONSTANT is added by hand because it is the math
+italic h but its Unicode name carries no style keyword, so the name filter misses
+it (a unit test caught this).
+Status: `ADOPTED` (code/canonicalization/canonicalize.py :: fold_math_alnum;
+code/tests/test_math_alnum.py).
+
 ---
 
 <a name="русский"></a>
@@ -357,3 +373,18 @@ security-проект; (б) провенанс и кворум — quorum-защ
 таблица не должна утверждать сходство, которого нет.
 Статус: `ПРИНЯТО` (code/canonicalization/canonicalize.py :: fold_fullwidth;
 code/tests/test_fullwidth.py).
+
+**AD-17 · Math-alphanumeric стилизация сворачивается в ASCII в пре-пассе, из курируемого источника.**
+Решение: math-буквы/цифры (𝐛𝐨𝐥𝐝, 𝘪𝘵𝘢𝘭𝘪𝘤, 𝔻𝕠𝕦𝕓𝕝𝕖-𝕤𝕥𝕣𝕦𝕔𝕜, 𝗌𝖺𝗇𝗌, monospace)
+сворачиваются в ASCII в канонизации — следующий за fullwidth по частоте — с флагом-
+свидетелем `math_styled`.
+Обоснование: та же логика носителя, что и AD-16 — чистая стилизация, не смесь
+письменностей. Таблица строится один раз на импорте из УЗКОГО источника: блок
+Mathematical Alphanumeric Symbols (U+1D400–1D7FF) плюс ~29 math-стилей, живущих
+«дырами» в блоке Letterlike Symbols (ℂ ℬ ℑ ℝ …), значение ASCII берётся из NFKC.
+Полный NFKC отвергнут как слишком широкий (свернул бы и ½, ², ﬁ, ㎏ …); курируемый
+источник оставляет обычные компат-символы (², ½, №, ™, Ω, ℹ) нетронутыми → 0 ложных
+срабатываний. U+210E PLANCK CONSTANT добавлена вручную: это math-курсивная h, но её
+имя не несёт ключа стиля, и name-фильтр её пропускал (поймал юнит-тест).
+Статус: `ПРИНЯТО` (code/canonicalization/canonicalize.py :: fold_math_alnum;
+code/tests/test_math_alnum.py).
