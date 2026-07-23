@@ -67,6 +67,10 @@ NASCII_DOT = {0x2024: ".", 0x3002: ".", 0xFF61: ".", 0x06D4: ".", 0x0701: "."}
 # Non-ASCII slashes that confuse with '/'. (Fullwidth solidus U+FF0F is folded
 # upstream.) Same domain-separator gate as the dots.
 NASCII_SLASH = {0x2044: "/", 0x2215: "/", 0x29F8: "/"}
+# Armenian letters that are Latin look-alikes (UTS #39). Conservative set — only
+# the well-established confusables — so single-script Armenian text stays clean and
+# only a Latin+Armenian MIX (or a whole-Armenian brand skeleton) is flagged.
+ARM_TO_LAT = {0x0585: "o", 0x0578: "n", 0x057D: "u", 0x0561: "a", 0x0555: "O"}
 OTHER_CONF = {}
 CONFUSABLE = {}
 CONFUSABLE.update(CYR_TO_LAT)
@@ -75,6 +79,7 @@ CONFUSABLE.update(ROMAN_TO_LAT)
 CONFUSABLE.update(NASCII_DASH)
 CONFUSABLE.update(NASCII_DOT)
 CONFUSABLE.update(NASCII_SLASH)
+CONFUSABLE.update(ARM_TO_LAT)
 CONFUSABLE.update(OTHER_CONF)
 
 # Target skeletons for the whole-script branch: fires ONLY when a foreign token's
@@ -92,6 +97,8 @@ def _script(ch):
         return "Cyrillic"
     if 0x0370 <= o <= 0x03FF:
         return "Greek"
+    if 0x0531 <= o <= 0x058F:
+        return "Armenian"
     if u.category(ch).startswith("L"):
         return "Other"
     return None
@@ -180,18 +187,19 @@ def confusable_cards_reader(text):
         if len(letters) < 2:
             continue
 
-        # mixed-script confusable: Latin + (Cyrillic/Greek) lookalikes in one token
-        if "Latin" in scripts and (scripts & {"Cyrillic", "Greek"}):
-            foreign = [c for c in letters if _script(c) in ("Cyrillic", "Greek")]
+        # mixed-script confusable: Latin + (Cyrillic/Greek/Armenian) lookalikes in one token
+        _FOREIGN = {"Cyrillic", "Greek", "Armenian"}
+        if "Latin" in scripts and (scripts & _FOREIGN):
+            foreign = [c for c in letters if _script(c) in _FOREIGN]
             if any(ord(c) in CONFUSABLE for c in foreign):
                 skel = _skeleton(tok)
                 return Finding("suspect", 0.9,
                     f"mixed-script confusable token '{tok}' impersonates '{skel}' "
-                    f"(Latin + {'/'.join(sorted(scripts & {'Cyrillic','Greek'}))} "
+                    f"(Latin + {'/'.join(sorted(scripts & _FOREIGN))} "
                     f"look-alikes)", conclusive=True, signature="mixed_script_confusable")
 
         # whole-script spoof: all-foreign token whose skeleton equals a TARGET
-        if (scripts <= {"Cyrillic"} or scripts <= {"Greek"}) and letters:
+        if (scripts <= {"Cyrillic"} or scripts <= {"Greek"} or scripts <= {"Armenian"}) and letters:
             if all(ord(c) in CONFUSABLE for c in letters):
                 skel = _skeleton(tok).strip(".-_").lower()
                 if skel in DEMO_TARGETS:
