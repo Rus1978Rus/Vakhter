@@ -295,6 +295,23 @@ whitespace space-lookalike branch is largely pre-empted by the AD-21 space fold
 line-separator class the fold deliberately does not touch.
 Status: `ADOPTED` (code/range/product.py; code/tests/test_guard_smuggles.py).
 
+**AD-24 · An adversarial sweep through the wired guard drove the next round of threat coverage.**
+Decision: after wiring everything (AD-22/23), run a broad attack battery through
+`analyze()` and close every conclusive attack that came back CLEAN. Six gaps were
+found and fixed: UNC / Windows-backslash paths, LDAP injection, NoSQL injection,
+PowerShell stealth/encoded execution (+ LOLBins, curl|sh), short-form IPv4
+(http://127.1/) and IPv6-with-zone SSRF.
+Rationale: a completeness critic — once the guard runs every detector, the honest
+question is what it still MISSES, not what it flags. Each fix is contextual and
+FP-calibrated to the attack's specific shape (LDAP only on wildcard-paren /
+boolean-chaining / attr=* ; NoSQL only on a quoted "$op" key or [$op] param;
+short-form IP only URL-gated; PowerShell only on -enc/stealth flags), and every
+new regex is bounded + flat (ReDoS-safe, verified <26 ms on 60 k inputs). 0 new
+false positives across all range_* benign corpora; range_meta and range_harden
+stay at 100%.
+Status: `ADOPTED` (code/range/harden_cards.py, code/range/metachar_cards.py;
+code/tests/test_execution_windows.py, code/tests/test_injection_ssrf.py).
+
 ---
 
 <a name="русский"></a>
@@ -575,3 +592,19 @@ space-lookalike в whitespace во многом упреждена fold-ом п�
 пр. уже ASCII к моменту ридера), оставляя ей класс разделителей строк, который fold
 намеренно не трогает.
 Статус: `ПРИНЯТО` (code/range/product.py; code/tests/test_guard_smuggles.py).
+
+**AD-24 · Adversarial-прогон через подключённый гвард задал следующий раунд покрытия угроз.**
+Решение: после подключения всего (AD-22/23) прогнать широкую батарею атак через
+`analyze()` и закрыть каждую окончательную атаку, вернувшуюся CLEAN. Найдено и
+исправлено шесть пробелов: UNC / Windows-backslash пути, LDAP-инъекция,
+NoSQL-инъекция, PowerShell stealth/encoded исполнение (+ LOLBins, curl|sh),
+short-form IPv4 (http://127.1/) и IPv6-with-zone SSRF.
+Обоснование: критик полноты — раз гвард запускает все детекторы, честный вопрос не
+что он флагует, а что ещё ПРОПУСКАЕТ. Каждое исправление контекстно и FP-калибровано
+под конкретную форму атаки (LDAP только на wildcard-скобки / boolean-цепочки / attr=*;
+NoSQL только на quoted-ключ "$op" или [$op] параметр; short-form IP только в
+URL-контексте; PowerShell только на -enc/stealth-флагах), и каждый новый регекс
+ограничен + плоский (ReDoS-безопасен, проверено <26 мс на 60k). 0 новых ложных
+срабатываний по всем бенайн-корпусам range_*; range_meta и range_harden держат 100%.
+Статус: `ПРИНЯТО` (code/range/harden_cards.py, code/range/metachar_cards.py;
+code/tests/test_execution_windows.py, code/tests/test_injection_ssrf.py).
