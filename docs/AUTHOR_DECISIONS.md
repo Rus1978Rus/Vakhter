@@ -277,6 +277,24 @@ threats. self_defense bounces floods before the reader, so no DoS surface is
 added.
 Status: `ADOPTED` (code/range/product.py; code/tests/test_guard_confusable.py).
 
+**AD-23 · Every built detector is audited against the guard's reader list; three more smuggle detectors wired.**
+Decision: after AD-22, audit ALL `*_reader` functions against `product._READERS`
+and wire the ones that catch a real attack the guard misses. This adds
+whitespace_cards (U+2028/2029 line/paragraph separators), hangul_filler_cards
+(U+3164 & jamo fillers) and prepended_format_cards (Arabic/Syriac number signs,
+interlinear annotation). vs_cards / tag_cards / bidi_cards / canonical_view /
+urlpunct were left OUT — the invisible detector and others already cover their
+sampled attacks, so wiring them would be redundant.
+Rationale: a detector that is built, locked and tested but not in `_READERS` gives
+zero protection — the same "built but not connected" gap AD-22 fixed for
+confusables. The three added are conclusive-smuggle detectors, FP-safe by design
+(a filler flanked by Hangul jamo is OK; a number sign prefixing its own script's
+digits is OK), and verified 0-FP on legit Korean/Arabic/CJK before wiring. The
+whitespace space-lookalike branch is largely pre-empted by the AD-21 space fold
+(NBSP etc. are already ASCII by the time the reader runs), leaving it the
+line-separator class the fold deliberately does not touch.
+Status: `ADOPTED` (code/range/product.py; code/tests/test_guard_smuggles.py).
+
 ---
 
 <a name="русский"></a>
@@ -539,3 +557,21 @@ whole-script/dot-разделитель спуфы, ранее CLEAN через 
 срабатываний по всем бенайн-корпусам range_* и safety-gate ERG по-прежнему глушит 0
 угроз. self_defense гасит флуды до ридера, так что DoS-поверхность не добавляется.
 Статус: `ПРИНЯТО` (code/range/product.py; code/tests/test_guard_confusable.py).
+
+**AD-23 · Каждый построенный детектор сверен со списком ридеров гварда; подключены ещё три детектора контрабанды.**
+Решение: после AD-22 — сверить ВСЕ `*_reader` функции с `product._READERS` и
+подключить те, что ловят реальную атаку, пропускаемую гвардом. Добавлены
+whitespace_cards (U+2028/2029 разделители строк/абзацев), hangul_filler_cards
+(U+3164 и jamo-филлеры) и prepended_format_cards (арабские/сирийские number sign,
+interlinear annotation). vs_cards / tag_cards / bidi_cards / canonical_view /
+urlpunct НЕ подключены — детектор невидимок и другие уже покрывают их выборочные
+атаки, подключение было бы избыточным.
+Обоснование: детектор построенный, запертый и протестированный, но не в `_READERS`,
+даёт ноль защиты — тот же разрыв «построено, но не подключено», что AD-22 закрыл
+для конфузаблов. Три добавленных — детекторы окончательной контрабанды, FP-безопасны
+по дизайну (филлер в окружении корейских jamo — OK; number sign перед своими цифрами
+— OK), проверены на 0 FP на легит корейском/арабском/CJK до вайринга. Ветка
+space-lookalike в whitespace во многом упреждена fold-ом пробелов из AD-21 (NBSP и
+пр. уже ASCII к моменту ридера), оставляя ей класс разделителей строк, который fold
+намеренно не трогает.
+Статус: `ПРИНЯТО` (code/range/product.py; code/tests/test_guard_smuggles.py).
