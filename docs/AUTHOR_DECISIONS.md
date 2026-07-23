@@ -364,6 +364,24 @@ cannot silently start clearing them.
 Status: `ADOPTED` (sign_cards ARMENIAN_*; coverage_lock ARM; docs/CHEROKEE_HARD_MIX.md;
 code/tests/test_erg_immunity.py).
 
+**AD-28 · Trust-core (HMAC) audit: delimiter injection and rollback replay fixed; HMAC symmetry pinned.**
+Decision: audit provenance.py / quorum.py (the HMAC demo of AD-12) and fix what is
+fixable without a crypto library. Two real weaknesses found and closed: (1)
+field-delimiter injection — fields joined with '|' made subject_of('a','b|c') ==
+subject_of('a|b','c'), so one signature bound to two different (name,hash) pairs;
+fixed with length-prefixed field encoding in both modules. (2) rollback replay —
+the quorum subject carried no version, so captured approvals could be replayed to
+re-accept a rolled-back component; fixed by binding the subject to a monotonic
+`epoch` (back-compatible default 0).
+Rationale: these are correctness/robustness bugs independent of the HMAC-vs-Ed25519
+question, so they are worth fixing in the demo now. The third finding — the
+verifier holds the secrets and can forge any signature — is inherent to HMAC and
+is exactly what AD-12 defers to Ed25519; rather than leave it implicit, a test
+pins the symmetric behaviour so the limitation is explicit. All PoCs and fixes are
+in test_trust_core.py; the trust-core harnesses still pass.
+Status: `ADOPTED` (delimiter + epoch fixes; code/range/quorum.py, provenance.py;
+code/tests/test_trust_core.py) / `DEFERRED` (Ed25519 asymmetric signing — AD-12).
+
 ---
 
 <a name="русский"></a>
@@ -711,3 +729,20 @@ test_erg_immunity.py закрепляет это, чтобы будущая пр
 их очищать.
 Статус: `ПРИНЯТО` (sign_cards ARMENIAN_*; coverage_lock ARM; docs/CHEROKEE_HARD_MIX.md;
 code/tests/test_erg_immunity.py).
+
+**AD-28 · Аудит trust-ядра (HMAC): инъекция разделителя и rollback-replay починены; HMAC-симметрия закреплена.**
+Решение: провести аудит provenance.py / quorum.py (HMAC-демо из AD-12) и починить
+чинимое без крипто-библиотеки. Найдены и закрыты две реальные слабости: (1) инъекция
+разделителя полей — поля соединялись через '|', из-за чего subject_of('a','b|c') ==
+subject_of('a|b','c'), и одна подпись привязывалась к двум разным (name,hash); чинено
+length-prefix кодированием полей в обоих модулях. (2) rollback-replay — subject кворума
+не нёс версию, поэтому захваченные одобрения переигрывались для повторного принятия
+откаченного компонента; чинено привязкой subject к монотонной `epoch` (обратно
+совместимо, дефолт 0).
+Обоснование: это баги корректности/устойчивости, независимые от вопроса HMAC-vs-Ed25519,
+поэтому их стоит починить в демо сейчас. Третья находка — верификатор держит секреты и
+может подделать любую подпись — присуща HMAC и есть ровно то, что AD-12 откладывает под
+Ed25519; вместо неявности тест закрепляет симметричное поведение, делая ограничение
+явным. Все PoC и фиксы — в test_trust_core.py; харнессы trust-ядра по-прежнему проходят.
+Статус: `ПРИНЯТО` (фиксы разделителя + эпохи; code/range/quorum.py, provenance.py;
+code/tests/test_trust_core.py) / `ОТЛОЖЕНО` (асимметричная подпись Ed25519 — AD-12).
