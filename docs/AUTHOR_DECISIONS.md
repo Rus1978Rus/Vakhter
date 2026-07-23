@@ -396,6 +396,26 @@ budget is restored to be comfortable on a slow host too. Pinned by
 test_dos_readers.py (floods bounce, worst-case under budget, each reader linear).
 Status: `ADOPTED` (code/range/guard.py MAX_LEN; code/tests/test_dos_readers.py).
 
+**AD-30 · Transparency-log audit: delimiter fixed, truncation/rewrite caught by an anchor.**
+Decision: audit transparency.py (the last untouched trust module) and fix what is
+fixable. Two findings closed: (1) delimiter injection — the entry hash committed
+"seq|when|event|prev", so (when='a', event='b|c') and (when='a|b', event='c')
+hashed the same; fixed with length-prefixed encoding (AD-28's fix, applied here).
+(2) truncation / full rewrite were undetectable — a bare hash chain that has had
+trailing entries dropped, or been rebuilt from genesis, is still self-consistent
+and verify_chain accepted it; fixed by `verify_chain(log, expected_head=...)`,
+which pins the log to an externally-anchored head (`head()` exposes it), plus
+genesis / seq-contiguity / reorder checks.
+Rationale: this mirrors NOTARIUS trace.py's honest limits (fork / truncation
+undetectable without an external anchor). The anchor requirement is not a
+weakness hidden away — it is documented in the module and pinned by a test
+(`test_truncation_without_anchor_is_consistent`) so the boundary between "internal
+consistency" and "authenticity of the whole log" is explicit. Signing a tree head
+(the CT approach) stays future work — signing is provenance/quorum's job and is
+HMAC there (AD-12/AD-28).
+Status: `ADOPTED` (delimiter + anchor; code/range/transparency.py;
+code/tests/test_transparency.py) / `DEFERRED` (signed tree head + gossip).
+
 ---
 
 <a name="русский"></a>
@@ -775,3 +795,23 @@ code/tests/test_trust_core.py) / `ОТЛОЖЕНО` (асимметричная 
 Закреплено test_dos_readers.py (флуды гасятся, worst-case под бюджетом, каждый ридер
 линеен).
 Статус: `ПРИНЯТО` (code/range/guard.py MAX_LEN; code/tests/test_dos_readers.py).
+
+**AD-30 · Аудит лога прозрачности: разделитель починен, усечение/переписывание ловятся якорем.**
+Решение: аудит transparency.py (последний незатронутый trust-модуль) и починка
+чинимого. Две находки закрыты: (1) инъекция разделителя — хеш записи коммитил
+"seq|when|event|prev", из-за чего (when='a', event='b|c') и (when='a|b', event='c')
+хешились одинаково; чинено length-prefix кодированием (фикс AD-28, применён здесь).
+(2) усечение / полное переписывание были необнаружимы — голая хеш-цепь, у которой
+отброшены хвостовые записи или которая пересобрана с генезиса, всё ещё
+самосогласована, и verify_chain её принимал; чинено `verify_chain(log,
+expected_head=...)`, привязывающим лог к внешне-заякоренной голове (`head()` её
+отдаёт), плюс проверки генезиса / непрерывности seq / переупорядочивания.
+Обоснование: это зеркалит честные пределы NOTARIUS trace.py (fork / усечение
+необнаружимы без внешнего якоря). Требование якоря не спрятано как слабость — оно
+задокументировано в модуле и закреплено тестом
+(`test_truncation_without_anchor_is_consistent`), так что граница между «внутренней
+согласованностью» и «подлинностью всего лога» явна. Подпись головы дерева
+(подход CT) остаётся будущей работой — подпись это дело provenance/quorum и там
+HMAC (AD-12/AD-28).
+Статус: `ПРИНЯТО` (разделитель + якорь; code/range/transparency.py;
+code/tests/test_transparency.py) / `ОТЛОЖЕНО` (подписанная голова дерева + gossip).
