@@ -91,7 +91,7 @@ _PIPE_SHELL = re.compile(r"\b(curl|wget)\b[^\n|]{0,200}\|\s*(sudo\s+)?(ba|z|d)?s
 # ---- deserialization / SSRF schemes / prototype pollution ----
 # Java serialized stream base64 starts rO0AB (magic AC ED 00 05); PHP serialized
 # object is O:<len>:"Class":<n>:{ . Both are unambiguous data-format magic.
-_DESERIAL = re.compile(r"\brO0AB[A-Za-z0-9+/]{4,}"
+_DESERIAL = re.compile(r"\brO0AB[A-Za-z0-9+/]"          # rO0AB = base64 of the Java magic AC ED 00 05
                        r'|(?:^|[^A-Za-z0-9])O:\d{1,4}:"[^"\n]{1,80}":\d{1,4}:\{')
 # Exotic URL schemes used for SSRF / protocol smuggling (gopher to Redis, dict to
 # memcached, tftp/netdoc/jar). Everyday http/https/ftp/mailto are NOT here.

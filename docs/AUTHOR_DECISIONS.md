@@ -312,6 +312,24 @@ stay at 100%.
 Status: `ADOPTED` (code/range/harden_cards.py, code/range/metachar_cards.py;
 code/tests/test_execution_windows.py, code/tests/test_injection_ssrf.py).
 
+**AD-25 · A second adversarial round adds Armenian homoglyphs and round-2 injection/RCE; some classes are deliberately out of scope.**
+Decision: re-sweep the guard (loop-until-dry). Added: Armenian look-alikes (a
+conservative, verified set օ/ո/ս/ա/Օ → o/n/u/a/O, joining Cyrillic/Greek), SQL
+stacked queries, Java/PHP deserialization magic, exotic SSRF schemes
+(gopher/dict/…), and JS prototype pollution. Left OUT on purpose: raw
+credential-format scanning (AWS AKIA…, GitHub ghp_…, JWT, Slack tokens) is
+data-loss prevention, a different mission from attack-detection; Georgian is not a
+genuine Latin-confusable script (Mkhedruli is distinctive); Cherokee IS a real
+confusable script but needs a verified mapping table (a follow-up, not guessed);
+pickle/XStream gadgets are niche/binary and hard to detect in text without FP.
+Rationale: keep expanding by real attack shape, but a security table must assert
+only verified look-alikes and the guard should not silently take on a DLP mission
+it was not scoped for. All new patterns are contextual, FP-calibrated and
+ReDoS-safe; 0 new false positives.
+Status: `ADOPTED` (confusable_cards ARM_TO_LAT; metachar/harden round-2;
+test_armenian.py, test_rce_round2.py) / `DEFERRED` (Cherokee cards, secret-format
+DLP).
+
 ---
 
 <a name="русский"></a>
@@ -608,3 +626,19 @@ URL-контексте; PowerShell только на -enc/stealth-флагах),
 срабатываний по всем бенайн-корпусам range_*; range_meta и range_harden держат 100%.
 Статус: `ПРИНЯТО` (code/range/harden_cards.py, code/range/metachar_cards.py;
 code/tests/test_execution_windows.py, code/tests/test_injection_ssrf.py).
+
+**AD-25 · Второй adversarial-раунд добавляет армянские гомоглифы и round-2 инъекции/RCE; часть классов намеренно вне рамок.**
+Решение: перепрогон гварда (loop-until-dry). Добавлено: армянские двойники
+(консервативный выверенный набор օ/ո/ս/ա/Օ → o/n/u/a/O, рядом с кириллицей/греческим),
+SQL stacked-запросы, магия десериализации Java/PHP, экзотические SSRF-схемы
+(gopher/dict/…), JS prototype pollution. Намеренно ИСКЛЮЧЕНО: сканирование форматов
+секретов (AWS AKIA…, GitHub ghp_…, JWT, Slack-токены) — это DLP, иная миссия, чем
+детекция атак; грузинский не является настоящим Latin-двойником (Мхедрули
+самобытен); Cherokee — реальный confusable-скрипт, но нужна выверенная таблица
+(follow-up, не угадывать); pickle/XStream-гаджеты нишевые/бинарные, трудно детектить
+в тексте без FP. Обоснование: расширять по реальной форме атаки, но security-таблица
+должна утверждать лишь выверенные двойники, а гвард не должен тихо брать DLP-миссию,
+под которую не проектировался. Все новые паттерны контекстны, FP-калиброваны и
+ReDoS-безопасны; 0 новых ложных срабатываний.
+Статус: `ПРИНЯТО` (confusable_cards ARM_TO_LAT; metachar/harden round-2;
+test_armenian.py, test_rce_round2.py) / `ОТЛОЖЕНО` (Cherokee-карточки, secret-format DLP).
