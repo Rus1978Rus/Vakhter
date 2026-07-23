@@ -88,6 +88,33 @@ _LOLBIN = re.compile(
 _PIPE_SHELL = re.compile(r"\b(curl|wget)\b[^\n|]{0,200}\|\s*(sudo\s+)?(ba|z|d)?sh\b", re.I)
 
 
+# ---- deserialization / SSRF schemes / prototype pollution ----
+# Java serialized stream base64 starts rO0AB (magic AC ED 00 05); PHP serialized
+# object is O:<len>:"Class":<n>:{ . Both are unambiguous data-format magic.
+_DESERIAL = re.compile(r"\brO0AB[A-Za-z0-9+/]{4,}"
+                       r'|(?:^|[^A-Za-z0-9])O:\d{1,4}:"[^"\n]{1,80}":\d{1,4}:\{')
+# Exotic URL schemes used for SSRF / protocol smuggling (gopher to Redis, dict to
+# memcached, tftp/netdoc/jar). Everyday http/https/ftp/mailto are NOT here.
+_SSRF_SCHEME = re.compile(r"\b(gopher|dict|tftp|netdoc|jar|ldap|ldaps)://", re.I)
+# JS prototype pollution: a "__proto__" JSON key, __proto__ used as an accessor, or
+# constructor[...]prototype. A bare mention "the __proto__ property" (no [ or .) is clean.
+_PROTO = re.compile(r'"__proto__"|\b__proto__\s*[\[.]'
+                    r"|constructor\s*\[?\s*[\"']?\s*prototype", re.I)
+
+
+def _rce_misc(text):
+    if _DESERIAL.search(text):
+        return Finding("suspect", 0.85, "serialized-object magic (Java/PHP deserialization)",
+                       conclusive=True, signature="deserialize")
+    if _SSRF_SCHEME.search(text):
+        return Finding("suspect", 0.85, "exotic URL scheme (SSRF / protocol smuggling)",
+                       conclusive=True, signature="ssrf_scheme")
+    if _PROTO.search(text):
+        return Finding("suspect", 0.8, "prototype-pollution accessor (__proto__ / constructor.prototype)",
+                       conclusive=True, signature="proto_pollution")
+    return None
+
+
 def _execution(text):
     if _POWERSHELL.search(text):
         return Finding("suspect", 0.9, "PowerShell stealth/encoded execution",
@@ -176,7 +203,7 @@ def _ip_advanced(text):
 
 def harden_cards_reader(text):
     result = Finding("clean", 0.0, "harden-cards: nothing")
-    for check in (_templates, _cloud, _dns_exfil, _execution, _windows_path, _ip_advanced):
+    for check in (_templates, _cloud, _dns_exfil, _rce_misc, _execution, _windows_path, _ip_advanced):
         f = check(text)
         if f:
             result = combine(result, f)

@@ -12,7 +12,10 @@ from invariant_engine.core import Finding
 from invariant_engine.supplement import combine
 
 _SQL   = re.compile(r"'(\s*(or|and|union|select|drop|insert)\b|\s*--|\s*#|\s*;|\s*=\s*')"
-                    r"|(\bor\b|\band\b)\s+'?\d+'?\s*=\s*'?\d+", re.I)
+                    r"|(\bor\b|\band\b)\s+'?\d+'?\s*=\s*'?\d+"
+                    # stacked query: ; then an unambiguous DDL/DML verb+object
+                    r"|;\s*(drop\s+(table|database)|delete\s+from|insert\s+into|"
+                    r"update\s+\w+\s+set|truncate\s+table|alter\s+table|exec(ute)?\s*[\s(])", re.I)
 # bounded wildcards ({0,N}) so a wall of the same char can't cause O(n^2)
 # backtracking (ReDoS). Real payloads are short.
 _BTICK = re.compile(r"`[^`]{0,200}\b(id|whoami|cat|ls|rm|curl|wget|nc|bash|sh|uname|env|ping|nslookup)\b[^`]{0,200}`"
