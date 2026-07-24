@@ -45,7 +45,7 @@ Without these, r>g can be turned against the discipline by declaring any module 
   deliberately explicit, versioned files — that is the point.
 
 ### How this already shows up in Vakhter
-- **High r:** 35 signs, one invariant, zero signature tables. New confusables/vectors are
+- **High r:** 145 signs (unique codepoints), one invariant, zero signature tables. New confusables/vectors are
   reasoned from `≠ EFFECT`, not enumerated.
 - **§5.1 evidence:** every card passes both gates before commit; `gate_selftest.py` proves
   the gates themselves are not false greens (validator catches injected defects; simulator
@@ -95,7 +95,7 @@ Vakhter по построению r-тяжёлый. `FORM ≠ EFFECT` — стр
   Vakhter сознательно явные, версионированные файлы — в этом и смысл.
 
 ### Как это уже проявляется в Vakhter
-- **Высокий r:** 35 знаков, один инвариант, ноль таблиц сигнатур. Новые confusables/векторы
+- **Высокий r:** 145 знаков (уникальных кодпоинтов), один инвариант, ноль таблиц сигнатур. Новые confusables/векторы
   выводятся из `≠ EFFECT`, а не перечисляются.
 - **§5.1 evidence:** каждая карточка проходит оба гейта до коммита; `gate_selftest.py`
   доказывает, что сами гейты — не ложная зелёнка (валидатор ловит инъектированные дефекты;

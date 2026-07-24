@@ -65,19 +65,19 @@ The fix: the adapter DELEGATES invisible judgment to a contextual `invisible_car
 
 **4. Homoglyph digit-as-letter brand mimicry (`paypa1`, `g00gle`) — 0% → 100%.**
 BASELINE 0% (MSL sees valid ASCII letters/digits). Digit cards de-leet each label and match a brand set → ALARM, **0 FP** on `version 1.0.3`, `pi 3.14159`, `iPhone 15`, `H2O`.
-*Missing to raise: expand the brand set (~21), edit-distance-1 fuzzy match, per-brand TLD expectations.*
+*Closed since (AD-18/20): brand set unified + expanded to ~55 (shared brand_corpus); visual-multigraph fuzzy adopted (rn→m, vv→w, cl→d, capital-I-for-l). Raw edit-distance-1 REJECTED as FP-unsafe. Residual: per-brand TLD expectations.*
 
 **5. Numeric IP hosts (metadata / private / loopback / decimal / hex / wildcard) — ~20% → 100%.**
 BASELINE catches only dotted-private. Digit cards + canon normalize decimal `2130706433` and hex `0x7f000001` to dotted, then classify: link-local `169.254.169.254` → metadata/SSRF, `0` → wildcard, etc. Hardening round adds bracketed IPv6 (`[::1]`, `[fd00::1]`, `[::ffff:169.254.169.254]`) and octal-dotted `0177.0.0.1` → all ALARM. `range_harden` IP cases 0/4 → 4/4, 0 FP.
-*Missing to raise: short forms (`127.1`), IPv6 zone-ids.*
+*Closed since (AD-24): short forms (`http://127.1/`, `http://10.0.1/` via inet_aton) and IPv6 zone-ids (`http://[fe80::1%25eth0]/`) — both URL-gated, 0 FP on version numbers.*
 
 **6. Mixed-script confusable (Cyrillic look-alike `раypal.com`) — 0% → 100%.**
 BASELINE 0%. Confusable card flags Latin+Cyrillic-lookalike in one domain token.
-*Missing to raise: Greek/Armenian look-alikes, full confusables table, whole-script confusable.*
+*Closed since: Greek (incl. lunate sigma / yot) and extended-Cyrillic (QA/Komi-De/We/Izhitsa/KA) look-alikes carded (81 locked forms); Armenian carded (AD-27); Cherokee via hard-mix rule (AD-26); whole-script brand spoofs via shared corpus; non-ASCII dot/slash domain separators (AD-19). The rich confusable reader is now WIRED into the guard (AD-22). Residual: the full UTS#39 confusables table.*
 
 **7. Metacharacters (SQLi, cmdi `` ` `` `|` `;` `$()`, XSS `<>`, null, CRLF) — 18% → 100%.**
 Contextual detectors (quote+SQL-operator, backtick+command-word, CRLF+header-name) → 11/11 ALARM, **0 new FP** on `don't`, `a<b`, `` `print()` ``, `a|b`, `<b>` tag. Hardening round adds template/expression injection — `${jndi:…}` (Log4Shell CVE-2021-44228), `{{7*7}}` / `{{config.__class__}}` SSTI, SpEL, ERB — all ALARM, **0 FP** on `${HOME}`, `{{ user.name }}`, `<%= @post.title %>`.
-*Missing to raise: LDAP/NoSQL/XPath families; PowerShell cmdlets.*
+*Closed since (AD-24/25): LDAP filter injection and NoSQL (Mongo `$op`) injection; SQL stacked queries (`; DROP TABLE`); PowerShell stealth/encoded execution + LOLBins (certutil/bitsadmin/mshta) + `curl|sh`; Windows/UNC path traversal; Java/PHP deserialization; exotic SSRF schemes (gopher/dict/…); prototype pollution. Residual: full XPath family.*
 
 **8. Sensitive-path & exfiltration intent — supplement + hardening.**
 Supplement flags `/etc/passwd`, `id_rsa`, `.env`, and EMAIL/URL + exfil-verb. Hardening adds cloud-credential artifacts (`~/.aws/credentials`, `~/.kube/config`, `.docker/config.json`, `.npmrc`/`.netrc`, `-----BEGIN … PRIVATE KEY-----`) → ALARM; DNS-exfil → WATCH. **0 FP** on `aws` in prose, `git@github.com`.
@@ -166,19 +166,19 @@ BASELINE 100% (обычный, percent, double-enc, overlong — все → ALAR
 
 **4. Двойник «цифра-как-буква», мимикрия брендов (`paypa1`, `g00gle`) — 0% → 100%.**
 BASELINE 0% (MSL видит валидные ASCII-буквы/цифры). Карточки цифр «раз-литят» каждую метку и сверяют с набором брендов → ALARM, **0 FP** на `version 1.0.3`, `pi 3.14159`, `iPhone 15`, `H2O`.
-*Что добавить: расширить набор брендов (~21), fuzzy-совпадение на расстоянии 1, ожидания по TLD.*
+*Закрыто (AD-18/20): набор брендов объединён и расширен до ~55 (общий brand_corpus); приняты визуальные биграммы (rn→m, vv→w, cl→d, заглавная-I-вместо-l). Сырой edit-distance-1 ОТВЕРГНУТ как FP-небезопасный. Остаток: ожидания по TLD.*
 
 **5. Числовые IP-хосты (метаданные / приватные / loopback / decimal / hex / wildcard) — ~20% → 100%.**
 BASELINE ловит только dotted-private. Карточки цифр + канон нормализуют decimal `2130706433` и hex `0x7f000001` в dotted, затем классифицируют: link-local `169.254.169.254` → метаданные/SSRF, `0` → wildcard и т.д. Hardening добавляет IPv6 в скобках (`[::1]`, `[fd00::1]`, `[::ffff:169.254.169.254]`) и octal `0177.0.0.1` → все ALARM. `range_harden`: IP-кейсы 0/4 → 4/4, 0 FP.
-*Что добавить: короткие формы (`127.1`), zone-id IPv6.*
+*Закрыто (AD-24): короткие формы (`http://127.1/`, `http://10.0.1/` через inet_aton) и zone-id IPv6 (`http://[fe80::1%25eth0]/`) — оба URL-gated, 0 FP на version-числах.*
 
 **6. Смешанные скрипты / двойники (кириллический `раypal.com`) — 0% → 100%.**
 BASELINE 0%. Карточка двойников флагует латиница+кириллица-двойник в одном домен-токене.
-*Что добавить: греческие/армянские двойники, полная таблица confusables, whole-script.*
+*Закрыто: греческие (вкл. лунную сигму / йот) и расширенно-кириллические (QA/Komi-De/We/Izhitsa/KA) двойники окарточены (81 запертая форма); армянские окарточены (AD-27); чероки через hard-mix правило (AD-26); whole-script бренд-спуфы через общий корпус; non-ASCII точка/слэш-разделители доменов (AD-19). Богатый confusable-ридер теперь ПОДКЛЮЧЁН в гвард (AD-22). Остаток: полная таблица UTS#39.*
 
 **7. Метасимволы (SQLi, cmdi `` ` `` `|` `;` `$()`, XSS `<>`, null, CRLF) — 18% → 100%.**
 Контекстные детекторы (кавычка+SQL-оператор, backtick+команда, CRLF+имя заголовка) → 11/11 ALARM, **0 новых FP** на `don't`, `a<b`, `` `print()` ``, `a|b`, тег `<b>`. Hardening добавляет инъекцию шаблонов/выражений — `${jndi:…}` (Log4Shell CVE-2021-44228), `{{7*7}}` / `{{config.__class__}}` SSTI, SpEL, ERB — все ALARM, **0 FP** на `${HOME}`, `{{ user.name }}`, `<%= @post.title %>`.
-*Что добавить: семейства LDAP/NoSQL/XPath; командлеты PowerShell.*
+*Закрыто (AD-24/25): LDAP filter-инъекция и NoSQL (Mongo `$op`) инъекция; SQL stacked-запросы (`; DROP TABLE`); PowerShell stealth/encoded исполнение + LOLBins (certutil/bitsadmin/mshta) + `curl|sh`; Windows/UNC path traversal; Java/PHP десериализация; экзотические SSRF-схемы (gopher/dict/…); prototype pollution. Остаток: полное семейство XPath.*
 
 **8. Чувствительные пути и намерение эксфильтрации — supplement + hardening.**
 Supplement флагует `/etc/passwd`, `id_rsa`, `.env`, а также EMAIL/URL + глагол-эксфильтрации. Hardening добавляет облачные креды (`~/.aws/credentials`, `~/.kube/config`, `.docker/config.json`, `.npmrc`/`.netrc`, заголовки `-----BEGIN … PRIVATE KEY-----`) → ALARM; DNS-эксфил → WATCH. **0 FP** на `aws` в тексте, `git@github.com`.
