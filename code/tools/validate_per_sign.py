@@ -121,6 +121,7 @@ def validate_file(path):
 def main():
     files = sorted(f for f in os.listdir(CARDS) if f.endswith(".md"))
     by_cp = {}
+    stems_by_cp = {}          # codepoint -> {filename stems} — must be exactly one
     failed = 0
     print("PER-SIGN CARD VALIDATOR")
     print("=" * 68)
@@ -131,6 +132,8 @@ def main():
         cpv = codepoint(text)
         lang = "RU" if f.endswith("_RU.md") else "EN"
         by_cp.setdefault(cpv, {})[lang] = c
+        stem = re.sub(r"_(EN|RU)\.md$", "", f)
+        stems_by_cp.setdefault(cpv, set()).add(stem)
         status = "PASS" if not errs else "FAIL"
         if errs:
             failed += 1
@@ -139,6 +142,15 @@ def main():
             print(f"        ERROR: {e}")
         for w in warns:
             print(f"        warn : {w}")
+
+    # one codepoint -> exactly one card pair (catches duplicate cards a per-file
+    # parity check would miss — one RU file silently overwrote the other; audit M1)
+    print("-" * 68)
+    for cp, stems in sorted(stems_by_cp.items()):
+        if len(stems) > 1:
+            failed += 1
+            print(f"[FAIL] U+{cp}: {len(stems)} different card stems for ONE codepoint "
+                  f"(duplicate): {sorted(stems)}")
 
     # EN/RU parity
     print("-" * 68)
