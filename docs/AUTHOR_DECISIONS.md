@@ -416,6 +416,27 @@ HMAC there (AD-12/AD-28).
 Status: `ADOPTED` (delimiter + anchor; code/range/transparency.py;
 code/tests/test_transparency.py) / `DEFERRED` (signed tree head + gossip).
 
+**AD-31 · Two external audits verified line-by-line; Tranche A (uncontested fixes) applied.**
+Decision: two independent external audits (a full clone, line-by-line; and a
+web-only read) were re-verified against the code — every substantive finding
+CONFIRMED, 0 false findings. The uncontested fixes were applied as "Tranche A":
+H1 (ai_gateway import paths pointed at applications/range not code/range → the
+flagship demo raised ModuleNotFoundError) fixed + an app smoke test added; L2
+(notarius_ledger repeated the AD-28/30 delimiter-injection) fixed with length-
+prefix fields; M1 (a duplicate U+217C card pair that both gates missed — parity
+keyed by (codepoint,lang), lock keyed by codepoint) removed, plus a
+one-codepoint-one-pair check added to validate_per_sign; the stale COVERAGE_MAP
+"missing to raise" notes refreshed to the AD-16..30 reality (the second audit's
+gap list was outdated because it read the pre-session map); "35 signs" → 145.
+Rationale: the audits' finding classes are exactly the ones this project already
+knows how to see — "built ≠ connected" (H1), "two sources of truth with no lock in
+a new dimension" (M1), "own lesson not carried to the sketch" (L2), "docs lag
+code" (map drift). Tranche B (design-level: ERG combine-vs-contract M4, mandatory
+integrity enforcement 4.2, urlpunct wiring M2, in-repo data: reader M3) is held
+for an explicit decision, not folded in silently.
+Status: `ADOPTED` (Tranche A: apps/ai_gateway, notarius_ledger, validate_per_sign,
+COVERAGE_MAP, METHODOLOGY_R_G; test_apps_smoke.py) / `PENDING` (Tranche B).
+
 ---
 
 <a name="русский"></a>
@@ -815,3 +836,22 @@ expected_head=...)`, привязывающим лог к внешне-заяк�
 HMAC (AD-12/AD-28).
 Статус: `ПРИНЯТО` (разделитель + якорь; code/range/transparency.py;
 code/tests/test_transparency.py) / `ОТЛОЖЕНО` (подписанная голова дерева + gossip).
+
+**AD-31 · Два внешних аудита проверены построчно; Транш A (бесспорные фиксы) применён.**
+Решение: два независимых внешних аудита (полный clone, построчно; и web-only чтение)
+перепроверены по коду — каждая предметная находка ПОДТВЕРЖДЕНА, 0 ложных. Бесспорные
+фиксы применены как «Транш A»: H1 (пути `ai_gateway` вели в `applications/range`, а не
+`code/range` → флагманское демо падало с ModuleNotFoundError) починен + добавлен
+smoke-тест приложений; L2 (`notarius_ledger` повторял delimiter-инъекцию AD-28/30)
+починен length-prefix полями; M1 (дубль карточки U+217C, который оба гейта пропускали —
+паритет по (кодпоинт,язык), замок по кодпоинту) удалён + добавлена проверка «один
+кодпоинт — одна пара» в validate_per_sign; устаревшие заметки «missing to raise» в
+COVERAGE_MAP приведены к реальности AD-16..30 (gap-список второго аудита устарел, т.к.
+читалась до-сессионная карта); «35 signs» → 145.
+Обоснование: классы находок аудитов — ровно те, что проект уже умеет видеть: «построено ≠
+подключено» (H1), «два источника истины без замка в новом измерении» (M1), «свой урок не
+донесён до наброска» (L2), «доки отстают от кода» (дрейф карты). Транш B (уровень дизайна:
+ERG combine-vs-контракт M4, обязательный integrity 4.2, подключение urlpunct M2, in-repo
+data:-ридер M3) отложен под явное решение, не свёрнут молча.
+Статус: `ПРИНЯТО` (Транш A: apps/ai_gateway, notarius_ledger, validate_per_sign,
+COVERAGE_MAP, METHODOLOGY_R_G; test_apps_smoke.py) / `PENDING` (Транш B).
