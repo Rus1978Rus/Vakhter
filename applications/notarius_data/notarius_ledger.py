@@ -39,6 +39,12 @@ def _cplen(s):
 def _sign(secret, msg):
     return hmac.new(secret, msg.encode("utf-8"), hashlib.sha256).hexdigest()
 
+def _fields(*parts):
+    """Length-prefixed field join so a '|' inside an id/event cannot shift the
+    signed/hashed boundaries (the delimiter-injection class the core modules fixed
+    in AD-28/AD-30; applied here too so the MVP does not repeat the lesson)."""
+    return "\x1e".join(f"{len(p)}:{p}" for p in (str(x) for x in parts))
+
 
 # ---------- author side (holds the key) ----------
 def notarize(rec_id, record, author_key):
@@ -46,7 +52,7 @@ def notarize(rec_id, record, author_key):
     h = _hash(s)
     lineage, prev = [], "ROOT"
     for step in CONVEYOR:
-        sig = _sign(author_key, f"{rec_id}|{h}|{step}|{prev}")
+        sig = _sign(author_key, _fields(rec_id, h, step, prev))
         lineage.append({"step": step, "prev": prev, "sig": sig})
         prev = sig
     return {"id": rec_id, "record": record, "hash": h, "cp_len": _cplen(s), "lineage": lineage}
@@ -65,7 +71,7 @@ def verify(entry, author_key, manifest_ids):
         return "INVISIBLE_INSERT"
     prev = "ROOT"
     for st in entry["lineage"]:
-        good = _sign(author_key, f"{entry['id']}|{entry['hash']}|{st['step']}|{prev}")
+        good = _sign(author_key, _fields(entry["id"], entry["hash"], st["step"], prev))
         if st.get("prev") != prev or not hmac.compare_digest(good, st.get("sig", "")):
             return "FORGED_LINEAGE"
         prev = st["sig"]
@@ -79,19 +85,19 @@ def light_witness(entry):
 # ---------- append-only transparency log (hash-chained) ----------
 def log_new():
     g = {"seq": 0, "event": "GENESIS", "prev": "0" * 64}
-    g["hash"] = _hash(f"0|GENESIS|{g['prev']}")
+    g["hash"] = _hash(_fields(0, "GENESIS", g["prev"]))
     return [g]
 
 def log_append(log, event):
     prev = log[-1]
     e = {"seq": prev["seq"] + 1, "event": event, "prev": prev["hash"]}
-    e["hash"] = _hash(f"{e['seq']}|{event}|{e['prev']}")
+    e["hash"] = _hash(_fields(e["seq"], event, e["prev"]))
     log.append(e)
     return e
 
 def log_ok(log):
     for i, e in enumerate(log):
-        if e["hash"] != _hash(f"{e['seq']}|{e['event']}|{e['prev']}"):
+        if e["hash"] != _hash(_fields(e["seq"], e["event"], e["prev"])):
             return False, e["seq"]
         if i and e["prev"] != log[i - 1]["hash"]:
             return False, e["seq"]
