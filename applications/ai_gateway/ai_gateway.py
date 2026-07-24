@@ -22,12 +22,15 @@ HONEST SCOPE: this is the STRUCTURAL half — smuggled / encoded / invisible / l
 """
 import os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
-RANGE = os.path.abspath(os.path.join(HERE, "..", "range"))
+# the executable modules live in <repo>/code/... — this app is at
+# <repo>/applications/ai_gateway/, so go up TWO levels then into code/.
+CODE = os.path.abspath(os.path.join(HERE, "..", "..", "code"))
+RANGE = os.path.join(CODE, "range")
 for _c in ("canon", "canonicalization"):
-    _p = os.path.abspath(os.path.join(HERE, "..", _c))
+    _p = os.path.join(CODE, _c)
     if os.path.isdir(_p):
         sys.path.insert(0, _p); break
-sys.path.insert(0, os.path.abspath(os.path.join(HERE, "..", "invariant_engine")))
+sys.path.insert(0, os.path.join(CODE, "invariant_engine"))
 sys.path.insert(0, RANGE)
 
 from product import analyze          # THE GUARD: one call, never throws
