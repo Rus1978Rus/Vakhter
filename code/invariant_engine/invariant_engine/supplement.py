@@ -67,12 +67,31 @@ def _rank(f: Finding) -> float:
     return 2.0 if f.conclusive else 1.0 + f.strength
 
 
+def _severity(f: Finding):
+    """Deterministic severity/specificity key. Order-INDEPENDENT: conclusive and
+    signature-presence are in the key, so a conclusive or signatured finding wins
+    a rank tie regardless of argument position (combine(x,y) == combine(y,x))."""
+    return (_rank(f), f.conclusive, f.strength, bool(f.signature))
+
+
 def combine(f1: Finding, f2: Finding) -> Finding:
-    """Return the more severe of two findings; merge reasons if both fire."""
-    hi, lo = (f1, f2) if _rank(f1) >= _rank(f2) else (f2, f1)
-    if lo.label != "clean" and hi.label != "clean" and lo.reason != hi.reason:
-        return Finding(hi.label, hi.strength,
-                       f"{hi.reason} | + {lo.reason}",
-                       conclusive=hi.conclusive or lo.conclusive,
-                       signature=hi.signature)
-    return hi
+    """Return the more severe of two findings; merge reasons if both fire.
+
+    The integrator is MONOTONE — it must never LOWER a verdict:
+      - `conclusive` is the OR of both inputs, in EVERY branch (a hard verdict on
+        either side is never dropped — the earlier same-reason short-circuit
+        could, order-dependently, drop a losing finding's conclusive flag);
+      - tie-breaking is by severity/specificity, not argument order, so a
+        conclusive / more-specific finding is not masked behind a generic one
+        that merely came first among the readers.
+    """
+    hi, lo = (f1, f2) if _severity(f1) >= _severity(f2) else (f2, f1)
+    conclusive = f1.conclusive or f2.conclusive          # never drop a hard verdict
+    signature = hi.signature or (lo.signature if lo.label != "clean" else "")
+    both = lo.label != "clean" and hi.label != "clean"
+    reason = (f"{hi.reason} | + {lo.reason}"
+              if both and lo.reason != hi.reason else hi.reason)
+    if conclusive == hi.conclusive and signature == hi.signature and reason == hi.reason:
+        return hi                                        # unchanged — keep the object
+    return Finding(hi.label, hi.strength, reason,
+                   conclusive=conclusive, signature=signature)

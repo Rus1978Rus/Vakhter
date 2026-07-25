@@ -486,6 +486,32 @@ Status: `ADOPTED` (documented + locked; urlpunct NOT in _READERS) /
 `DEFERRED` (a userinfo branch that separates spoof from dotted-local email —
 needs a real scheme/host model, not the current heuristic).
 
+**AD-34 · combine() made monotone and order-independent — an integrator must never lower a verdict (M4).**
+Decision: supplement.combine() (the reader-merge integrator, a trusted-core
+component that CAN lower a verdict) had two measured defects, verified by PoC
+before the fix: (C1) when two findings shared a reason string and the LOSING
+one was conclusive while the winner was not, the same-reason short-circuit
+returned the winner and DROPPED conclusive True->False — a hard ALARM silently
+softened; (C2) that drop was order-dependent — combine(a,b) and combine(b,a)
+disagreed, so the verdict depended on the accidental order readers run in
+(MSL is first in _READERS, so it won ties); (C3) on a rank tie a specific,
+signatured finding was masked behind a generic one that merely came first. Fix:
+`conclusive` is now the OR of both inputs in EVERY branch (never dropped), and
+tie-breaking uses a deterministic severity/specificity key (_severity: rank,
+then conclusive, then strength, then signature-presence) instead of argument
+position, so combine is commutative and a conclusive/specific finding is never
+masked by a generic one. Rationale: the whole trust model rests on the
+integrator being MONOTONE — it may only ever RAISE severity when merging, never
+lower it, and it must not depend on reader order (which is an implementation
+detail, not a security judgement). This overturned the earlier "MSL wins ties"
+behaviour. Locked by test_combine_monotone (C1 no-drop, C2 commutativity, C3
+specific-signature-wins, and clean-never-raises).
+Rationale for doing this LAST of the tranche: it touches the trusted core that
+can lower verdicts, so it went in only after the additive/documentation changes,
+with a PoC first and a regression lock, under the "measure, don't declare" rule.
+Status: `ADOPTED` (code/invariant_engine/.../supplement.py combine/_severity;
+code/tests/test_combine_monotone.py).
+
 ---
 
 <a name="русский"></a>
@@ -955,3 +981,29 @@ at-userinfo спуфа) НАМЕРЕННО не добавлен в product._REA
 Статус: `ПРИНЯТО` (задокументировано + замок; urlpunct НЕ в _READERS) /
 `ОТЛОЖЕНО` (ветка userinfo, отделяющая спуф от почты с точкой в имени — нужна
 настоящая модель схемы/хоста, а не текущая эвристика).
+
+**AD-34 · combine() сделан монотонным и независимым от порядка — интегратор никогда не понижает вердикт (M4).**
+Решение: supplement.combine() (интегратор слияния ридеров, компонент доверенного
+ядра, который МОЖЕТ понижать вердикт) имел две измеренные дыры, проверенные
+PoC-ом до правки: (C1) когда у двух findings совпадала строка-причина, а
+ПРОИГРАВШИЙ был conclusive, победитель — нет, ветка short-circuit «одинаковая
+причина» возвращала победителя и РОНЯЛА conclusive True->False — жёсткий ALARM
+молча смягчался; (C2) это ронянье зависело от порядка — combine(a,b) и
+combine(b,a) расходились, то есть вердикт зависел от случайного порядка запуска
+ридеров (MSL первый в _READERS, поэтому выигрывал ничьи); (C3) при ничьей по
+рангу конкретный findings с сигнатурой прятался за общим, который просто шёл
+первым. Правка: `conclusive` теперь ИЛИ обоих входов ВО ВСЕХ ветках (никогда не
+роняется), а ничья разрешается детерминированным ключом строгости/конкретности
+(_severity: ранг, затем conclusive, затем strength, затем наличие сигнатуры)
+вместо позиции аргумента, поэтому combine коммутативен, а conclusive/конкретный
+findings никогда не маскируется общим. Обоснование: вся модель доверия держится
+на том, что интегратор МОНОТОНЕН — при слиянии он может только ПОВЫШАТЬ строгость,
+никогда не понижать, и не должен зависеть от порядка ридеров (это деталь
+реализации, а не решение о безопасности). Это перечеркнуло прежнее поведение
+«MSL выигрывает ничьи». Закреплено тестом test_combine_monotone (C1 без ронянья,
+C2 коммутативность, C3 конкретная сигнатура выигрывает, clean ничего не поднимает).
+Почему это делалось ПОСЛЕДНИМ в транше: правка трогает доверенное ядро, которое
+может понижать вердикты, поэтому вошла только после аддитивных/документационных
+изменений — с PoC вперёд и регресс-замком, по правилу «измеряй, а не объявляй».
+Статус: `ПРИНЯТО` (code/invariant_engine/.../supplement.py combine/_severity;
+code/tests/test_combine_monotone.py).
