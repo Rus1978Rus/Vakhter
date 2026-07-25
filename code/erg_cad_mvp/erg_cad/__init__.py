@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 from .detector import ERGDetector, Reading, Thresholds, rg_filter_pipeline
 from . import signals
 

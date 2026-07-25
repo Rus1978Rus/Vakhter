@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 COMPONENT CHECK #3 — stress each sign card ON ITS OWN.
 

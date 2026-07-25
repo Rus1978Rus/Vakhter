@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for Armenian homoglyph detection (confusable_cards :: ARM_TO_LAT), via
 the reader and the assembled guard.

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Coverage point #3 — invisible / bidi, before/after.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar cards

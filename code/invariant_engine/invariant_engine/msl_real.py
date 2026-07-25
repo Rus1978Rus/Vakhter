@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 REAL MSL adapter — bridges the invariant engine to the actual msl_mip runtime.
 

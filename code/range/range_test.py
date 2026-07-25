@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Empirical range test — drive many kinds of input through the FULL product:
     canonicalization pre-pass  ->  real MSL  ->  verdict

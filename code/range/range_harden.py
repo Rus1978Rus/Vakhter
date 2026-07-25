@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Hardening round — before/after for tomorrow's high-severity classes.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + invisible

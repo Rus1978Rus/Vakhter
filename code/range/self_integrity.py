@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 SELF-INTEGRITY REPORT — honest, never a fake green check (external conveyor,
 option B; recorded in AUTHOR_DECISIONS AD-32).

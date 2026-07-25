@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 CONTOUR TAIL — the three cards that complete the default-ignorable contour beyond
 the 138 format chars: Hangul fillers (Lo), script-bound ignorable marks (Mn:

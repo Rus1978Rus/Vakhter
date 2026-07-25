@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Invisible / bidi detector cards (SIMULATOR of drafts) — raises coverage point #3.
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 urlpunct deliberate-exclusion lock (external conveyor, M2; AD-33).
 

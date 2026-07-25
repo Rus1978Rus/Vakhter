@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 COMPONENT CHECK #5 — the malicious author (a legit signer embeds a threat).
 

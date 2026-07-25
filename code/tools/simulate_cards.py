@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Card simulator (phase 2) — run each per-sign card's RISK/SAFE cases through the
 live Vakhter detection prototypes and see which fire.

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the execution + Windows/UNC-path hardening checks
 (code/range/harden_cards.py :: _execution / _windows_path), reached through the

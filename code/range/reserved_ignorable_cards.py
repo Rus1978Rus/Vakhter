@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Reserved-ignorable detector card (SIMULATOR of a draft) — the SHOULD-NEVER-APPEAR
 blanket that closes the default-ignorable contour.

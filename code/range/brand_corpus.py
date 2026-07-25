@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 BRAND_CORPUS — one source of truth for "which brands do we protect", shared by
 the two brand-mimicry detectors so they cannot drift apart (cf. AD-13):

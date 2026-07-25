@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 ERG-FRAUD — anomaly detection by "does the spike survive coarse-graining?" (MVP).
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 COMPONENT CHECK #4 — a POISONED component (supply-chain). What if an attacker
 slips in a fake sign card, a fake integrator (combine), or a fake ERG?

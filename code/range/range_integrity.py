@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 COMPONENT CHECK #4b — demonstrate the integrity gate catching a poisoned component.
 

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 MSL role — structural readers (the 'nature' axis).
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 REAL demo — the invariant engine driven by the ACTUAL msl_mip runtime
 (no stub). Needs the msl_mip repo:  MSL_MIP_HOME=/path/to/msl_mip python demo_real.py

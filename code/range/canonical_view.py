@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 canonical_view — a parser-DESYNC detector (SIMULATOR of a draft).
 

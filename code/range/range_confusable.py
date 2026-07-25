@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 CONFUSABLE / HOMOGLYPH axis — visible-deception, before/after.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar (no cross-script sense)

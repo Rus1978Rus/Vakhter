@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for Cherokee homoglyph detection (confusable_cards, hard-mix branch).
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 ERG / context layer (SIMULATOR) — the "does the threat survive coarse-graining?"
 pass. MSL says what a SIGN is; ERG-context asks whether the FRAME around it

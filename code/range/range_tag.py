@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 TAG axis card, before/after — the invisible-ASCII-smuggle axis.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + invisible + bidi

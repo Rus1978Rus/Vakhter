@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Unit contract for the confusable / homoglyph detector (code/range/confusable_cards.py).
 

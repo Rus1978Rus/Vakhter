@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Hardening cards (SIMULATOR of drafts) — the "tomorrow's threats" round.
 

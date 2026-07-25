@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 URL-punctuation detector card (SIMULATOR of a draft) — visible structural
 punctuation used to deceive: the dot / slash / at / colon family.

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 STRESS TEST — attacks on the guard ITSELF (denial-of-service / exhaustion).
 Runs each abusive input through: self_defense front gate -> (if it passes) the

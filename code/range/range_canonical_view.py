@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 canonical_view axis — parser-DESYNC detection, before/after.
   BEFORE = the invisible/zero-width card alone (judges ONE string; alnum word-split)

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 COMPONENT CHECK #6 — m-of-n quorum + append-only transparency log.
 

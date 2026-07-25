@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the math-alphanumeric fold in the canonicalization pre-pass
 (code/canonicalization/canonicalize.py :: fold_math_alnum / canonicalize).

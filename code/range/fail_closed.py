@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 FAIL-CLOSED wrappers — a security guard must NEVER answer "OK" just because it
 crashed. If it cannot examine the input, the safe answer is HOLD/BLOCK, not PASS.

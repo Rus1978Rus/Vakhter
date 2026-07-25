@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 CLASS-138 coverage proof — self-derives the invisible-format contour and maps
 every member to the draft class card that owns it.

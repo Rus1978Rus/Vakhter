@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 SELF-DEFENSE for the analyzer — so the guard itself cannot be drowned.
 

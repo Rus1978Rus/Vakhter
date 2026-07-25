@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Digit-focused empirical run WITH before/after.
   BEFORE = canonicalize -> real MSL only

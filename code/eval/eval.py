@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Prompt-injection eval: MSL (real) vs keyword baseline vs combined.
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 PREPENDED / ENCLOSING-FORMAT axis card, before/after — the Cf-but-NOT-default-
 ignorable tail (outside 'class 138'): format chars that ACT on their scope.

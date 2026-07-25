@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Confusable / homoglyph detector card (SIMULATOR of a draft) — the VISIBLE-deception
 axis. First card that is NOT about invisibles: the danger here is a character you

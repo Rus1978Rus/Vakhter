@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 ERG role — survival testers (the 'reality' axis).
 

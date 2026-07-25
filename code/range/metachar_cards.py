@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Metacharacter detector cards (SIMULATOR of drafts) — closes coverage point #7.
 

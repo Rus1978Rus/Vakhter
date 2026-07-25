@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 PROVENANCE layer for the integrity gate — the Notarius idea, applied.
 

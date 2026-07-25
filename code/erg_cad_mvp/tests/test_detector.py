@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """pytest suite = ERG-CAD acceptance criteria A/B/C + security (API masking).
 
 Run:  pytest            (if pytest installed)

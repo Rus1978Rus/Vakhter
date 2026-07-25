@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Hangul-filler detector card (SIMULATOR of a draft) — invisible LETTER fillers.
 

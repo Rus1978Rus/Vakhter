@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Unit contract for the invisible / bidi detector (code/range/invisible_cards.py).
 

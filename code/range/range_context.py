@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 ERG / context layer — before/after, with a THREAT REGRESSION BATTERY.
   BEFORE = full pipeline (canon -> MSL + all drafted cards)

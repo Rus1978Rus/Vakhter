@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Tests for the REAL MSL adapter (needs the msl_mip repo).
 Run:  MSL_MIP_HOME=/path/to/msl_mip python tests/test_real.py

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 VARIATION-SELECTOR axis card, before/after — the Mn carrier axis.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + invisible + bidi + tag

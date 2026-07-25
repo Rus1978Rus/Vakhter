@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the visual-multigraph brand-mimicry check
 (code/range/digit_cards.py :: _visual_brand).

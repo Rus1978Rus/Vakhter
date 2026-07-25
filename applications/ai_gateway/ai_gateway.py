@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 AI-GATEWAY — how the guard embeds into an LLM app (integration sketch).
 

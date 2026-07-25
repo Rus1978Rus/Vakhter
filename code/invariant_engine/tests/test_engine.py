@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """One core, many substrates. Run: pytest  or  python tests/test_engine.py"""
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))

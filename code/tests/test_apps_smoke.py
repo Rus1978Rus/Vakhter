@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Smoke test for the applications/ demos — catches the "built but not connected"
 class of defect automatically (external audit H1: ai_gateway's import paths

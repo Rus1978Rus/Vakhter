@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the LDAP/NoSQL injection and short-form/zone SSRF checks closed after
 the adversarial sweep (metachar_cards :: _LDAP/_NOSQL; harden_cards :: _ip_advanced),

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Prepended / enclosing-format detector card (SIMULATOR of a draft).
 

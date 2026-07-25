@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Coverage point #7 — metacharacter attacks, before/after.
   BEFORE = canonicalize -> real MSL (+ supplement + digit cards)

@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """ERG-CAD demo — proves 'intensity != objectivity' on synthetic signals.
 
 Run:  python demo.py

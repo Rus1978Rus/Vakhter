@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Digit-card SIMULATOR — runs the drafted digit-card SURFACE logic as code.
 (The real cards are WORKING_DRAFT, not loaded into msl_mip; this exercises

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Unit contract for the variation-selector detector (code/range/vs_cards.py).
 

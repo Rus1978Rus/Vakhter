@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 APPEND-ONLY TRANSPARENCY LOG — every sign-off is public and tamper-evident.
 

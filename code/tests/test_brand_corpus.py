@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the shared brand corpus (code/range/brand_corpus.py) and its two
 consumers: the digit-leet detector (digit_cards) and the whole-script branch of

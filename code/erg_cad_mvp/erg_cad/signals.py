@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """Synthetic signal generators = the 'golden traces' test substrate.
 
 Grid convention: grid[t][n]  (time steps x sensor nodes), values in 0..1.

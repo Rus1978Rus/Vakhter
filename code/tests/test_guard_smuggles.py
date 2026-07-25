@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract that the guard (product.analyze) wires three invisible/format smuggle
 detectors that were previously absent from _READERS and that the guard therefore

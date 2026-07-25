@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 MONITORED-FORMAT axis card, before/after — the WITNESS tier.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + invisible + bidi + tag + vs + whitespace

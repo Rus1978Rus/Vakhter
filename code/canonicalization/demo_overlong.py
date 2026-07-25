@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Close the HIGH bands: overlong-UTF-8 evasion on the REAL MSL.
 Run:  MSL_MIP_HOME=/path/to/msl_mip  python demo_overlong.py

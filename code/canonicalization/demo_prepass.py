@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Show the double bottom on the REAL MSL:
   raw (digit-encoded)  -> MSL misses (bypass)

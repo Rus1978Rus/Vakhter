@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """One engine, four substrates. Run: python demo.py  (also self-verifies)."""
 
 from invariant_engine import InvariantEngine, msl, erg

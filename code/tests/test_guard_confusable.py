@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract that the assembled guard (code/range/product.py :: analyze) actually
 WIRES the rich confusable detector — not just the light dot-gated Cyrillic check

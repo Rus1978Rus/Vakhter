@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Structural supplement — engine-layer checks that COMPLEMENT the real MSL.
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Bidi-axis detector card (SIMULATOR of a draft) — the DIRECTIONAL-CONTROL axis.
 

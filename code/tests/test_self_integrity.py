@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Self-integrity honest-report contract (external conveyor, option B; AD-32).
 

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Bidi AXIS card, before/after — the directional-control (logical!=visual) axis.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + invisible

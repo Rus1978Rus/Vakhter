@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 URL-PUNCTUATION axis — visible structural-punctuation deception, before/after.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + confusable

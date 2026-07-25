@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 CANONICALIZATION_PRE_PASS v0.2 — closes the whole %XX space.
 

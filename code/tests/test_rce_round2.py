@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the round-2 injection/RCE coverage (metachar._SQL stacked queries;
 harden._rce_misc: deserialization / SSRF schemes / prototype pollution), via the

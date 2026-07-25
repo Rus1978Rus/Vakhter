@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 Contract for the non-ASCII dot/slash domain-separator branch in the confusable
 detector (code/range/confusable_cards.py :: NASCII_DOT / NASCII_SLASH).

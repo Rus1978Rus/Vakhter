@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 TAG-block detector card (SIMULATOR of a draft) — the INVISIBLE-ASCII-SMUGGLE axis.
 

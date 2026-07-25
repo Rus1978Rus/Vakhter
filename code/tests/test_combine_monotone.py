@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 combine() monotonicity + order-independence lock (external conveyor, M4; AD-34).
 

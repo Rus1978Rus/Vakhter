@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 coverage_lock.py — regression lock for the homoglyph front.
 

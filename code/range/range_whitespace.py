@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 WHITESPACE axis card, before/after — space-lookalikes by real vector.
   BEFORE = canonicalize -> real MSL + supplement + digit + metachar + invisible + bidi + tag + vs

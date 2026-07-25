@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 ERG-CAD · Objective Anomaly Detector — runnable MVP of the core node.
 

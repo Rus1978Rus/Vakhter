@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: LicenseRef-Proprietary
 """
 NOTARIUS-DATA — a lightweight provenance ledger for DATA RECORDS (MVP sketch).
 
