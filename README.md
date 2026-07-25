@@ -124,5 +124,13 @@ sign_cards/            — черновые карточки знаков (0–9
 
 ## License / Лицензия
 
-Private authorial project. Commercial use prohibited.
-Частный авторский проект. Коммерческое использование запрещено.
+**PROPRIETARY — ALL RIGHTS RESERVED.** See [LICENSE](LICENSE) for the full
+bilingual terms. Public for viewing only; no use, copying, modification, or
+distribution without the prior written permission of the copyright holder.
+
+**ПРОПРИЕТАРНАЯ — ВСЕ ПРАВА ЗАЩИЩЕНЫ.** Полные двуязычные условия — в файле
+[LICENSE](LICENSE). Открыто только для просмотра; без предварительного
+письменного разрешения правообладателя запрещено использование, копирование,
+изменение и распространение.
+
+Copyright (c) 2026 Руслан Малявский (Ruslan Malyavskiy).

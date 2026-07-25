@@ -1,1 +1,10 @@
-MIT-like private terms: see README. COMMERCIAL USE PROHIBITED.
+PROPRIETARY — ALL RIGHTS RESERVED. See LICENSE.
+No use, copying, modification, or distribution without prior written
+permission of the copyright holder. Public for viewing only.
+
+ПРОПРИЕТАРНАЯ ЛИЦЕНЗИЯ — ВСЕ ПРАВА ЗАЩИЩЕНЫ. См. LICENSE.
+Без предварительного письменного разрешения правообладателя запрещено
+использование, копирование, изменение и распространение. Открыто только
+для просмотра.
+
+Copyright (c) 2026 Руслан Малявский (Ruslan Malyavskiy).
