@@ -463,6 +463,29 @@ Status: `ADOPTED` (option B: code/range/self_integrity.py, wired in product.py;
 code/tests/test_self_integrity.py) / `DEFERRED` (option A: read-only mount +
 offline Ed25519 anchor — the genuine proof, gated on deploy-side read-only mount).
 
+**AD-33 · urlpunct stays OUT of the production guard — measured FP on dotted-local emails (M2).**
+Decision: the built urlpunct detector (dot/slash/at/colon look-alikes + an
+at-userinfo spoof branch) is DELIBERATELY not added to product._READERS. The
+external conveyor's M2 finding was verified by measurement, not assumed:
+urlpunct's at-userinfo branch cannot structurally distinguish a spoof
+(`paypal.com@evil.ru`) from an ordinary email whose local part contains a dot
+(`john.smith@company.com`) — both are "dotted-token@domain", both come back
+`suspect`. In the always-on guard that flags every `first.last@` corporate
+address — a fatal false-positive rate. The dot/slash/colon look-alike branch is
+well-behaved (CJK `。` prose and dotted-local emails stay clean), but the card
+ships as one reader, so the whole card stays out until the userinfo-vs-email
+ambiguity is solved. This overturned my own earlier instinct to wire it.
+Rationale: a guard that cries wolf on normal email trains its operator to ignore
+it — a false positive on the common case is worse than a miss on the rare spoof,
+which other layers (confusable/canonicalize on look-alike delimiters) still see.
+The exclusion is not silent: a comment at the _READERS site, a note in the card,
+and a LOCK test (test_urlpunct_not_wired) that goes red if urlpunct is ever wired
+and re-flags a normal dotted email. urlpunct remains a standalone research
+harness (range_urlpunct.py).
+Status: `ADOPTED` (documented + locked; urlpunct NOT in _READERS) /
+`DEFERRED` (a userinfo branch that separates spoof from dotted-local email —
+needs a real scheme/host model, not the current heuristic).
+
 ---
 
 <a name="русский"></a>
@@ -908,3 +931,27 @@ pubkey/HMAC, соседняя manifest-константа), здесь отве�
 Статус: `ПРИНЯТО` (вариант B: code/range/self_integrity.py, подключён в product.py;
 code/tests/test_self_integrity.py) / `ОТЛОЖЕНО` (вариант A: read-only монтирование +
 офлайн Ed25519-якорь — подлинное доказательство, зависит от read-only диска на деплое).
+
+**AD-33 · urlpunct остаётся ВНЕ боевого охранника — измеренный ложняк на почте с точкой в имени (M2).**
+Решение: построенный детектор urlpunct (двойники точки/слэша/at/двоеточия + ветка
+at-userinfo спуфа) НАМЕРЕННО не добавлен в product._READERS. Находка M2 внешнего
+конвейера проверена измерением, а не принята на веру: ветка at-userinfo
+структурно не может отличить спуф (`paypal.com@evil.ru`) от обычной почты, у
+которой в локальной части есть точка (`john.smith@company.com`) — оба это
+«токен-с-точкой@домен», оба возвращают `suspect`. В always-on охраннике это метит
+каждый корпоративный адрес вида `first.last@` — фатальная доля ложных
+срабатываний. Ветка look-alike точки/слэша/двоеточия ведёт себя корректно
+(японская проза с `。` и почта с точкой в имени остаются чистыми), но карточка
+поставляется одним ридером, поэтому вся она остаётся снаружи, пока не решена
+неоднозначность userinfo-против-почты. Это перечеркнуло мой собственный ранний
+порыв её подключить.
+Обоснование: охранник, кричащий «волк» на обычную почту, приучает оператора его
+игнорировать — ложняк на частом случае хуже пропуска на редком спуфе, который
+другие слои (confusable/canonicalize на двойниках-разделителях) всё равно видят.
+Исключение не молчаливо: комментарий у места _READERS, заметка в карточке и
+ТЕСТ-ЗАМОК (test_urlpunct_not_wired), который краснеет, если urlpunct когда-либо
+подключат и он снова пометит нормальную почту с точкой. urlpunct остаётся
+отдельным исследовательским стендом (range_urlpunct.py).
+Статус: `ПРИНЯТО` (задокументировано + замок; urlpunct НЕ в _READERS) /
+`ОТЛОЖЕНО` (ветка userinfo, отделяющая спуф от почты с точкой в имени — нужна
+настоящая модель схемы/хоста, а не текущая эвристика).

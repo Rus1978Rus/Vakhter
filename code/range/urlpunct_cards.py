@@ -23,6 +23,16 @@ Two mechanism branches:
 The ASCII dot is the shared pivot with the (future) numeric/IP card — this card
 owns the dot FAMILY (ASCII + look-alikes); the numeric card will reuse the ASCII
 dot for IPv4-like segmentation.
+
+NOT WIRED INTO THE PRODUCTION GUARD (product.py). Reason, MEASURED not assumed:
+the AT-USERINFO branch cannot structurally distinguish a spoof
+(`paypal.com@evil.ru`) from an ordinary email whose local part contains a dot
+(`john.smith@company.com`) — both are "dotted-token@domain". In the always-on
+guard that flags every `first.last@` corporate address. The dot/slash/colon
+look-alike branch is safe (CJK `。` prose and dotted-local emails both stay
+clean), but the card ships as one reader, so the whole card stays out until the
+userinfo-vs-email ambiguity is solved. This module remains a standalone research
+harness (range_urlpunct.py). See AUTHOR_DECISIONS AD-33.
 """
 from invariant_engine.core import Finding
 

@@ -48,6 +48,14 @@ _READERS = [("msl", real_text_reader), ("supplement", supplement_reader),
             ("hangul_filler", hangul_filler_cards_reader),
             ("prepended_format", prepended_format_cards_reader)]
 
+# DELIBERATELY NOT WIRED: urlpunct_cards_reader (range_urlpunct.py). Its
+# at-userinfo branch structurally cannot tell a spoof (paypal.com@evil.ru) from
+# an ordinary dotted-local-part email (john.smith@company.com) — both are
+# "dotted-token@domain" — so in the always-on guard it flags every first.last@
+# corporate address (MEASURED, not assumed; see AD-33 and test_urlpunct_not_wired).
+# It stays a standalone research harness. Do not add it here without first
+# solving the userinfo-vs-email ambiguity; the lock test will go red if you do.
+
 
 def _core(text):
     gate = integrity_gate()           # honest fail-closed: refuse if integrity
