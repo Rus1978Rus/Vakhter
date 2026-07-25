@@ -437,6 +437,32 @@ for an explicit decision, not folded in silently.
 Status: `ADOPTED` (Tranche A: apps/ai_gateway, notarius_ledger, validate_per_sign,
 COVERAGE_MAP, METHODOLOGY_R_G; test_apps_smoke.py) / `PENDING` (Tranche B).
 
+**AD-32 · Self-integrity: honest fail-closed self-report, never a fake green check (option B).**
+Decision: an external "find the cheap real fix" conveyor established that pure
+in-process Python CANNOT prove its own code is intact — an attacker who can
+rewrite the code directory rewrites the checker and any co-located manifest too
+(the self-hash tautology; integrity.py's manifest-vs-hash is exactly this shape
+and is thereby demoted from "proof" to "library"). The cheapest GENUINE fix is
+an out-of-process anchor: a read-only mount + an offline Ed25519 signature
+(verify-only is feasible in pure stdlib, no C crypto lib) — but the load-bearing
+part is the mount being truly read-only at deploy, not any Python. That is held
+as future work (option A). Shipped now is option B: self_integrity.py, a self-
+report that NEVER lies. integrity_status() returns 'unverified' by default (no
+out-of-process anchor in this build) — never a fabricated 'verified'; a merely-
+named anchor is not accepted as proof. Opt-in strict mode
+(VAKHTER_REQUIRE_INTEGRITY=1) makes analyze() REFUSE TO SERVE — a conclusive
+block on every call, even benign input — when integrity is demanded but unproven,
+via integrity_gate() at the top of _core (inside the fail-closed envelope).
+Rationale: honest "I cannot prove myself" beats a green check that lies. The
+three theatre patterns the conveyor named (self-hash, co-located pubkey/HMAC,
+co-located manifest constant) are all rejected here by construction — status is
+truthful about the deployed anchor or it says 'unverified'. Real proven
+integrity waits for the read-only mount (option A), recorded so it is not
+mistaken for done.
+Status: `ADOPTED` (option B: code/range/self_integrity.py, wired in product.py;
+code/tests/test_self_integrity.py) / `DEFERRED` (option A: read-only mount +
+offline Ed25519 anchor — the genuine proof, gated on deploy-side read-only mount).
+
 ---
 
 <a name="русский"></a>
@@ -855,3 +881,30 @@ ERG combine-vs-контракт M4, обязательный integrity 4.2, по
 data:-ридер M3) отложен под явное решение, не свёрнут молча.
 Статус: `ПРИНЯТО` (Транш A: apps/ai_gateway, notarius_ledger, validate_per_sign,
 COVERAGE_MAP, METHODOLOGY_R_G; test_apps_smoke.py) / `PENDING` (Транш B).
+
+**AD-32 · Само-целостность: честный fail-closed self-report, без фальшивой зелёной галочки (вариант B).**
+Решение: внешний конвейер «найди дешёвое настоящее решение» установил, что
+чистый in-process Python НЕ может доказать целостность собственного кода — тот,
+кто переписал папку с кодом, перепишет и проверяльщик, и лежащий рядом манифест
+(само-хеш тавтология; манифест-против-хеша из integrity.py — ровно эта форма, и
+потому понижен из «доказательства» в «библиотеку»). Самый дешёвый ПОДЛИННЫЙ фикс —
+внешний якорь: read-only монтирование + офлайн-подпись Ed25519 (только проверка
+осуществима на чистой stdlib, без C-крипто-библиотеки), но несущая часть — чтобы
+диск был по-настоящему только-для-чтения на деплое, а не какой-либо Python. Это
+отложено как будущая работа (вариант A). Сейчас поставляется вариант B:
+self_integrity.py — self-report, который НИКОГДА не врёт. integrity_status()
+по умолчанию возвращает 'unverified' (внешнего якоря в этой сборке нет) — никогда
+выдуманного 'verified'; просто-названный якорь не принимается за доказательство.
+Опциональный строгий режим (VAKHTER_REQUIRE_INTEGRITY=1) заставляет analyze()
+ОТКАЗАТЬСЯ ОБСЛУЖИВАТЬ — конклюзивный блок на каждом вызове, даже на безобидном
+вводе — когда целостность требуется, но не доказана, через integrity_gate() в
+начале _core (внутри fail-closed конверта).
+Обоснование: честное «я не могу себя доказать» лучше зелёной галочки, которая
+врёт. Три «театральных» паттерна, названные конвейером (само-хеш, соседний
+pubkey/HMAC, соседняя manifest-константа), здесь отвергнуты по построению — статус
+либо правдив о задеплоенном якоре, либо говорит 'unverified'. Настоящая
+доказанная целостность ждёт read-only монтирования (вариант A) — записано, чтобы
+не приняли за сделанное.
+Статус: `ПРИНЯТО` (вариант B: code/range/self_integrity.py, подключён в product.py;
+code/tests/test_self_integrity.py) / `ОТЛОЖЕНО` (вариант A: read-only монтирование +
+офлайн Ed25519-якорь — подлинное доказательство, зависит от read-only диска на деплое).

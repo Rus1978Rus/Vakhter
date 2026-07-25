@@ -38,6 +38,7 @@ from prepended_format_cards import prepended_format_cards_reader
 from erg_context import erg_context
 from guard import self_defense
 from fail_closed import safe_reader, safe_analyze
+from self_integrity import integrity_gate
 
 _READERS = [("msl", real_text_reader), ("supplement", supplement_reader),
             ("digit", digit_cards_reader), ("metachar", metachar_cards_reader),
@@ -49,6 +50,9 @@ _READERS = [("msl", real_text_reader), ("supplement", supplement_reader),
 
 
 def _core(text):
+    gate = integrity_gate()           # honest fail-closed: refuse if integrity
+    if gate is not None:              # is demanded (strict mode) but unproven —
+        return gate                  # no fake green check (AD-32, option B)
     early = self_defense(text)
     if early is not None:
         return early
