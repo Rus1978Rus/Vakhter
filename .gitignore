@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .DS_Store
 *.zip
+# packaging / build artifacts
+*.egg-info/
+build/
+dist/
+.eggs/

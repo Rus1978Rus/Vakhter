@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vakhter"
+version = "0.1.0"
+description = "Autonomous structural security guard for LLM inputs — homoglyphs, invisibles, encoding carriers, look-alike domains, injection / RCE / data:-URI structure. Zero dependencies."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Proprietary — all rights reserved. See LICENSE." }
+authors = [{ name = "Ruslan Malyavskiy" }]
+keywords = ["security", "llm", "prompt-injection", "homoglyph", "unicode", "guard"]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/Rus1978Rus/Vakhter"
+
+[project.scripts]
+vakhter = "vakhter.__main__:main"
+
+[tool.setuptools]
+# Thin public-API package. The autonomous guard lives under code/; an editable
+# install (pip install -e .) keeps it in place so the path wiring in
+# vakhter/__init__.py resolves. See README "Install".
+packages = ["vakhter"]

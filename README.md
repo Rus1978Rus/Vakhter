@@ -23,17 +23,54 @@ Everything here rests on one idea the whole project turns on:
 
 One engine, two axes, many substrates: **MSL** reads what a *sign does in context* (invariance across substrate); **ERG** asks whether that structure *survives coarse-graining* (invariance across scale/time). A signal, a text, a prompt, or code are just adapters onto the same core, with a canonicalization pass that peels encoding tricks before the reading.
 
+### Quickstart
+
+Vakhter is **autonomous** — pure Python standard library, **zero third-party dependencies**.
+
+```bash
+git clone https://github.com/Rus1978Rus/Vakhter
+cd Vakhter
+pip install -e .
+```
+
+As a library — one call:
+
+```python
+from vakhter import analyze
+
+finding = analyze("paypal.com login")   # any untrusted text
+blocked = finding.label != "clean"       # act on this
+print(finding.label, finding.signature, finding.reason)
+```
+
+`finding.label` is `"clean"` or `"suspect"`; `finding.signature` is a stable key for the catch (e.g. `data_uri_exec`, `mixed_script_confusable`); `finding.reason` is a human explanation. The guard **never throws** — bad input or an internal error becomes a *blocking* verdict, never a silent pass.
+
+From the shell (exits non-zero when blocked, so it composes in pipelines):
+
+```bash
+vakhter "gοοgle.com"                 # → BLOCK  suspect  mixed_script_confusable
+echo "just a normal sentence" | vakhter   # → CLEAN  clean  -
+```
+
+**MSL/MIP is optional.** The guard runs fully on its own detectors. To add the external MSL engine as extra reinforcement, set `MSL_MIP_HOME` to an `msl_mip` repo; without it, Vakhter is fully autonomous.
+
+Run the test suite (no pytest required):
+
+```bash
+python code/tests/run_tests.py       # 126 tests, all green, MSL not needed
+```
+
 ### What runs (executable code)
 
 | Module | What it does | Status |
 |---|---|---|
-| `code/invariant_engine/` | the core + adapters, with the **real MSL** wired in | ✅ 11/11 + 8/8 tests |
-| `code/range/` | the assembled guard (`product.py`), detector cards, self-defense, and supply-chain gates | ✅ runs on real MSL |
-| `code/canonicalization/` | encoding pre-pass: percent / HTML-entity / escapes / **overlong UTF-8** | ✅ proven on MSL |
+| `code/invariant_engine/` | the core + adapters; MSL wired in as an **optional** reinforcing reader | ✅ 11/11 + 8/8 tests |
+| `code/range/` | the assembled guard (`product.py`), detector cards, self-defense, and supply-chain gates | ✅ autonomous (126 tests) |
+| `code/canonicalization/` | encoding pre-pass: percent / HTML-entity / escapes / **overlong UTF-8** | ✅ tested |
 | `code/erg_cad_mvp/` | the ERG detector ("intensity ≠ objectivity") | ✅ 6/6 tests |
 | `code/eval/` | a prompt-injection eval (MSL vs keyword baseline) | ✅ indicative |
 
-The real MSL runtime lives in a separate repository; the adapter *locates* it via `MSL_MIP_HOME` rather than copying it. Coverage, measured before/after per category, is in [`COVERAGE_MAP.md`](COVERAGE_MAP.md).
+MSL/MIP is an **optional** relative, not a dependency: the adapter *locates* it via `MSL_MIP_HOME` and adds it as an extra reinforcing reader. Without it the guard runs fully autonomously on its own cards. Coverage, measured before/after per category, is in [`COVERAGE_MAP.md`](COVERAGE_MAP.md).
 
 ### The three applications
 
@@ -78,13 +115,50 @@ Vakhter — это **турникет безопасности для прило
 
 Один движок, две оси, много подложек: **MSL** читает, *что знак делает в контексте* (инвариантность к подложке); **ERG** спрашивает, *переживёт ли структура огрубление* (инвариантность к масштабу/времени). Сигнал, текст, промпт или код — просто адаптеры на одно ядро, плюс слой канонизации, снимающий кодировочные обёртки до чтения.
 
+### Быстрый старт
+
+Vakhter **автономен** — чистая стандартная библиотека Python, **ноль сторонних зависимостей**.
+
+```bash
+git clone https://github.com/Rus1978Rus/Vakhter
+cd Vakhter
+pip install -e .
+```
+
+Как библиотека — один вызов:
+
+```python
+from vakhter import analyze
+
+finding = analyze("paypal.com login")   # любой недоверенный текст
+blocked = finding.label != "clean"       # на это и реагируем
+print(finding.label, finding.signature, finding.reason)
+```
+
+`finding.label` — `"clean"` или `"suspect"`; `finding.signature` — устойчивый ключ срабатывания (например `data_uri_exec`, `mixed_script_confusable`); `finding.reason` — объяснение по-человечески. Охранник **никогда не бросает исключение** — плохой ввод или внутренняя ошибка становятся *блокирующим* вердиктом, а не молчаливым пропуском.
+
+Из консоли (ненулевой код выхода при блоке — удобно в пайплайнах):
+
+```bash
+vakhter "gοοgle.com"                 # → BLOCK  suspect  mixed_script_confusable
+echo "обычное предложение" | vakhter      # → CLEAN  clean  -
+```
+
+**MSL/MIP — опционален.** Охранник работает полностью на своих детекторах. Чтобы добавить внешний движок MSL как усиление, задайте `MSL_MIP_HOME` с путём к репозиторию `msl_mip`; без него Vakhter полностью автономен.
+
+Прогон тестов (pytest не нужен):
+
+```bash
+python code/tests/run_tests.py       # 126 тестов, все зелёные, MSL не требуется
+```
+
 ### Что работает (запускаемый код)
 
 | Модуль | Что делает | Статус |
 |---|---|---|
-| `code/invariant_engine/` | ядро + адаптеры, встроен **настоящий MSL** | ✅ 11/11 + 8/8 тестов |
-| `code/range/` | собранный вахтёр (`product.py`), карточки-детекторы, самозащита, воротца цепочки поставки | ✅ бежит на настоящем MSL |
-| `code/canonicalization/` | pre-pass кодировок: percent / HTML-entity / escapes / **overlong-UTF-8** | ✅ доказано на MSL |
+| `code/invariant_engine/` | ядро + адаптеры; MSL подключён как **опциональный** усиливающий ридер | ✅ 11/11 + 8/8 тестов |
+| `code/range/` | собранный вахтёр (`product.py`), карточки-детекторы, самозащита, воротца цепочки поставки | ✅ автономен (126 тестов) |
+| `code/canonicalization/` | pre-pass кодировок: percent / HTML-entity / escapes / **overlong-UTF-8** | ✅ протестировано |
 | `code/erg_cad_mvp/` | ERG-детектор («интенсивность ≠ объективность») | ✅ 6/6 тестов |
 | `code/eval/` | eval prompt-injection (MSL против keyword) | ✅ индикативно |
 
