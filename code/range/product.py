@@ -26,7 +26,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(_HERE, "..", "invariant_engine")
 sys.path.insert(0, _HERE)
 
 from canonicalize import canonicalize
-from invariant_engine.msl_real import real_text_reader
 from invariant_engine.supplement import supplement_reader, combine
 from digit_cards import digit_cards_reader
 from metachar_cards import metachar_cards_reader
@@ -36,18 +35,42 @@ from confusable_cards import confusable_cards_reader
 from whitespace_cards import whitespace_cards_reader
 from hangul_filler_cards import hangul_filler_cards_reader
 from prepended_format_cards import prepended_format_cards_reader
+from data_uri_cards import data_uri_cards_reader
 from erg_context import erg_context
 from guard import self_defense
 from fail_closed import safe_reader, safe_analyze
 from self_integrity import integrity_gate
 
-_READERS = [("msl", real_text_reader), ("supplement", supplement_reader),
-            ("digit", digit_cards_reader), ("metachar", metachar_cards_reader),
-            ("invisible", invisible_cards_reader), ("harden", harden_cards_reader),
-            ("confusable", confusable_cards_reader),
-            ("whitespace", whitespace_cards_reader),
-            ("hangul_filler", hangul_filler_cards_reader),
-            ("prepended_format", prepended_format_cards_reader)]
+# Vakhter is AUTONOMOUS. These nine card detectors stand entirely on their own
+# with zero third-party dependencies (pure stdlib) — a deployment needs nothing
+# else to run the guard.
+_CARD_READERS = [("supplement", supplement_reader),
+                 ("digit", digit_cards_reader), ("metachar", metachar_cards_reader),
+                 ("invisible", invisible_cards_reader), ("harden", harden_cards_reader),
+                 ("confusable", confusable_cards_reader),
+                 ("whitespace", whitespace_cards_reader),
+                 ("hangul_filler", hangul_filler_cards_reader),
+                 ("prepended_format", prepended_format_cards_reader),
+                 ("data_uri", data_uri_cards_reader)]
+
+
+def _build_readers():
+    """MSL/MIP is a RELATIVE, not a dependency. The card detectors above are the
+    autonomous guard. The external MSL engine is added as an EXTRA reinforcing
+    reader ONLY when the operator explicitly points at it via MSL_MIP_HOME — it is
+    never auto-probed. Without it the guard runs fully on the cards (returns clean
+    on clean input); it does NOT degrade every input to WATCH for a missing engine."""
+    readers = list(_CARD_READERS)
+    if os.environ.get("MSL_MIP_HOME"):
+        try:
+            from invariant_engine.msl_real import real_text_reader
+            readers.insert(0, ("msl", real_text_reader))
+        except Exception:
+            pass                       # MSL opt-in but unavailable -> stay autonomous
+    return readers
+
+
+_READERS = _build_readers()
 
 # DELIBERATELY NOT WIRED: urlpunct_cards_reader (range_urlpunct.py). Its
 # at-userinfo branch structurally cannot tell a spoof (paypal.com@evil.ru) from

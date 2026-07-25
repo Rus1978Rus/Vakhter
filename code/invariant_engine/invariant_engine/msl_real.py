@@ -34,20 +34,15 @@ WITNESS_CONCLUSIVE = False
 
 
 def _locate_repo():
-    cands = []
-    if os.environ.get("MSL_MIP_HOME"):
-        cands.append(os.environ["MSL_MIP_HOME"])
-    # walk up from cwd looking for the runtime
-    d = os.getcwd()
-    for _ in range(6):
-        cands.append(d)
-        d = os.path.dirname(d)
-    cands.append("/home/user/msl_mip")
-    for c in cands:
-        if c and os.path.exists(os.path.join(c, "msl_mip_runtime.py")):
-            return c
+    # MSL is an OPTIONAL relative, wired in only when the operator explicitly asks
+    # for it. No hidden path probing (no baked-in absolute path, no cwd walk) so an
+    # autonomous deployment never silently reaches into a machine-specific tree.
+    home = os.environ.get("MSL_MIP_HOME")
+    if home and os.path.exists(os.path.join(home, "msl_mip_runtime.py")):
+        return home
     raise ImportError(
-        "msl_mip_runtime.py not found. Set MSL_MIP_HOME to the msl_mip repo path.")
+        "msl_mip_runtime.py not found. MSL is optional; set MSL_MIP_HOME to an "
+        "msl_mip repo to enable it. Vakhter runs autonomously without it.")
 
 
 def _boot():

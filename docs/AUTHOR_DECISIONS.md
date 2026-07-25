@@ -512,6 +512,34 @@ with a PoC first and a regression lock, under the "measure, don't declare" rule.
 Status: `ADOPTED` (code/invariant_engine/.../supplement.py combine/_severity;
 code/tests/test_combine_monotone.py).
 
+**AD-35 · Vakhter is AUTONOMOUS: MSL is an optional relative, and the data: URI gap it exposed is closed (M3).**
+Decision: MSL/MIP is a relative, not a dependency. The guard now runs entirely on
+its own card detectors (zero third-party deps); the external MSL engine is added
+as an EXTRA reinforcing reader ONLY when the operator explicitly sets MSL_MIP_HOME.
+Two coupling bugs were removed: (a) real_text_reader sat in the default _READERS,
+so with MSL absent safe_reader returned WATCH on EVERY input — a missing OPTIONAL
+engine degraded every verdict; _READERS is now built card-first and prepends MSL
+only when opted in. (b) msl_real._locate_repo had a baked-in absolute path
+(/home/user/msl_mip) and a cwd walk, so it silently reached into a machine-
+specific tree; now it honours MSL_MIP_HOME only — no hidden probing. Running the
+suite autonomously then MEASURED the real autonomy gap: the "data: URI in an
+upload" attack (data:text/html;base64,<script>…>) was caught ONLY by MSL and
+passed without it. Closed with a new autonomous card, data_uri_cards: (1) an
+executable/markup mediatype (text/html, image/svg+xml, application/javascript,
+application/x-*) is a smuggle regardless of payload -> ALARM, no decode; (2) a
+bounded magic sniff of a base64 payload catches a mislabeled dropper
+(data:image/png;base64,<a PE>) via <script/<svg/MZ/ELF/#! head bytes — NOT the
+conveyor's rejected decode-and-rescan (which escalates benign inline images and
+still misses binary droppers). Benign inline images (real PNG \x89PNG, JPEG
+\xFF\xD8), text/plain, fonts, audio/video stay clean.
+Rationale: "we are relatives but must be autonomous" — a guard that only works
+when its relative is installed is not a shippable prototype. Autonomy is now
+enforced by MEASUREMENT (the whole suite passes with MSL absent), and the one gap
+that measurement exposed is closed by a card, not by re-coupling to MSL.
+Status: `ADOPTED` (product.py _build_readers card-first; msl_real._locate_repo
+env-only; code/range/data_uri_cards.py; code/tests/test_data_uri.py). MSL stays
+supported as opt-in reinforcement via MSL_MIP_HOME.
+
 ---
 
 <a name="русский"></a>
@@ -1007,3 +1035,31 @@ C2 коммутативность, C3 конкретная сигнатура в
 изменений — с PoC вперёд и регресс-замком, по правилу «измеряй, а не объявляй».
 Статус: `ПРИНЯТО` (code/invariant_engine/.../supplement.py combine/_severity;
 code/tests/test_combine_monotone.py).
+
+**AD-35 · Vakhter АВТОНОМЕН: MSL — опциональный родственник, а вскрытую им брешь data: URI закрыли (M3).**
+Решение: MSL/MIP — родственник, а не зависимость. Охранник теперь работает
+полностью на своих карточных детекторах (0 сторонних зависимостей); внешний
+движок MSL добавляется ДОПОЛНИТЕЛЬНЫМ усиливающим ридером ТОЛЬКО когда оператор
+явно задал MSL_MIP_HOME. Убраны две связки: (a) real_text_reader стоял в дефолтном
+_READERS, поэтому без MSL safe_reader возвращал WATCH на КАЖДЫЙ ввод — отсутствие
+ОПЦИОНАЛЬНОГО движка понижало любой вердикт; теперь _READERS строится «карточки
+сначала» и добавляет MSL спереди только при опте. (b) msl_real._locate_repo имел
+захардкоженный абсолютный путь (/home/user/msl_mip) и обход cwd — молча лез в
+машинно-специфичное дерево; теперь чтит только MSL_MIP_HOME, без скрытого
+зондирования. Автономный прогон затем ИЗМЕРИЛ реальную брешь: атака «data: URI в
+загрузке» (data:text/html;base64,<script>…>) ловилась ТОЛЬКО движком MSL и без
+него проходила. Закрыто новой автономной картой data_uri_cards: (1) исполняемый/
+markup mediatype (text/html, image/svg+xml, application/javascript, application/x-*)
+— смуглинг независимо от содержимого -> ALARM, без декодирования; (2) ограниченный
+magic-sniff base64-payload ловит mislabeled-дроппер (data:image/png;base64,<PE>)
+по head-байтам <script/<svg/MZ/ELF/#! — это НЕ отвергнутый конвейером «декодируй
+и пере-сканируй» (который раздувает безобидные inline-картинки и всё равно
+пропускает бинарные дропперы). Безобидные inline-картинки (реальный PNG \x89PNG,
+JPEG \xFF\xD8), text/plain, шрифты, audio/video остаются чистыми.
+Обоснование: «мы родственники, но должны быть автономны» — охранник, работающий
+лишь при установленном родственнике, не является поставляемым прототипом.
+Автономность теперь закреплена ИЗМЕРЕНИЕМ (весь набор проходит без MSL), а
+единственная вскрытая измерением брешь закрыта картой, а не пере-связкой с MSL.
+Статус: `ПРИНЯТО` (product.py _build_readers карточки-сначала; msl_real._locate_repo
+только env; code/range/data_uri_cards.py; code/tests/test_data_uri.py). MSL
+поддерживается как опт-ин усиление через MSL_MIP_HOME.
