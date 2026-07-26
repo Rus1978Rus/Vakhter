@@ -26,17 +26,28 @@ import hashlib
 import json
 import os
 
-_HERE = os.path.dirname(os.path.abspath(__file__))     # …/code/range
-_ROOT = os.path.dirname(_HERE)                          # …/code
-# the three dirs that make up the autonomous runtime (see the 22-file surface)
-_RUNTIME_DIRS = ("range", "canonicalization",
-                 os.path.join("invariant_engine", "invariant_engine"))
+_HERE = os.path.dirname(os.path.abspath(__file__))     # …/code/range (or …/vakhter/range)
+_ROOT = os.path.dirname(_HERE)                          # …/code (or …/vakhter)
+
+
+def _runtime_dirs(root):
+    """The three runtime dirs relative to `root`. invariant_engine is nested
+    (source: invariant_engine/invariant_engine) or flat (installed wheel:
+    invariant_engine) — pick whichever is actually present so the same code hashes
+    the right files in both layouts."""
+    dirs = ["range", "canonicalization"]
+    for cand in (os.path.join("invariant_engine", "invariant_engine"),
+                 "invariant_engine"):
+        if os.path.isdir(os.path.join(root, cand)):
+            dirs.append(cand)
+            break
+    return dirs
 
 
 def runtime_files(root=_ROOT):
     """Deterministic, sorted list of every runtime .py, relative to `root`."""
     out = []
-    for d in _RUNTIME_DIRS:
+    for d in _runtime_dirs(root):
         base = os.path.join(root, d)
         for dp, _dns, fns in os.walk(base):
             if "__pycache__" in dp.split(os.sep):

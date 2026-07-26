@@ -30,7 +30,7 @@ Vakhter is **autonomous** — pure Python standard library, **zero third-party d
 ```bash
 git clone https://github.com/Rus1978Rus/Vakhter
 cd Vakhter
-pip install -e .
+pip install .            # or `pip install -e .` for a live/editable checkout
 ```
 
 As a library — one call:
@@ -122,7 +122,7 @@ Vakhter **автономен** — чистая стандартная библ�
 ```bash
 git clone https://github.com/Rus1978Rus/Vakhter
 cd Vakhter
-pip install -e .
+pip install .            # или `pip install -e .` для живой/editable-копии
 ```
 
 Как библиотека — один вызов:

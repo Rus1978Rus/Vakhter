@@ -570,6 +570,24 @@ Status: `ADOPTED` (code/range/_ed25519.py, integrity_verify.py; self_integrity
 real verify + cache; tools/sign_integrity.py offline signer; test_ed25519_rfc8032,
 test_integrity_real). Supersedes the `DEFERRED` half of AD-32.
 
+**AD-37 · Plain `pip install .` works by MOUNTING the runtime into the wheel, not moving it.**
+Decision: to make a non-editable `pip install .` ship a working guard (not just the
+thin shim), the three runtime dirs are declared as subpackages via setuptools
+package-dir mapping (vakhter.range = code/range, etc.) — the files stay where they
+are in the repo. A plain install copies them into the wheel under vakhter/; the
+flat imports keep working because vakhter/__init__.py puts the dirs on sys.path in
+both layouts, and integrity_verify detects invariant_engine's nesting (double in
+source, flat in the wheel). Rejected: physically relocating code/ into the package,
+which would have rewritten the relative paths that tests, tools (→ sign_cards), and
+apps depend on — a wide blast radius for no functional gain. Verified empirically:
+`pip install . --target` then `from vakhter import analyze` + the `vakhter` CLI +
+an integrity round-trip all work with NO source tree present, and the source-layout
+suite stays green (136 tests). Two empty packaging __init__.py were added to
+code/range and code/canonicalization (setuptools discovery only; flat imports are
+unaffected).
+Status: `ADOPTED` (pyproject package-dir; vakhter/__init__.py dual-layout;
+integrity_verify nesting detect; code/{range,canonicalization}/__init__.py).
+
 ---
 
 <a name="русский"></a>
@@ -1125,3 +1143,21 @@ read-only монтирования планка поднимается (подд
 Статус: `ПРИНЯТО` (code/range/_ed25519.py, integrity_verify.py; self_integrity
 настоящая проверка + кэш; tools/sign_integrity.py офлайн-подписант;
 test_ed25519_rfc8032, test_integrity_real). Замещает `ОТЛОЖЕНО`-половину AD-32.
+
+**AD-37 · Обычный `pip install .` работает через МОНТИРОВАНИЕ рантайма в wheel, а не перемещение.**
+Решение: чтобы non-editable `pip install .` поставлял рабочий охранник (а не только
+тонкий shim), три рантайм-папки объявлены подпакетами через setuptools package-dir
+(vakhter.range = code/range и т.д.) — файлы остаются на месте в репо. Обычная
+установка копирует их в wheel под vakhter/; flat-импорты продолжают работать, потому
+что vakhter/__init__.py кладёт папки на sys.path в обеих раскладках, а
+integrity_verify определяет вложенность invariant_engine (двойная в исходниках,
+одинарная в wheel). Отвергнуто: физически переносить code/ в пакет — это переписало
+бы относительные пути, от которых зависят тесты, инструменты (→ sign_cards) и
+приложения — широкий радиус поражения без функциональной выгоды. Проверено
+эмпирически: `pip install . --target`, затем `from vakhter import analyze` + CLI
+`vakhter` + round-trip целостности работают БЕЗ исходников, а набор в исходной
+раскладке остаётся зелёным (136 тестов). Добавлены два пустых упаковочных
+__init__.py в code/range и code/canonicalization (только для обнаружения
+setuptools; flat-импорты не затронуты).
+Статус: `ПРИНЯТО` (pyproject package-dir; vakhter/__init__.py две раскладки;
+детект вложенности integrity_verify; code/{range,canonicalization}/__init__.py).

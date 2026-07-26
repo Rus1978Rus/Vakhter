@@ -20,7 +20,20 @@ Repository = "https://github.com/Rus1978Rus/Vakhter"
 vakhter = "vakhter.__main__:main"
 
 [tool.setuptools]
-# Thin public-API package. The autonomous guard lives under code/; an editable
-# install (pip install -e .) keeps it in place so the path wiring in
-# vakhter/__init__.py resolves. See README "Install".
-packages = ["vakhter"]
+# The `vakhter` shim plus the three runtime directories, mounted as subpackages
+# WITHOUT moving them in the repo (package-dir maps a package name to an existing
+# path). This makes a plain `pip install .` copy the guard's runtime into the
+# wheel — `from vakhter import analyze` then works with no source tree present.
+# The modules are still imported FLAT: vakhter/__init__.py puts these dirs on
+# sys.path in both the installed and the source layout.
+packages = [
+    "vakhter",
+    "vakhter.range",
+    "vakhter.canonicalization",
+    "vakhter.invariant_engine",
+]
+
+[tool.setuptools.package-dir]
+"vakhter.range" = "code/range"
+"vakhter.canonicalization" = "code/canonicalization"
+"vakhter.invariant_engine" = "code/invariant_engine/invariant_engine"

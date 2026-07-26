@@ -25,13 +25,29 @@ fully autonomously on its own card detectors.
 import os
 import sys
 
-_ROOT = os.path.dirname(os.path.abspath(__file__))
-_CODE = os.path.join(os.path.dirname(_ROOT), "code")
-# product.py self-wires canonicalization + invariant_engine relative to itself;
-# we only need its own directory (code/range) on the path to import it.
-_RANGE = os.path.join(_CODE, "range")
-if os.path.isdir(_RANGE) and _RANGE not in sys.path:
-    sys.path.insert(0, _RANGE)
+_PKG = os.path.dirname(os.path.abspath(__file__))
+
+# Two layouts resolve identically:
+#   installed (pip install .)  — the runtime dirs were copied INSIDE the package:
+#                                vakhter/range, vakhter/canonicalization,
+#                                vakhter/invariant_engine  (parent = the package).
+#   source / editable          — they live at ../code/range, ../code/canonicalization,
+#                                ../code/invariant_engine/invariant_engine.
+# `invariant_engine` is imported as a package, so its PARENT dir goes on the path;
+# `range` and `canonicalization` hold flat modules, so THOSE dirs go on the path.
+if os.path.isdir(os.path.join(_PKG, "range")):
+    _RANGE = os.path.join(_PKG, "range")
+    _CANON = os.path.join(_PKG, "canonicalization")
+    _IE_PARENT = _PKG                                      # holds vakhter/invariant_engine
+else:
+    _CODE = os.path.join(os.path.dirname(_PKG), "code")
+    _RANGE = os.path.join(_CODE, "range")
+    _CANON = os.path.join(_CODE, "canonicalization")
+    _IE_PARENT = os.path.join(_CODE, "invariant_engine")  # holds .../invariant_engine
+
+for _p in (_IE_PARENT, _CANON, _RANGE):
+    if os.path.isdir(_p) and _p not in sys.path:
+        sys.path.insert(0, _p)
 
 from product import analyze  # noqa: E402  (path wiring must precede the import)
 
