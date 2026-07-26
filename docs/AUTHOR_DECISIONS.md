@@ -540,6 +540,36 @@ Status: `ADOPTED` (product.py _build_readers card-first; msl_real._locate_repo
 env-only; code/range/data_uri_cards.py; code/tests/test_data_uri.py). MSL stays
 supported as opt-in reinforcement via MSL_MIP_HOME.
 
+**AD-36 · Real integrity: offline Ed25519 signature + read-only mount (option A, delivers what AD-32 deferred).**
+Decision: AD-32 shipped the honest self-report (option B) and deferred option A —
+genuine proven integrity — because it needs a deploy-side read-only mount. Option A
+is now built and opt-in. A pure-Python Ed25519 (stdlib only, keeping zero
+dependencies) provides the ASYMMETRIC half the self-hash tautology needs: the
+author signs a manifest of runtime file hashes OFFLINE (the private seed never
+ships), and the runtime verifies that signature under a PINNED public key before
+re-hashing every runtime file. integrity_status() now returns a real 'verified'
+only when VAKHTER_INTEGRITY_ANCHOR (manifest.json + manifest.sig) and
+VAKHTER_INTEGRITY_PUBKEY are both set and the signature + all file hashes check
+out; a signature failure, a changed file, or a runtime file the manifest omits ->
+'failed'; neither configured -> honest 'unverified' (unchanged default). Strict
+mode (AD-32) can now REACH 'verified' and serve; without a valid anchor it still
+refuses. The pure Ed25519 is pinned to the RFC 8032 test vectors
+(test_ed25519_rfc8032) — a hand-rolled routine that reproduces the standard's own
+vectors byte-for-byte is the correctness proof.
+Rationale — what is and is NOT load-bearing: the SIGNATURE proves AUTHORSHIP (only
+the offline key could make it); the READ-ONLY MOUNT proves the verifier itself was
+not swapped. The mount is the load-bearing control — no amount of Python closes the
+tautology from inside a writable code dir. So this is opt-in and honestly scoped:
+without a read-only mount it raises the bar (a tamper now needs the private key)
+but is not absolute, which is exactly why AD-32's self-report stays the default.
+The three theatre patterns the conveyor named (self-hash, co-located symmetric
+key, co-located manifest constant) are all still rejected: the key is asymmetric
+and its private half is offline; the manifest is signed, not merely present; the
+pin is an operator-supplied/immutable pubkey, not a constant a code-writer edits.
+Status: `ADOPTED` (code/range/_ed25519.py, integrity_verify.py; self_integrity
+real verify + cache; tools/sign_integrity.py offline signer; test_ed25519_rfc8032,
+test_integrity_real). Supersedes the `DEFERRED` half of AD-32.
+
 ---
 
 <a name="русский"></a>
@@ -1063,3 +1093,35 @@ JPEG \xFF\xD8), text/plain, шрифты, audio/video остаются чист�
 Статус: `ПРИНЯТО` (product.py _build_readers карточки-сначала; msl_real._locate_repo
 только env; code/range/data_uri_cards.py; code/tests/test_data_uri.py). MSL
 поддерживается как опт-ин усиление через MSL_MIP_HOME.
+
+**AD-36 · Настоящая целостность: офлайн-подпись Ed25519 + read-only монтирование (Вариант A, то, что AD-32 откладывал).**
+Решение: AD-32 поставил честный self-report (Вариант B) и отложил Вариант A —
+подлинную доказанную целостность — потому что она требует read-only монтирования
+на стороне деплоя. Вариант A теперь построен и опционален. Чистый Python-Ed25519
+(только stdlib, ноль зависимостей сохранены) даёт АСИММЕТРИЧНУЮ половину, которой
+не хватало из-за само-хеш тавтологии: автор подписывает манифест хешей рантайм-
+файлов ОФЛАЙН (приватный seed никогда не поставляется), а рантайм проверяет эту
+подпись под ЗАКреплённым публичным ключом до пере-хеширования каждого рантайм-
+файла. integrity_status() теперь возвращает настоящий 'verified' только когда
+заданы и VAKHTER_INTEGRITY_ANCHOR (manifest.json + manifest.sig), и
+VAKHTER_INTEGRITY_PUBKEY, и подпись + все хеши файлов сходятся; сбой подписи,
+изменённый файл или рантайм-файл, пропущенный в манифесте -> 'failed'; ничего не
+задано -> честный 'unverified' (дефолт без изменений). Строгий режим (AD-32)
+теперь может ДОСТИЧЬ 'verified' и обслуживать; без валидного якоря — по-прежнему
+отказывает. Чистый Ed25519 закреплён тест-векторами RFC 8032
+(test_ed25519_rfc8032) — самописная процедура, воспроизводящая собственные
+векторы стандарта байт-в-байт, и есть доказательство корректности.
+Обоснование — что несущее, а что НЕТ: ПОДПИСЬ доказывает АВТОРСТВО (только офлайн-
+ключ мог её сделать); READ-ONLY МОНТИРОВАНИЕ доказывает, что сам проверяльщик не
+подменён. Монтирование — несущий контроль: никакой Python не закрывает тавтологию
+изнутри записываемой папки кода. Поэтому это опционально и честно очерчено: без
+read-only монтирования планка поднимается (подделка теперь требует приватного
+ключа), но не абсолютна — ровно поэтому self-report из AD-32 остаётся дефолтом.
+Три «театральных» паттерна, названные конвейером (само-хеш, соседний
+симметричный ключ, соседняя manifest-константа), по-прежнему отвергнуты: ключ
+асимметричен и его приватная половина офлайн; манифест подписан, а не просто
+лежит рядом; пин — это operator-заданный/неизменяемый pubkey, а не константа,
+которую правит писатель кода.
+Статус: `ПРИНЯТО` (code/range/_ed25519.py, integrity_verify.py; self_integrity
+настоящая проверка + кэш; tools/sign_integrity.py офлайн-подписант;
+test_ed25519_rfc8032, test_integrity_real). Замещает `ОТЛОЖЕНО`-половину AD-32.
