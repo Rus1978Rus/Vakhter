@@ -40,6 +40,15 @@ _NOSQL = re.compile(r'"\$(gt|gte|lt|lte|ne|eq|nin|in|or|and|nor|not|where|regex|
                     r'exists|elemmatch|mod|all|type)"'
                     r"|\[\s*\$(gt|gte|lt|lte|ne|eq|nin|in|where|regex|exists)\s*\]", re.I)
 
+# Control codepoints that do not belong in text shown to a model: C0 (U+0000–1F)
+# and C1 (U+0080–9F) plus DEL (U+007F). Excludes the ordinary whitespace controls
+# tab/LF/CR/VT/FF (the whitespace card owns those) and NUL (flagged above with its
+# own signature). NEL (U+0085) is a line break in some parsers (header/log
+# injection), CSI (U+009B) a terminal escape, ESC (U+001B) a terminal control,
+# DEL a parser disruptor — the digit-card R7-3/R8-2/R9-1 carrier class.
+_CTRL = ((set(range(0x00, 0x20)) | {0x7F} | set(range(0x80, 0xA0)))
+         - {0x00, 0x09, 0x0A, 0x0B, 0x0C, 0x0D})
+
 
 def metachar_cards_reader(text):
     res = Finding("clean", 0.0, "metachar: nothing")
@@ -49,6 +58,11 @@ def metachar_cards_reader(text):
 
     if "\x00" in text:
         res = hit(0.9, "NULL byte in input (parser truncation / filter bypass)", "null_byte")
+    ctrl = sorted({ord(c) for c in text if ord(c) in _CTRL})
+    if ctrl:
+        names = ", ".join(f"U+{c:04X}" for c in ctrl[:4]) + ("…" if len(ctrl) > 4 else "")
+        res = hit(0.8, f"control character(s) invalid in text ({names}) — NEL/CSI/"
+                  f"ESC/DEL class (line / terminal / parser injection)", "control_char")
     if _CRLF.search(text):
         res = hit(0.9, "CRLF followed by a header name (header/log injection)", "crlf")
     if _XSS.search(text):
